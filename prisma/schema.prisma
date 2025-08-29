@@ -19,6 +19,7 @@ model CustomerServiceAgents {
   agentId                   String               @unique
   agentName                 String
   username                  String               @unique // New unique username field
+  createdAt                 DateTime             @default(now())
   availableTokens           Int                  @default(0)
   items                     Item[]
 
