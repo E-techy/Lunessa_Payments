@@ -11,3 +11,4 @@
 /prisma/generated
 
 /test.js
+/generated/prisma
