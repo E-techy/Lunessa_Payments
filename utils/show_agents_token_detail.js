@@ -84,8 +84,10 @@ async function showAgentsTokenDetail(username) {
   }
 }
 
-(async () => {
-  showAgentsTokenDetail("arjun_agent01");
-})();
+// (async () => {
+// const all = await  showAgentsTokenDetail("arjun_agent01");
+// console.log(all);
+
+// })();
 
 module.exports = showAgentsTokenDetail;
