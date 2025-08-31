@@ -84,10 +84,10 @@ async function showAgentsTokenDetail(username) {
   }
 }
 
-// (async () => {
-// const all = await  showAgentsTokenDetail("arjun_agent01");
-// console.log(all);
+(async () => {
+const all = await  showAgentsTokenDetail("aman123");
+console.log(all);
 
-// })();
+})();
 
 module.exports = showAgentsTokenDetail;

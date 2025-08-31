@@ -105,3 +105,30 @@ type AgentModification {
   companyEmail              String
   companyDescription        String
 }
+
+
+/// Offer model to store promotional campaigns, discounts, and coupon codes
+model Offer {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  offerId           String   @unique                            // 🔑 unique identifier (UUID)
+  title             String                                   // short title e.g. "New Year Sale"
+  description       String?                                  // detailed description
+  offerCode         String?   @unique                        // optional coupon code
+  discountType      String                                   // e.g. "percentage" | "flat"
+  discountValue     Float                                    // e.g. 20 (for 20%) or 500 (₹500 flat)
+  maxDiscountAmount Float?                                  // optional cap for percentage discounts
+  
+  applicableTo      String[]                                // e.g. ["all", "new-users", "premium-users"]
+  minPurchaseAmount Float?                                  // e.g. must spend ₹1000
+  
+  applicableProducts String[]                               // product IDs or categories
+  usageLimit        Int?                                    // total number of times offer can be used
+  usageLimitPerUser Int?                                    // per user usage cap
+  
+  startDate         DateTime
+  endDate           DateTime
+  status            String   @default("active")              // "active" | "expired" | "upcoming" | "paused"
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
