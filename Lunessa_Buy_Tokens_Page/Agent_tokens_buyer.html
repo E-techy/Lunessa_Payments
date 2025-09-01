@@ -3,97 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buy Tokens</title>
+    <title>AI Token Purchase - Professional</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>BUY TOKEN</h1>
+            <h1>AI TOKEN MARKETPLACE</h1>
         </div>
 
         <div class="info-cards">
-            <div class="agent-name">
-                <h3>Agent-name</h3>
-                <p>MZK-Owner</p>
+            <div class="agent-card">
+                <div class="card-header">
+                    <div class="icon">🤖</div>
+                    <h3>Agent Information</h3>
+                </div>
+                <div class="card-content">
+                    <p class="agent-name">MZK- AI</p>
+                    <span class="status-badge">Active</span>
+                </div>
             </div>
-            <div class="token-available">
-                <h3>Token-available</h3>
-                <p>5000</p>
+            <div class="token-card">
+                <div class="card-header">
+                    <div class="icon">⚡</div>
+                    <h3>Available Tokens</h3>
+                </div>
+                <div class="card-content">
+                    <p class="token-count">5,000</p>
+                    <span class="availability">Ready for Purchase</span>
+                </div>
             </div>
         </div>
 
-        <div class="calculate-section">
-            <h2>CALCULATE PRICING</h2>
-            <div class="input-row">
-                <div class="input-group model-select">
-                    <label for="model">Model Selection</label>
-                    <select id="model">
-                        <option value="">Select Model</option>
-                        <option value="gpt-4" data-rate="0.03">GPT-4 (₹0.03/token)</option>
-                        <option value="gpt-3.5" data-rate="0.002">GPT-3.5 Turbo (₹0.002/token)</option>
-                        <option value="claude-3" data-rate="0.025">Claude-3 (₹0.025/token)</option>
-                        <option value="gemini-pro" data-rate="0.015">Gemini Pro (₹0.015/token)</option>
-                    </select>
+        <div class="purchase-section">
+            <div class="section-header">
+                <h2>Configure Your Purchase</h2>
+                <p>Select your preferred AI model and specify the number of tokens needed</p>
+            </div>
+
+            <div class="input-container">
+                <div class="input-group model-group">
+                    <label for="model">AI Model Selection</label>
+                    <div class="select-wrapper">
+                        <select id="model" class="model-select">
+                            <option value="">Choose AI Model</option>
+                            <option value="gpt-4" data-rate="0.03">GPT-4 Turbo - ₹0.03/token</option>
+                            <option value="gpt-3.5" data-rate="0.002">GPT-3.5 Turbo - ₹0.002/token</option>
+                            <option value="claude-3" data-rate="0.025">Claude-3 Sonnet - ₹0.025/token</option>
+                            <option value="gemini-pro" data-rate="0.015">Gemini Pro - ₹0.015/token</option>
+                            <option value="llama-2" data-rate="0.001">Llama 2 70B - ₹0.001/token</option>
+                        </select>
+                        <div class="select-arrow">
+                            <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+                                <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
                 </div>
-                <div class="input-group token-input">
-                    <label for="tokens">No. of tokens</label>
-                    <input type="number" id="tokens" placeholder="Enter number of tokens" min="1">
+
+                <div class="input-group token-group">
+                    <label for="tokens">Number of Tokens</label>
+                    <input type="number" id="tokens" class="token-input" placeholder="Enter token quantity" min="1" max="5000000">
                 </div>
-                <button class="calculate-btn">Calculate</button>
+
+                <button class="calculate-btn">
+                    <span class="btn-text">Calculate Price</span>
+                    <svg class="btn-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
         </div>
 
-        <div class="bill-desk" id="billDesk">
-            <h2>BILL DESK</h2>
-            <div class="bill-row">
-                <span>No. of tokens</span>
-                <span id="billTokens">-</span>
+        <div class="pricing-breakdown" id="pricingBreakdown">
+            <div class="breakdown-header">
+                <h2>Pricing Breakdown</h2>
+                <div class="model-badge" id="selectedModelBadge"></div>
             </div>
-            <div class="bill-row">
-                <span>Price</span>
-                <span id="billPrice">₹0.00</span>
+            
+            <div class="pricing-details">
+                <div class="detail-row">
+                    <span class="detail-label">Token Quantity</span>
+                    <span class="detail-value" id="billTokens">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Rate per Token</span>
+                    <span class="detail-value" id="tokenRate">₹0.00</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Subtotal</span>
+                    <span class="detail-value" id="billPrice">₹0.00</span>
+                </div>
+                <div class="detail-row discount-row" id="discountRow" style="display: none;">
+                    <span class="detail-label">Discount Applied</span>
+                    <span class="detail-value discount" id="discountAmount">-₹0.00</span>
+                </div>
+                <div class="divider"></div>
+                <div class="detail-row total-row">
+                    <span class="detail-label">Total Amount</span>
+                    <span class="detail-value total" id="totalPrice">₹0.00</span>
+                </div>
             </div>
-            <div class="bill-row discount" id="discountRow" style="display: none;">
-                <span>Discount</span>
-                <span id="discountAmount">-₹0.00</span>
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="purchase-btn" id="purchaseBtn" >
+                    <span class="btn-text">Complete Purchase</span>
+                    <svg class="btn-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M12 5L6.5 10.5L4 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg> 
+                </button>
             </div>
-            <div class="bill-row total">
-                <span>Total price</span>
-                <span id="totalPrice">₹0.00</span>
-            </div>
-            <button class="buy-btn" id="buyBtn">Buy</button>
         </div>
 
         <div class="offers-section">
-            <h2>Limited-time Offers</h2>
-            <div class="offers-grid" id="offersGrid">
-                <div class="offer-card" data-discount-type="percentage" data-discount-value="20" data-min-amount="1000">
-                    <h3>New Year Sale</h3>
-                    <p>Get 20% off on your token purchase. Valid for orders above ₹1000.</p>
-                    <div class="offer-code">NEWYEAR20</div>
-                    <button class="apply-btn" >Apply</button>
+            <div class="section-header">
+                <h2>Exclusive Offers</h2>
+                <p>Apply promotional codes to save on your token purchase</p>
+            </div>
+            
+            <div class="offers-grid">
+                <div class="offer-card premium" data-discount-type="percentage" data-discount-value="25" data-min-amount="1500">
+                    <div class="offer-badge">Premium</div>
+                    <h3>New Year Special</h3>
+                    <p>Get 25% off on your first premium purchase. Valid for orders above ₹1,500.</p>
+                    <div class="offer-details">
+                        <span class="offer-code">NEWYEAR25</span>
+                        <button class="apply-offer-btn">Apply Offer</button>
+                    </div>
                 </div>
-                <div class="offer-card" data-discount-type="flat" data-discount-value="500" data-min-amount="2000">
-                    <h3>Flat ₹500 Off</h3>
-                    <p>Get flat ₹500 discount on orders above ₹2000. Limited time offer.</p>
-                    <div class="offer-code">FLAT500</div>
-                    <button class="apply-btn" >Apply</button>
+
+                <div class="offer-card popular" data-discount-type="flat" data-discount-value="500" data-min-amount="2000">
+                    <div class="offer-badge">Popular</div>
+                    <h3>Bulk Purchase Discount</h3>
+                    <p>Flat ₹500 off on bulk orders. Perfect for enterprise customers.</p>
+                    <div class="offer-details">
+                        <span class="offer-code">BULK500</span>
+                        <button class="apply-offer-btn">Apply Offer</button>
+                    </div>
                 </div>
-                <div class="offer-card" data-discount-type="percentage" data-discount-value="15" data-min-amount="500">
-                    <h3>First Time User</h3>
-                    <p>Special 15% discount for new users. No minimum purchase required.</p>
-                    <div class="offer-code">FIRST15</div>
-                    <button class="apply-btn" >Apply</button>
+
+                <div class="offer-card standard" data-discount-type="percentage" data-discount-value="15" data-min-amount="500">
+                    <div class="offer-badge">First Time</div>
+                    <h3>Welcome Bonus</h3>
+                    <p>15% discount for new customers. Start your AI journey with savings.</p>
+                    <div class="offer-details">
+                        <span class="offer-code">WELCOME15</span>
+                        <button class="apply-offer-btn">Apply Offer</button>
+                    </div>
                 </div>
-                <div class="offer-card" data-discount-type="flat" data-discount-value="200" data-min-amount="800">
-                    <h3>Weekend Special</h3>
-                    <p>Enjoy ₹200 off on weekend purchases. Valid for orders above ₹800.</p>
-                    <div class="offer-code">WEEKEND200</div>
-                    <button class="apply-btn" >Apply</button>
+
+                <div class="offer-card weekend" data-discount-type="flat" data-discount-value="200" data-min-amount="800">
+                    <div class="offer-badge">Limited</div>
+                    <h3>Weekend Flash Sale</h3>
+                    <p>₹200 off on weekend purchases. Valid until Sunday midnight.</p>
+                    <div class="offer-details">
+                        <span class="offer-code">WEEKEND200</span>
+                        <button class="apply-offer-btn" >Apply Offer</button>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <footer class="page-footer">
+            <p>© 2024 AI Token Marketplace. All rights reserved. | Secure payments powered by advanced encryption</p>
+        </footer>
     </div>
 
     <!-- <script>
@@ -103,7 +175,8 @@
             basePrice: 0,
             discount: 0,
             totalPrice: 0,
-            appliedOffer: null
+            appliedOffer: null,
+            modelName: ''
         };
 
         function calculatePrice() {
@@ -111,7 +184,12 @@
             const tokensInput = document.getElementById('tokens');
             
             if (!modelSelect.value || !tokensInput.value) {
-                alert('Please select a model and enter number of tokens');
+                showNotification('Please select a model and enter number of tokens', 'warning');
+                return;
+            }
+
+            if (parseInt(tokensInput.value) < 1 || parseInt(tokensInput.value) > 50000) {
+                showNotification('Token quantity must be between 1 and 50,000', 'error');
                 return;
             }
 
@@ -119,6 +197,7 @@
             const rate = parseFloat(selectedOption.dataset.rate);
             const tokens = parseInt(tokensInput.value);
             const basePrice = tokens * rate;
+            const modelName = selectedOption.text.split(' - ')[0];
 
             currentCalculation.tokens = tokens;
             currentCalculation.rate = rate;
@@ -126,25 +205,30 @@
             currentCalculation.discount = 0;
             currentCalculation.totalPrice = basePrice;
             currentCalculation.appliedOffer = null;
+            currentCalculation.modelName = modelName;
 
-            updateBillDesk();
+            updatePricingBreakdown();
             resetOffers();
             
-            const billDesk = document.getElementById('billDesk');
-            billDesk.classList.add('show');
+            const pricingSection = document.getElementById('pricingBreakdown');
+            pricingSection.classList.add('show');
+            
+            showNotification('Pricing calculated successfully!', 'success');
         }
 
-        function updateBillDesk() {
+        function updatePricingBreakdown() {
             document.getElementById('billTokens').textContent = currentCalculation.tokens.toLocaleString();
+            document.getElementById('tokenRate').textContent = `₹${currentCalculation.rate.toFixed(3)}`;
             document.getElementById('billPrice').textContent = `₹${currentCalculation.basePrice.toFixed(2)}`;
             document.getElementById('discountAmount').textContent = `-₹${currentCalculation.discount.toFixed(2)}`;
             document.getElementById('totalPrice').textContent = `₹${currentCalculation.totalPrice.toFixed(2)}`;
             
+            const modelBadge = document.getElementById('selectedModelBadge');
+            modelBadge.textContent = currentCalculation.modelName;
+            modelBadge.style.display = 'block';
+            
             const discountRow = document.getElementById('discountRow');
             discountRow.style.display = currentCalculation.discount > 0 ? 'flex' : 'none';
-            
-            const buyBtn = document.getElementById('buyBtn');
-            buyBtn.textContent = currentCalculation.appliedOffer ? 'Buy Now' : 'Buy';
         }
 
         function applyOffer(button) {
@@ -154,19 +238,17 @@
             const minAmount = parseFloat(card.dataset.minAmount);
             
             if (currentCalculation.basePrice === 0) {
-                alert('Please calculate pricing first');
+                showNotification('Please calculate pricing first', 'warning');
                 return;
             }
             
             if (currentCalculation.basePrice < minAmount) {
-                alert(`Minimum purchase amount is ₹${minAmount}`);
+                showNotification(`Minimum purchase amount is ₹${minAmount}`, 'error');
                 return;
             }
             
-            // Reset all offers
             resetOffers();
             
-            // Calculate discount
             let discount = 0;
             if (discountType === 'percentage') {
                 discount = (currentCalculation.basePrice * discountValue) / 100;
@@ -174,52 +256,50 @@
                 discount = discountValue;
             }
             
-            // Ensure discount doesn't exceed base price
             discount = Math.min(discount, currentCalculation.basePrice);
             
             currentCalculation.discount = discount;
             currentCalculation.totalPrice = currentCalculation.basePrice - discount;
             currentCalculation.appliedOffer = card.querySelector('h3').textContent;
             
-            // Update UI
             card.classList.add('applied');
             button.classList.add('applied');
-            button.textContent = 'Applied';
+            button.textContent = 'Applied ✓';
             
-            updateBillDesk();
+            updatePricingBreakdown();
+            showNotification(`Offer applied! You saved ₹${discount.toFixed(2)}`, 'success');
         }
 
         function resetOffers() {
             const offerCards = document.querySelectorAll('.offer-card');
-            const applyBtns = document.querySelectorAll('.apply-btn');
+            const applyBtns = document.querySelectorAll('.apply-offer-btn');
             
             offerCards.forEach(card => card.classList.remove('applied'));
             applyBtns.forEach(btn => {
                 btn.classList.remove('applied');
-                btn.textContent = 'Apply';
+                btn.textContent = 'Apply Offer';
             });
         }
 
-        function handleBuy() {
+        function handlePurchase() {
             if (currentCalculation.basePrice === 0) {
-                alert('Please calculate pricing first');
+                showNotification('Please calculate pricing first', 'warning');
                 return;
             }
             
-            // Simulate purchase process
-            const buyBtn = document.getElementById('buyBtn');
-            const originalText = buyBtn.textContent;
+            const purchaseBtn = document.getElementById('purchaseBtn');
+            const originalContent = purchaseBtn.innerHTML;
             
-            buyBtn.textContent = 'Processing...';
-            buyBtn.disabled = true;
+            purchaseBtn.innerHTML = '<span class="btn-text">Processing...</span>';
+            purchaseBtn.disabled = true;
             
             setTimeout(() => {
-                alert(`Purchase successful! You have bought ${currentCalculation.tokens.toLocaleString()} tokens for ₹${currentCalculation.totalPrice.toFixed(2)}`);
+                showNotification(`Purchase successful! You have bought ${currentCalculation.tokens.toLocaleString()} tokens for ₹${currentCalculation.totalPrice.toFixed(2)}`, 'success');
                 
-                // Reset the form
+                // Reset form
                 document.getElementById('model').value = '';
                 document.getElementById('tokens').value = '';
-                document.getElementById('billDesk').classList.remove('show');
+                document.getElementById('pricingBreakdown').classList.remove('show');
                 resetOffers();
                 
                 currentCalculation = {
@@ -228,19 +308,36 @@
                     basePrice: 0,
                     discount: 0,
                     totalPrice: 0,
-                    appliedOffer: null
+                    appliedOffer: null,
+                    modelName: ''
                 };
                 
-                buyBtn.textContent = originalText;
-                buyBtn.disabled = false;
+                purchaseBtn.innerHTML = originalContent;
+                purchaseBtn.disabled = false;
             }, 2000);
         }
 
-        // Auto-calculate when inputs change
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Auto-calculate on input
         document.getElementById('tokens').addEventListener('input', function() {
             const modelSelect = document.getElementById('model');
             if (modelSelect.value && this.value) {
-                setTimeout(calculatePrice, 500); // Debounce
+                clearTimeout(this.debounceTimer);
+                this.debounceTimer = setTimeout(calculatePrice, 800);
             }
         });
 
