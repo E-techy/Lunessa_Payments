@@ -3,6 +3,9 @@ const express = require("express");
 const showAgentsTokenDetail = require("./utils/show_agents_token_detail");
 const authenticateUser = require("./utils/authenticate_user");
 
+const Razorpay = require("razorpay");
+const shortid = require("shortid");
+
 require("dotenv").config();
 const PORT = process.env.LUNESSA_AGENT_TOKENS_BUYING_PORT || 3004;
 
@@ -42,6 +45,23 @@ app.post("/view_agent_tokens", authenticateUser, async (req, res) => {
     });
   }
 });
+
+
+// buy agent tokens, with offers
+app.post("/offer_selection", authenticateUser, async (req, req) => {
+  
+})
+
+
+// generate final bill
+app.post("/agents_tokens_bill", authenticateUser, async (req, res) => {
+  
+})
+
+// razorpay payments page redirect, 
+app.post("/confirm_payment", authenticateUser, async (req, res) => {
+  
+})
 
 // listening on the port url
 app.listen(PORT, () => {
