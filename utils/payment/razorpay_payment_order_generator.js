@@ -1,7 +1,7 @@
 const Razorpay = require("razorpay");
 
 /**
- * Generate a Razorpay order with custom metadata.
+ * Generate a Razorpay order with custom metadata and order type.
  *
  * @async
  * @function generatePaymentOrder
@@ -11,10 +11,10 @@ const Razorpay = require("razorpay");
  * @param {Object} paymentInfo - JSON object with payment-related info (e.g., { plan, tokens }).
  * @param {number} amount - Amount in INR (in rupees, not paise).
  * @param {string} receiptNumber - Unique receipt number for tracking.
+ * @param {"normal"|"manual_capture"} [orderType="normal"] - Type of order:
+ *   - "normal": Default flow (auto-captures after payment success)
+ *   - "manual_capture": Payment is authorized only, must be captured later
  * @returns {Promise<{success: boolean, order?: Object, error?: string}>}
- * - success: Whether the order creation succeeded
- * - order: Razorpay order object (if success)
- * - error: Error message (if failed)
  *
  * @example
  * const result = await generatePaymentOrder(
@@ -23,7 +23,8 @@ const Razorpay = require("razorpay");
  *   { userId: "123", name: "Ashutosh", email: "ashu@example.com" },
  *   { plan: "gold", tokens: 50 },
  *   500,
- *   "receipt#101"
+ *   "receipt#101",
+ *   "manual_capture"
  * );
  *
  * if (result.success) {
@@ -32,7 +33,15 @@ const Razorpay = require("razorpay");
  *   console.error("Error:", result.error);
  * }
  */
-async function generatePaymentOrder(keyId, keySecret, userDetails, paymentInfo, amount, receiptNumber) {
+async function generatePaymentOrder(
+  keyId,
+  keySecret,
+  userDetails,
+  paymentInfo,
+  amount,
+  receiptNumber,
+  orderType = "normal"
+) {
   const razorpay = new Razorpay({
     key_id: keyId,
     key_secret: keySecret,
@@ -43,9 +52,11 @@ async function generatePaymentOrder(keyId, keySecret, userDetails, paymentInfo, 
       amount: amount * 100, // Razorpay expects paise
       currency: "INR",
       receipt: receiptNumber,
+      payment_capture: orderType === "normal" ? 1 : 0, // auto-capture or manual
       notes: {
         userDetails: JSON.stringify(userDetails),
         paymentInfo: JSON.stringify(paymentInfo),
+        orderType,
       },
     });
 
