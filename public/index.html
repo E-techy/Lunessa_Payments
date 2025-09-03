@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Razorpay Payment Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #528ff0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #4078d0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Razorpay Test Payment</h1>
+  <button id="payBtn">Pay ₹500</button>
+  <label>enter amount</label>
+  <input type="number" width="200px" name="enter amout" id="amount">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+
+   
+    
+    document.getElementById("payBtn").onclick = async function () {
+
+         let amount = document.getElementById("amount").value;
+    let a = parseInt(amount);
+    console.log(a);
+      // Step 1: Create order from backend
+      const res = await fetch("/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: a }) // amount in INR
+      });
+      const order = await res.json();
+
+      // Step 2: Razorpay options
+      const options = {
+        key: "rzp_test_RCor7m7EQVQcnW", // ⚠️ replace manually with your test Key ID
+        amount: order.amount,
+        currency: order.currency,
+        name: "My Test Shop",
+        description: "Test Transaction",
+        order_id: order.id,
+        handler: async function (response) {
+          // Step 3: Verify payment on backend
+          const verifyRes = await fetch("/payment/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(response),
+          });
+          const result = await verifyRes.json();
+          console.log(result.message);
+          
+          alert(result.message);
+        },
+        theme: { color: "#528ff0" },
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+    };
+  </script>
+</body>
+</html>
