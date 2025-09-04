@@ -21,7 +21,7 @@ app.use(express.static(__dirname + "/Lunessa_Buy_Tokens_Page"));
 // Agent tokens viewer Page for buying tokens
 app.get("/view_agent_tokens", async (req, res) => {
   // Sending the tokens viewer page
-  res.sendFile(__dirname + "/Lunessa_Buy_Tokens_Page/Agent_tokens_viewer.html");
+  res.sendFile(__dirname + "/Lunessa_Buy_Tokens_Page/Agent_tokens_buyer.html");
 });
 
 
@@ -48,7 +48,7 @@ app.post("/view_agent_tokens", authenticateUser, async (req, res) => {
 
 
 // buy agent tokens, with offers
-app.post("/offer_selection", authenticateUser, async (req, req) => {
+app.post("/offer_selection", authenticateUser, async (req, res) => {
   
 })
 

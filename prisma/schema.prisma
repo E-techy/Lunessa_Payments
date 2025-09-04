@@ -132,3 +132,24 @@ model Offer {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
+
+
+
+model UserOrders {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+type Order {
+  orderId      String
+  amount       Float
+  paymentInfo  Json
+  receipt      String
+  fulfillment  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime // ❌ cannot use @updatedAt in type
+}
+
