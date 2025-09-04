@@ -57,7 +57,7 @@ async function saveUserOrderToDatabase({ username, orderId, amount, paymentInfo,
     };
 
     // Try updating existing user
-    const updatedUser = await prisma.userOrders.update({
+    const updatedUser = await prisma.UserOrders.update({
       where: { username },
       data: {
         orders: {
@@ -67,7 +67,7 @@ async function saveUserOrderToDatabase({ username, orderId, amount, paymentInfo,
     }).catch(async (err) => {
       // If user does not exist, create a new one
       if (err.code === "P2025") {
-        return await prisma.userOrders.create({
+        return await prisma.UserOrders.create({
           data: {
             username,
             orders: [newOrder],
