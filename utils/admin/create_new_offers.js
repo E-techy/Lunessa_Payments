@@ -64,3 +64,26 @@ async function createNewOffer(offerData) {
 }
 
 module.exports = createNewOffer;
+
+
+// (async () => {
+//   let result = await createNewOffer({
+//     title: "Independence Day Sale",
+//     description: "Flat ₹500 off on orders above ₹2000",
+//     offerCode: "IND500", // coupon code type
+//     discountType: "flat", // can be "percentage" or "flat"
+//     discountValue: 500,
+//     maxDiscountAmount: null, // not needed for flat discount
+//     offerType: "festival", // e.g. festival, referral, welcome
+//     applicableTo: ["all"], // all users can apply
+//     minPurchaseAmount: 2000,
+//     applicableProducts: ["all"], // applicable for all products
+//     usageLimit: 100, // total 100 times globally
+//     usageLimitPerUser: 2, // each user can use 2 times
+//     startDate: new Date(),
+//     endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days validity
+//     status: "active",
+//   });
+
+//   console.log(result);
+// })();
