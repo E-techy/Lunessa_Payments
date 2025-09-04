@@ -148,6 +148,8 @@ model Offer {
   usageLimit        Int?                                    // total number of times offer can be used globally
   usageLimitPerUser Int?                                    // per user usage cap
 
+  globalUsedCount   Int      @default(0)                    // 🔥 how many times this offer has been applied (any user)
+
   startDate         DateTime
   endDate           DateTime
   status            String   @default("active")              // "active" | "expired" | "upcoming" | "paused"
@@ -155,6 +157,7 @@ model Offer {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
+
 
 /// Track which user has used which offer and how many times
 model OfferUsage {
