@@ -107,33 +107,6 @@ type AgentModification {
 }
 
 
-/// Offer model to store promotional campaigns, discounts, and coupon codes
-model Offer {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  offerId           String   @unique                            // 🔑 unique identifier (UUID)
-  title             String                                   // short title e.g. "New Year Sale"
-  description       String?                                  // detailed description
-  offerCode         String?   @unique                        // optional coupon code
-  discountType      String                                   // e.g. "percentage" | "flat"
-  discountValue     Float                                    // e.g. 20 (for 20%) or 500 (₹500 flat)
-  maxDiscountAmount Float?                                  // optional cap for percentage discounts
-  
-  applicableTo      String[]                                // e.g. ["all", "new-users", "premium-users"]
-  minPurchaseAmount Float?                                  // e.g. must spend ₹1000
-  
-  applicableProducts String[]                               // product IDs or categories
-  usageLimit        Int?                                    // total number of times offer can be used
-  usageLimitPerUser Int?                                    // per user usage cap
-  
-  startDate         DateTime
-  endDate           DateTime
-  status            String   @default("active")              // "active" | "expired" | "upcoming" | "paused"
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-}
-
-
 
 model UserOrders {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -150,6 +123,57 @@ type Order {
   receipt      String
   fulfillment  Boolean  @default(false)
   createdAt    DateTime @default(now())
-  updatedAt    DateTime // ❌ cannot use @updatedAt in type
+  updatedAt    DateTime 
+}
+
+
+
+/// Offer model to store promotional campaigns, discounts, and coupon codes
+model Offer {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  offerId           String   @unique                           // 🔑 unique identifier (UUID)
+  title             String                                   // short title e.g. "New Year Sale"
+  description       String?                                  // detailed description
+  offerCode         String?   @unique                        // optional coupon code
+  discountType      String                                   // e.g. "percentage" | "flat"
+  discountValue     Float                                    // e.g. 20 (for 20%) or 500 (₹500 flat)
+  maxDiscountAmount Float?                                  // optional cap for percentage discounts
+
+  offerType         String                                   // e.g. "festival", "referral", "welcome"
+
+  applicableTo      String[]                                // e.g. ["all", "new-users", "premium-users"]
+  minPurchaseAmount Float?                                  // e.g. must spend ₹1000
+
+  applicableProducts String[]                               // product IDs or categories
+  usageLimit        Int?                                    // total number of times offer can be used globally
+  usageLimitPerUser Int?                                    // per user usage cap
+
+  startDate         DateTime
+  endDate           DateTime
+  status            String   @default("active")              // "active" | "expired" | "upcoming" | "paused"
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+/// Track which user has used which offer and how many times
+model OfferUsage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique                                // user identifier
+
+  offersUsed OfferUsed[]                              // embedded type for tracking offer usage
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Embedded type to track individual offer usage by a user
+type OfferUsed {
+  offerId      String   // linked to Offer.offerId
+  offerType    String   // copied from Offer.offerType for easy querying
+  usageLimit   Int      // maximum usage allowed for this user (from Offer.usageLimitPerUser)
+  usedCount    Int      @default(0)  // how many times user has applied the offer
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
 }
 
