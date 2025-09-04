@@ -34,7 +34,7 @@ const { v4: uuidv4 } = require("uuid");
  */
 async function createNewOffer(offerData) {
   try {
-    const newOffer = await prisma.offer.create({
+    const newOffer = await prisma.Offer.create({
       data: {
         offerId: uuidv4(),
         title: offerData.title,
