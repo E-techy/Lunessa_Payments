@@ -1,0 +1,25 @@
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    z-index: 1000;
+    animation: slideInRight 0.3s ease;
+}
+
+.notification.success { 
+    background: #10B981; 
+    border: 1px solid #059669;
+}
+.notification.error { 
+    background: #EF4444; 
+    border: 1px solid #DC2626;
+}
+.notification.warning { 
+    background: #F59E0B; 
+    border: 1px solid #D97706;
+}

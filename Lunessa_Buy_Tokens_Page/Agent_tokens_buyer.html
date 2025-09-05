@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Token Purchase - Professional</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="main.css">
+    <!-- JavaScript Modules -->
+    <script src="utils/config.js"></script>
+    <script src="utils/calculation.js"></script>
+    <script src="utils/coupons.js"></script>
+    <script src="utils/offers.js"></script>
+    <script src="utils/ui.js"></script>
+    <script src="utils/main.js"></script>
 </head>
 <body>
     <div class="container">
@@ -63,7 +70,7 @@
 
                 <div class="input-group token-group">
                     <label for="tokens">Number of Tokens</label>
-                    <input type="number" id="tokens" class="token-input" placeholder="Enter token quantity" min="1" max="5000000">
+                    <input type="number" id="tokens" class="token-input" placeholder="Enter token quantity" min="1">
                 </div>
 
                 <button class="calculate-btn">
@@ -95,7 +102,10 @@
                     <span class="detail-value" id="billPrice">₹0.00</span>
                 </div>
                 <div class="detail-row discount-row" id="discountRow" style="display: none;">
-                    <span class="detail-label">Discount Applied</span>
+                    <span class="detail-label">
+                        <span id="discountLabel">Discount Applied</span>
+                        <span class="discount-source" id="discountSource"></span>
+                    </span>
                     <span class="detail-value discount" id="discountAmount">-₹0.00</span>
                 </div>
                 <div class="divider"></div>
@@ -104,8 +114,45 @@
                     <span class="detail-value total" id="totalPrice">₹0.00</span>
                 </div>
             </div>
+            
+            <!-- Coupon Code Section -->
+            <div class="coupon-container">
+                <div class="coupon-toggle" id="couponToggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="coupon-toggle-icon">
+                        <path d="M9 12L11 14L15 10M12 3C16.97 3 21 6.043 21 9.5C21 10.5 20.5 11.5 19.5 12C20.5 12.5 21 13.5 21 14.5C21 17.957 16.97 21 12 21C7.03 21 3 17.957 3 14.5C3 13.5 3.5 12.5 4.5 12C3.5 11.5 3 10.5 3 9.5C3 6.043 7.03 3 12 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Have a coupon code?</span>
+                </div>
+                
+                <div class="coupon-input-section" id="couponInputSection" style="display: none;">
+                    <div class="coupon-input-wrapper">
+                        <input type="text" id="couponInput" class="coupon-input" placeholder="Enter a coupon code" maxlength="20">
+                        <button id="applyCouponBtn" class="apply-coupon-btn">
+                            Apply
+                        </button>
+                    </div>
+                    <div class="coupon-feedback" id="couponFeedback"></div>
+                </div>
+                
+                <div class="applied-coupon-section" id="appliedCouponSection" style="display: none;">
+                    <div class="coupon-success-message">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M20 6L9 17L4 12" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Coupon code applied</span>
+                    </div>
+                    <div class="applied-coupon-badge" id="appliedCouponBadge">
+                        <span id="appliedCouponCode"></span>
+                        <button class="remove-coupon-btn">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
             <div style="display: flex; justify-content: flex-end;">
-                <button class="purchase-btn" id="purchaseBtn" >
+                <button class="purchase-btn" id="purchaseBtn">
                     <span class="btn-text">Complete Purchase</span>
                     <svg class="btn-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <path d="M12 5L6.5 10.5L4 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -157,196 +204,15 @@
                     <p>₹200 off on weekend purchases. Valid until Sunday midnight.</p>
                     <div class="offer-details">
                         <span class="offer-code">WEEKEND200</span>
-                        <button class="apply-offer-btn" >Apply Offer</button>
+                        <button class="apply-offer-btn">Apply Offer</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <footer class="page-footer">
-            <p>© 2024 AI Token Marketplace. All rights reserved. | Secure payments powered by advanced encryption</p>
+            <p>© 2025 AI Token Marketplace. All rights reserved. | Secure payments powered by advanced encryption</p>
         </footer>
     </div>
-
-    <!-- <script>
-        let currentCalculation = {
-            tokens: 0,
-            rate: 0,
-            basePrice: 0,
-            discount: 0,
-            totalPrice: 0,
-            appliedOffer: null,
-            modelName: ''
-        };
-
-        function calculatePrice() {
-            const modelSelect = document.getElementById('model');
-            const tokensInput = document.getElementById('tokens');
-            
-            if (!modelSelect.value || !tokensInput.value) {
-                showNotification('Please select a model and enter number of tokens', 'warning');
-                return;
-            }
-
-            if (parseInt(tokensInput.value) < 1 || parseInt(tokensInput.value) > 50000) {
-                showNotification('Token quantity must be between 1 and 50,000', 'error');
-                return;
-            }
-
-            const selectedOption = modelSelect.options[modelSelect.selectedIndex];
-            const rate = parseFloat(selectedOption.dataset.rate);
-            const tokens = parseInt(tokensInput.value);
-            const basePrice = tokens * rate;
-            const modelName = selectedOption.text.split(' - ')[0];
-
-            currentCalculation.tokens = tokens;
-            currentCalculation.rate = rate;
-            currentCalculation.basePrice = basePrice;
-            currentCalculation.discount = 0;
-            currentCalculation.totalPrice = basePrice;
-            currentCalculation.appliedOffer = null;
-            currentCalculation.modelName = modelName;
-
-            updatePricingBreakdown();
-            resetOffers();
-            
-            const pricingSection = document.getElementById('pricingBreakdown');
-            pricingSection.classList.add('show');
-            
-            showNotification('Pricing calculated successfully!', 'success');
-        }
-
-        function updatePricingBreakdown() {
-            document.getElementById('billTokens').textContent = currentCalculation.tokens.toLocaleString();
-            document.getElementById('tokenRate').textContent = `₹${currentCalculation.rate.toFixed(3)}`;
-            document.getElementById('billPrice').textContent = `₹${currentCalculation.basePrice.toFixed(2)}`;
-            document.getElementById('discountAmount').textContent = `-₹${currentCalculation.discount.toFixed(2)}`;
-            document.getElementById('totalPrice').textContent = `₹${currentCalculation.totalPrice.toFixed(2)}`;
-            
-            const modelBadge = document.getElementById('selectedModelBadge');
-            modelBadge.textContent = currentCalculation.modelName;
-            modelBadge.style.display = 'block';
-            
-            const discountRow = document.getElementById('discountRow');
-            discountRow.style.display = currentCalculation.discount > 0 ? 'flex' : 'none';
-        }
-
-        function applyOffer(button) {
-            const card = button.closest('.offer-card');
-            const discountType = card.dataset.discountType;
-            const discountValue = parseFloat(card.dataset.discountValue);
-            const minAmount = parseFloat(card.dataset.minAmount);
-            
-            if (currentCalculation.basePrice === 0) {
-                showNotification('Please calculate pricing first', 'warning');
-                return;
-            }
-            
-            if (currentCalculation.basePrice < minAmount) {
-                showNotification(`Minimum purchase amount is ₹${minAmount}`, 'error');
-                return;
-            }
-            
-            resetOffers();
-            
-            let discount = 0;
-            if (discountType === 'percentage') {
-                discount = (currentCalculation.basePrice * discountValue) / 100;
-            } else if (discountType === 'flat') {
-                discount = discountValue;
-            }
-            
-            discount = Math.min(discount, currentCalculation.basePrice);
-            
-            currentCalculation.discount = discount;
-            currentCalculation.totalPrice = currentCalculation.basePrice - discount;
-            currentCalculation.appliedOffer = card.querySelector('h3').textContent;
-            
-            card.classList.add('applied');
-            button.classList.add('applied');
-            button.textContent = 'Applied ✓';
-            
-            updatePricingBreakdown();
-            showNotification(`Offer applied! You saved ₹${discount.toFixed(2)}`, 'success');
-        }
-
-        function resetOffers() {
-            const offerCards = document.querySelectorAll('.offer-card');
-            const applyBtns = document.querySelectorAll('.apply-offer-btn');
-            
-            offerCards.forEach(card => card.classList.remove('applied'));
-            applyBtns.forEach(btn => {
-                btn.classList.remove('applied');
-                btn.textContent = 'Apply Offer';
-            });
-        }
-
-        function handlePurchase() {
-            if (currentCalculation.basePrice === 0) {
-                showNotification('Please calculate pricing first', 'warning');
-                return;
-            }
-            
-            const purchaseBtn = document.getElementById('purchaseBtn');
-            const originalContent = purchaseBtn.innerHTML;
-            
-            purchaseBtn.innerHTML = '<span class="btn-text">Processing...</span>';
-            purchaseBtn.disabled = true;
-            
-            setTimeout(() => {
-                showNotification(`Purchase successful! You have bought ${currentCalculation.tokens.toLocaleString()} tokens for ₹${currentCalculation.totalPrice.toFixed(2)}`, 'success');
-                
-                // Reset form
-                document.getElementById('model').value = '';
-                document.getElementById('tokens').value = '';
-                document.getElementById('pricingBreakdown').classList.remove('show');
-                resetOffers();
-                
-                currentCalculation = {
-                    tokens: 0,
-                    rate: 0,
-                    basePrice: 0,
-                    discount: 0,
-                    totalPrice: 0,
-                    appliedOffer: null,
-                    modelName: ''
-                };
-                
-                purchaseBtn.innerHTML = originalContent;
-                purchaseBtn.disabled = false;
-            }, 2000);
-        }
-
-        function showNotification(message, type) {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            
-            // Add to page
-            document.body.appendChild(notification);
-            
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-
-        // Auto-calculate on input
-        document.getElementById('tokens').addEventListener('input', function() {
-            const modelSelect = document.getElementById('model');
-            if (modelSelect.value && this.value) {
-                clearTimeout(this.debounceTimer);
-                this.debounceTimer = setTimeout(calculatePrice, 800);
-            }
-        });
-
-        document.getElementById('model').addEventListener('change', function() {
-            const tokensInput = document.getElementById('tokens');
-            if (this.value && tokensInput.value) {
-                calculatePrice();
-            }
-        });
-    </script> -->
 </body>
 </html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Token</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Agent Token Marketplace</h1>
+            <p>Purchase tokens to unlock premium agent capabilities</p>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Agent Details</th>
+                        <th>Agent ID</th>
+                        <th>Available Tokens</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="status-indicator status-empty"></span>
+                            <span class="agent-name">Naha</span>
+                        </td>
+                        <td>
+                            <span class="agent-id">AGT-bhjadhadh</span>
+                        </td>
+                        <td>
+                            <span class="token-amount zero-tokens pulse">0</span>
+                        </td>
+                        <td>
+                            <button class="buy-btn">
+                                Buy Tokens
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Mock data for Customer Service Agents
+        const agentsData = [
+            {
+                id: "1",
+                agentId: "AGT-bhjadhadh",
+                agentName: "Naha",
+                availableTokens: 0
+            },
+            {
+                id: "2", 
+                agentId: "AGT-fsjjavdkhaf",
+                agentName: "Jorge",
+                availableTokens: 1000
+            },
+            {
+                id: "3",
+                agentId: "AGT-bhfbdshjfd", 
+                agentName: "Luca",
+                availableTokens: 5000000
+            }
+        ];
+
+        function renderAgentsTable() {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            agentsData.forEach(agent => {
+                const row = document.createElement('tr');
+                
+                // Apply styling classes based on token amount
+                const tokenClass = agent.availableTokens === 0 ? 'token-amount zero-tokens pulse' : 'token-amount';
+                const buttonText = 'Buy Tokens';
+                
+                row.innerHTML = `
+                    <td>
+                        <span class="agent-name">${agent.agentName}</span>
+                    </td>
+                    <td>
+                        <span class="agent-id">${agent.agentId}</span>
+                    </td>
+                    <td>
+                        <span class="${tokenClass}">${agent.availableTokens.toLocaleString()}</span>
+                    </td>
+                    <td>
+                        <button class="buy-btn" onclick="handlePurchase('${agent.agentName}', '${agent.agentId}', ${agent.availableTokens})">
+                            ${buttonText}
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // function handlePurchase(agentName, agentId, currentTokens) {
+        //     const amount = prompt(`How many tokens would you like to purchase for ${agentName}?`, '1000');
+            
+        //     if (amount && !isNaN(amount) && parseInt(amount) > 0) {
+        //         const cost = (parseInt(amount) * 0.001).toFixed(3);
+        //         const confirmed = confirm(
+        //             `Purchase ${parseInt(amount).toLocaleString()} tokens for ${agentName}\n` +
+        //             `Cost: ${cost}\n` +
+        //             `Agent ID: ${agentId}\n\n` +
+        //             `Confirm purchase?`
+        //         );
+                
+        //         if (confirmed) {
+        //             alert(`✅ Purchase successful!\n${parseInt(amount).toLocaleString()} tokens added to ${agentName}`);
+                    
+        //             // Update the mock data
+        //             const agent = agentsData.find(a => a.agentId === agentId);
+        //             if (agent) {
+        //                 agent.availableTokens += parseInt(amount);
+        //                 renderAgentsTable(); // Re-render table with updated data
+        //             }
+        //         }
+        //     }
+        // }
+
+        // Add subtle animations on load
+        document.addEventListener('DOMContentLoaded', function() {
+            renderAgentsTable(); // Render table with mock data
+            
+            // Animate rows after rendering
+            setTimeout(() => {
+                const rows = document.querySelectorAll('tbody tr');
+                rows.forEach((row, index) => {
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        row.style.transition = 'all 0.5s ease';
+                        row.style.opacity = '1';
+                        row.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }, 10);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+/* Form Inputs & Custom Select */
+
+/* Custom Select Dropdown */
+.select-wrapper {
+    position: relative;
+}
+
+.model-select {
+    width: 100%;
+    padding: 14px 40px 14px 16px;
+    border: 2px solid #E4E4E7;
+    border-radius: 12px;
+    font-size: 16px;
+    background: white;
+    color: #18181B;
+    cursor: pointer;
+    appearance: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.model-select:focus {
+    outline: none;
+    border-color: #8B5CF6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.model-select:hover {
+    border-color: #8B5CF6;
+}
+
+.select-arrow {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #71717A;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.model-select:focus + .select-arrow {
+    transform: translateY(-50%) rotate(180deg);
+    color: #8B5CF6;
+}
+
+/* Token Input - No Spinner */
+.token-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #E4E4E7;
+    border-radius: 12px;
+    font-size: 16px;
+    background: white;
+    color: #18181B;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+/* Remove number input arrows */
+.token-input::-webkit-outer-spin-button,
+.token-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.token-input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.token-input:focus {
+    outline: none;
+    border-color: #8B5CF6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.token-input:hover {
+    border-color: #8B5CF6;
+}
