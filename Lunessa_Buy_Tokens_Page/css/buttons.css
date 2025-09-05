@@ -1,0 +1,138 @@
+/* Buttons */
+
+/* Calculate Button */
+.calculate-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #8B5CF6;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    height: fit-content;
+}
+
+.calculate-btn:hover {
+    background: #7C3AED;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.btn-icon {
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+}
+
+.calculate-btn:hover .btn-icon {
+    transform: translateX(2px);
+}
+
+/* Purchase Button */
+.purchase-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #18181B;
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.purchase-btn:hover {
+    background: #27272A;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(24, 24, 27, 0.3);
+}
+
+.purchase-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Apply Offer Button */
+.apply-offer-btn {
+    background: #8B5CF6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.apply-offer-btn:hover {
+    background: #7C3AED;
+    transform: translateY(-1px);
+}
+
+.apply-offer-btn.applied {
+    background: #10B981;
+    cursor: default;
+}
+
+/* Apply Coupon Button */
+.apply-coupon-btn {
+    background: #8B5CF6;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    min-width: 70px;
+}
+
+.apply-coupon-btn:hover:not(:disabled) {
+    background: #7C3AED;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.apply-coupon-btn.applied {
+    background: #10B981;
+    cursor: default;
+}
+
+.apply-coupon-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.apply-coupon-btn.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Remove Coupon Button */
+.remove-coupon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.remove-coupon-btn:hover {
+    background: #E5E7EB;
+    color: #374151;
+}

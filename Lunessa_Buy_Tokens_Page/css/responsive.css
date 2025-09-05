@@ -1,0 +1,72 @@
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .info-cards {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .input-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .breakdown-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .offers-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    /* Mobile responsive adjustments for coupon section */
+    .coupon-container {
+        align-items: stretch;
+    }
+    
+    .coupon-input-wrapper {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .coupon-input {
+        width: 100%;
+    }
+
+    .apply-coupon-btn {
+        width: 100%;
+    }
+
+    .applied-coupon-badge {
+        justify-content: space-between;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .purchase-section,
+    .pricing-breakdown,
+    .offers-section,
+    .agent-card,
+    .token-card,
+    .header {
+        padding: 20px;
+    }
+
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+}

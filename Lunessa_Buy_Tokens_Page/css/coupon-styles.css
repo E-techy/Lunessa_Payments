@@ -1,0 +1,117 @@
+/* Coupon Section Styles */
+.coupon-container {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.coupon-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #8B5CF6;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 0;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.coupon-toggle:hover {
+    color: #7C3AED;
+}
+
+.coupon-toggle-icon {
+    color: #8B5CF6;
+}
+
+.coupon-input-section {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.coupon-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.applied-coupon-section {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.coupon-success-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #10B981;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.applied-coupon-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #F3F4F6;
+    border-radius: 6px;
+    padding: 6px 8px;
+    gap: 8px;
+    border: 1px solid #E5E7EB;
+}
+
+.applied-coupon-badge span {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.coupon-input {
+    padding: 10px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 400;
+    background: white;
+    color: #374151;
+    transition: all 0.3s ease;
+}
+
+.coupon-input:focus {
+    outline: none;
+    border-color: #8B5CF6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.coupon-input:disabled {
+    background: #F9FAFB;
+    color: #6B7280;
+    cursor: not-allowed;
+}
+
+.coupon-feedback {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+}
+
+.coupon-feedback.success {
+    background: #ECFDF5;
+    color: #059669;
+    border: 1px solid #A7F3D0;
+}
+
+.coupon-feedback.error {
+    background: #FEF2F2;
+    color: #DC2626;
+    border: 1px solid #FECACA;
+}

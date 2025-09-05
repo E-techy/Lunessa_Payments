@@ -1,0 +1,59 @@
+/* Info Cards */
+.info-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.agent-card, .token-card {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(24, 24, 27, 0.1);
+    border: 1px solid #E4E4E7;
+    transition: all 0.3s ease;
+}
+
+.agent-card:hover, .token-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(24, 24, 27, 0.15);
+    border-color: #8B5CF6;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.icon {
+    font-size: 1.5rem;
+    margin-right: 10px;
+    color: #8B5CF6;
+}
+
+.card-header h3 {
+    color: #8B5CF6;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-content .agent-name, .card-content .token-count {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #18181B;
+    margin-bottom: 5px;
+}
+
+.status-badge, .availability {
+    display: inline-block;
+    background: #8B5CF6;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}

@@ -1,0 +1,50 @@
+/* Purchase Section */
+.purchase-section {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    box-shadow: 0 1px 3px rgba(24, 24, 27, 0.1);
+    border: 1px solid #E4E4E7;
+}
+
+.section-header {
+    margin-bottom: 25px;
+}
+
+.section-header h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #18181B;
+    margin-bottom: 8px;
+}
+
+.section-header p {
+    color: #71717A;
+    font-size: 1rem;
+}
+
+.input-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 20px;
+    align-items: end;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #18181B;
+    font-size: 0.9rem;
+}
+
+.input-helper {
+    font-size: 0.8rem;
+    color: #71717A;
+    margin-top: 4px;
+}
