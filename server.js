@@ -2,6 +2,7 @@ const cookieParser = require("cookie-parser");
 const express = require("express");
 const showAgentsTokenDetail = require("./utils/show_agents_token_detail");
 const authenticateUser = require("./utils/authenticate_user");
+const getBaseDiscountData = require("./utils/get_base_discount_data");
 
 const Razorpay = require("razorpay");
 const shortid = require("shortid");
@@ -61,6 +62,11 @@ app.post("/agents_tokens_bill", authenticateUser, async (req, res) => {
 // razorpay payments page redirect, 
 app.post("/confirm_payment", authenticateUser, async (req, res) => {
   
+})
+
+app.post("/base_discount", async (req, res) =>{
+    const baseDiscountData = await getBaseDiscountData();
+    res.send(baseDiscountData);
 })
 
 // listening on the port url

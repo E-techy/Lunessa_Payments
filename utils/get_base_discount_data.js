@@ -25,7 +25,7 @@ async function getBaseDiscountData() {
     return { success: true, data: slab };
   } catch (error) {
     console.error("❌ Error in getBaseDiscountData:", error);
-    return { success: false, error: error.message || "Failed to fetch discount data" };
+    return { success: false, error: "Failed to fetch discount data" };
   } finally {
     await prisma.$disconnect();
   }
