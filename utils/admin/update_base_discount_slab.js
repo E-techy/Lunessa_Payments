@@ -20,9 +20,10 @@ const prisma = new PrismaClient();
  * @param {Object} params
  * @param {string} params.adminRole - Role of the admin
  * @param {Object} params.data - JSON object containing BaseDiscountSlab update data
+ * @param {("active"|"inactive")=} params.status - Optional status to update (defaults to "active")
  * @returns {Promise<{success: boolean, data?: object, error?: string}>}
  */
-async function updateBaseDiscountSlab({ adminRole, data }) {
+async function updateBaseDiscountSlab({ adminRole, data, status = "active" }) {
   try {
     // ✅ Step 1: Role authorization
     if (!["superAdmin", "payments"].includes(adminRole)) {
@@ -78,18 +79,23 @@ async function updateBaseDiscountSlab({ adminRole, data }) {
       }
     }
 
-    // ✅ Step 3: Fetch existing BaseDiscountSlab
+    // ✅ Step 3: Validate status input
+    if (!["active", "inactive"].includes(status)) {
+      return { success: false, error: "Invalid status: must be 'active' or 'inactive'" };
+    }
+
+    // ✅ Step 4: Fetch existing BaseDiscountSlab
     const existing = await prisma.baseDiscountSlab.findFirst();
     if (!existing) {
       return { success: false, error: "No BaseDiscountSlab exists to update" };
     }
 
-    // ✅ Step 4: Update BaseDiscountSlab
+    // ✅ Step 5: Update BaseDiscountSlab
     const updated = await prisma.baseDiscountSlab.update({
       where: { id: existing.id },
       data: {
         levels: data.levels,
-        status: data.status || existing.status,
+        status,
         updatedAt: new Date(),
       },
     });
@@ -106,19 +112,18 @@ async function updateBaseDiscountSlab({ adminRole, data }) {
 module.exports = { updateBaseDiscountSlab };
 
 // Test runner
-if (require.main === module) {
-  (async () => {
-    const result = await updateBaseDiscountSlab({
-      adminRole: "superAdmin",
-      data: {
-        levels: [
-          { minOrderValue: 0, maxOrderValue: 2000, discountType: "percentage", discountValue: 15 },
-          { minOrderValue: 2000, maxOrderValue: 6000, discountType: "flat", discountValue: 500 },
-        ],
-        status: "active",
-      },
-    });
-
-    console.log(result);
-  })();
-}
+// if (require.main === module) {
+//   (async () => {
+//     const result = await updateBaseDiscountSlab({
+//       adminRole: "superAdmin",
+//       status: "inactive",
+//       data: {
+//         levels: [
+//           { minOrderValue: 0, maxOrderValue: 2000, discountType: "percentage", discountValue: 15 },
+//           { minOrderValue: 2000, maxOrderValue: 6000, discountType: "flat", discountValue: 500 },
+//         ],
+//       },
+//     });
+//     console.log(result);
+//   })();
+// }

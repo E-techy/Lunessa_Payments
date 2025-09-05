@@ -34,9 +34,9 @@ async function getBaseDiscountData() {
 module.exports = { getBaseDiscountData };
 
 // Test runner
-if (require.main === module) {
-  (async () => {
-    const result = await getBaseDiscountData();
-    console.log(result);
-  })();
-}
+// if (require.main === module) {
+//   (async () => {
+//     const result = await getBaseDiscountData();
+//     console.log(result);
+//   })();
+// }
