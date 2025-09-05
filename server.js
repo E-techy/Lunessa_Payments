@@ -64,9 +64,11 @@ app.post("/confirm_payment", authenticateUser, async (req, res) => {
   
 })
 
+// route for sending the base discount slab to all users
 app.post("/base_discount", async (req, res) =>{
     const baseDiscountData = await getBaseDiscountData();
-    res.send(baseDiscountData);
+
+    res.json(baseDiscountData);
 })
 
 // listening on the port url
