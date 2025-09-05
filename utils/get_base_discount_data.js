@@ -31,7 +31,7 @@ async function getBaseDiscountData() {
   }
 }
 
-module.exports = { getBaseDiscountData };
+module.exports =  getBaseDiscountData ;
 
 // Test runner
 // if (require.main === module) {
