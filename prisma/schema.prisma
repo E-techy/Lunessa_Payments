@@ -180,3 +180,22 @@ type OfferUsed {
   updatedAt    DateTime @default(now())
 }
 
+
+/// BaseDiscountSlab model → stores the global base discount logic
+model baseDiscountSlab {
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  levels    DiscountLevel[]                             // Array of discount levels/slabs
+  status    String          @default("active")          // "active" | "inactive"
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+/// DiscountLevel → embedded type for each slab/level
+type DiscountLevel {
+  minOrderValue   Float    // Minimum order value (inclusive)
+  maxOrderValue   Float?   // Maximum order value (null = no upper limit)
+  discountType    String   // "percentage" | "flat"
+  discountValue   Float    // e.g. 10 (%) or 500 (₹ flat discount)
+  createdAt       DateTime @default(now())
+}
+
