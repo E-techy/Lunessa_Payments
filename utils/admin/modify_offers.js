@@ -1,4 +1,9 @@
-const { PrismaClient } = require('../../generated/customer-service');
+/**
+ * @file utils/admin/modify_offers.js
+ * @description Utility function to modify an existing offer in the Offer model.
+ */
+
+const { PrismaClient } = require("../../generated/customer-service");
 const prisma = new PrismaClient();
 
 /**
@@ -38,10 +43,13 @@ async function modifyOffer({ adminRole, offerId, modificationData }) {
   try {
     // 1. Validate role
     if (!["superAdmin", "edit"].includes(adminRole)) {
-      return { success: false, error: "Unauthorized: Admin role not permitted to modify offers." };
+      return {
+        success: false,
+        error: "Unauthorized: Admin role not permitted to modify offers.",
+      };
     }
 
-    // 2. Define valid fields with expected types
+    // 2. Define valid fields & expected types (aligned with createNewOffer)
     const validFields = {
       title: "string",
       description: "string",
@@ -49,48 +57,71 @@ async function modifyOffer({ adminRole, offerId, modificationData }) {
       discountType: "string", // "percentage" | "flat"
       discountValue: "number",
       maxDiscountAmount: "number",
-      offerType: "string", // "festival" | "referral" | "welcome"
-      applicableTo: "object", // Array of strings
+      offerType: "string", // "festival" | "referral" | "welcome", etc.
+      applicableTo: "array", // Array of strings
       minPurchaseAmount: "number",
-      applicableProducts: "object", // Array of strings
+      applicableProducts: "array", // Array of strings
       usageLimit: "number",
       usageLimitPerUser: "number",
-      globalUsedCount: "number",
-      startDate: "object", // Date
-      endDate: "object", // Date
+      startDate: "date",
+      endDate: "date",
       status: "string", // "active" | "expired" | "upcoming" | "paused"
+      globalUsedCount: "number", // can also be updated manually if needed
     };
 
-    // 3. Filter and validate modificationData
+    // 3. Validate and prepare update data
     const updateData = {};
     for (const key in modificationData) {
-      if (validFields[key]) {
-        const expectedType = validFields[key];
-        const value = modificationData[key];
+      if (!validFields[key]) {
+        return {
+          success: false,
+          error: `Invalid field '${key}' in modification data.`,
+        };
+      }
 
-        // Handle arrays
-        if (expectedType === "object" && Array.isArray(value)) {
-          updateData[key] = value;
-        }
-        // Handle Date fields
-        else if (expectedType === "object" && (value instanceof Date || !isNaN(Date.parse(value)))) {
-          updateData[key] = new Date(value);
-        }
-        // Handle primitive types
-        else if (typeof value === expectedType) {
-          updateData[key] = value;
-        }
-        // Invalid type
-        else {
-          return { success: false, error: `Invalid type for field '${key}'. Expected ${expectedType}.` };
-        }
-      } else {
-        return { success: false, error: `Invalid field '${key}' in modification data.` };
+      const expectedType = validFields[key];
+      const value = modificationData[key];
+
+      switch (expectedType) {
+        case "array":
+          if (Array.isArray(value)) {
+            updateData[key] = value;
+          } else {
+            return {
+              success: false,
+              error: `Invalid type for '${key}'. Expected array.`,
+            };
+          }
+          break;
+
+        case "date":
+          if (value instanceof Date || !isNaN(Date.parse(value))) {
+            updateData[key] = new Date(value);
+          } else {
+            return {
+              success: false,
+              error: `Invalid type for '${key}'. Expected Date.`,
+            };
+          }
+          break;
+
+        default:
+          if (typeof value === expectedType) {
+            updateData[key] = value;
+          } else {
+            return {
+              success: false,
+              error: `Invalid type for '${key}'. Expected ${expectedType}.`,
+            };
+          }
       }
     }
 
     if (Object.keys(updateData).length === 0) {
-      return { success: false, error: "No valid fields provided for update." };
+      return {
+        success: false,
+        error: "No valid fields provided for update.",
+      };
     }
 
     // 4. Perform update
@@ -102,7 +133,10 @@ async function modifyOffer({ adminRole, offerId, modificationData }) {
     return { success: true, data: updatedOffer };
   } catch (error) {
     console.error("❌ Error modifying offer:", error);
-    return { success: false, error: error.message || "Failed to modify offer." };
+    return {
+      success: false,
+      error: error.message || "Failed to modify offer.",
+    };
   }
 }
 

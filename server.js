@@ -6,6 +6,7 @@ const getBaseDiscountData = require("./utils/get_base_discount_data");
 const authenticateAdmin = require("./utils/admin/authenticate_admin");
 const handleAdminBaseDiscount = require("./utils/routes_handler/admin_base_discount");
 const getAvailableOffers = require("./utils/get_available_offers");
+const adminOffersHandler = require("./utils/routes_handler/admin_offers");
 
 require("dotenv").config();
 
@@ -96,6 +97,12 @@ app.post("/offers", authenticateUser, async (req, res) => {
   }
   res.json(result);
 });
+
+
+// route for the admin to create, modify and delete the offers and also get all offers 
+app.post("/admin/offers", authenticateAdmin, adminOffersHandler, async (req, res) => {
+   console.log("done dana done");
+})
 
 
 
