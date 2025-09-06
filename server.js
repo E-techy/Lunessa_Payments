@@ -69,6 +69,12 @@ app.post("/base_discount", async (req, res) =>{
     const baseDiscountData = await getBaseDiscountData();
 
     res.json(baseDiscountData);
+});
+
+
+// route for the admin to add or modify the base discount slab
+app.post("/admin/base_discount", async (req, res)=>{
+  
 })
 
 // listening on the port url

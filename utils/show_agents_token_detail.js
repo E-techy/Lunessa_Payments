@@ -1,5 +1,5 @@
 // utils/show_agents_token_detail.js
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('../node_modules/.prisma-customer-service');
 const prisma = new PrismaClient();
 
 /**

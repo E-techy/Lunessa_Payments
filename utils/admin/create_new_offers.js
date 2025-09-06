@@ -3,7 +3,7 @@
  * @description Utility function to create new offers in the Offer model.
  */
 
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('../node_modules/.prisma-customer-service');
 const prisma = new PrismaClient();
 const { v4: uuidv4 } = require("uuid");
 

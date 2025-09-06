@@ -1,11 +1,14 @@
+// 🔥 Multiple datasources
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma-customer-service"
 }
 
 datasource db {
   provider = "mongodb"
-  url      = env("DATABASE_URL")
+  url      = env("LUNESSA_CUSTOMER_SERVICE_AGENTS_DATABASE_URL")
 }
+
 
 // 1️⃣ Customer Service Agents model
 model CustomerServiceAgents {
@@ -26,7 +29,7 @@ model CustomerServiceAgents {
   // New fields
   lastModified              DateTime             @default(now())
   modificationHistory       AgentModification[]
-}
+} 
 
 // Embedded Item schema
 type Item {
@@ -51,7 +54,7 @@ model AgentUsageStatistics {
   satisfactionRate     Int                    @default(0) // Current satisfaction rate in percentage
   satisfactionRateLogs SatisfactionRateLog[]  // History of review stars
   customerReviews      CustomerReview[]
-}
+} 
 
 type UsageLog {
   tokensUsed Int
@@ -76,7 +79,7 @@ model AgentRequestsHandledLogs {
   agentName            String
   totalRequestsHandled Int                 @default(0)
   requestLogs          RequestHandledLog[]
-}
+} 
 
 type RequestHandledLog {
   timestamp DateTime @default(now())
@@ -87,7 +90,7 @@ model CompanyAgentsRegistered {
   username    String        @unique   // ✅ Now unique
   totalAgents Int           @default(0)
   agents      AgentRecord[]
-}
+} 
 
 type AgentRecord {
   agentId   String
@@ -114,7 +117,7 @@ model UserOrders {
   orders    Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
+} 
 
 type Order {
   orderId      String
@@ -156,7 +159,7 @@ model Offer {
 
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-}
+} 
 
 
 /// Track which user has used which offer and how many times
@@ -168,7 +171,7 @@ model OfferUsage {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
+} 
 
 /// Embedded type to track individual offer usage by a user
 type OfferUsed {
@@ -188,7 +191,7 @@ model baseDiscountSlab {
   status    String          @default("active")          // "active" | "inactive"
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
-}
+} 
 
 /// DiscountLevel → embedded type for each slab/level
 type DiscountLevel {
@@ -198,4 +201,10 @@ type DiscountLevel {
   discountValue   Float    // e.g. 10 (%) or 500 (₹ flat discount)
   createdAt       DateTime @default(now())
 }
+
+
+
+
+
+
 
