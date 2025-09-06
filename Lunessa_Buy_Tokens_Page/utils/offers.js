@@ -45,11 +45,13 @@ function validateOfferApplication(minAmount) {
 }
 
 /**
- * Apply offer discount to calculation
+ * Apply offer discount to calculation (works with base discount)
  */
 function applyOfferDiscount(discount, offerName, card, button) {
     currentCalculation.discount = discount;
-    currentCalculation.totalPrice = currentCalculation.basePrice - discount;
+    // Total = base price - base discount - additional discount (offer/coupon)
+    const baseDiscountedPrice = currentCalculation.basePrice - (currentCalculation.baseDiscount || 0);
+    currentCalculation.totalPrice = baseDiscountedPrice - discount;
     currentCalculation.appliedOffer = offerName;
     currentCalculation.appliedCoupon = null;
     currentCalculation.discountSource = 'offer';
@@ -59,8 +61,10 @@ function applyOfferDiscount(discount, offerName, card, button) {
     button.classList.add('applied');
     button.textContent = 'Applied ✓';
     
-    updatePricingBreakdown();
-    showNotification(`Offer applied! You saved ₹${discount.toFixed(2)}`, 'success');
+    updateBaseDiscountDisplay();
+    
+    const totalSaved = (currentCalculation.baseDiscount || 0) + discount;
+    showNotification(`Offer applied! Total saved: ₹${totalSaved.toFixed(2)}`, 'success');
 }
 
 /**

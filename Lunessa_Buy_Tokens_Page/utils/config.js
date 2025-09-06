@@ -15,7 +15,9 @@ let currentCalculation = {
     appliedOffer: null,
     appliedCoupon: null,
     modelName: '',
-    discountSource: '' // 'coupon' or 'offer'
+    discountSource: '', // 'coupon' or 'offer'
+    baseDiscount: 0, // Base discount from server
+    baseDiscountInfo: null // Base discount details
 };
 
 // Predefined coupon codes

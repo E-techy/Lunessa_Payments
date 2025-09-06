@@ -8,6 +8,7 @@
     <!-- JavaScript Modules -->
     <script src="utils/config.js"></script>
     <script src="utils/calculation.js"></script>
+    <script src="utils/base_discount.js"></script>
     <script src="utils/coupons.js"></script>
     <script src="utils/offers.js"></script>
     <script src="utils/ui.js"></script>
@@ -73,7 +74,7 @@
                     <input type="number" id="tokens" class="token-input" placeholder="Enter token quantity" min="1">
                 </div>
 
-                <button class="calculate-btn">
+                <button class="calculate-btn" id="calculateBtn">
                     <span class="btn-text">Calculate Price</span>
                     <svg class="btn-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -167,8 +168,8 @@
                 <p>Apply promotional codes to save on your token purchase</p>
             </div>
             
-            <div class="offers-grid">
-                <div class="offer-card premium" data-discount-type="percentage" data-discount-value="25" data-min-amount="1500">
+            <div class="offers-grid" id="offersGrid">
+                <!-- <div class="offer-card premium" data-discount-type="percentage" data-discount-value="25" data-min-amount="1500">
                     <div class="offer-badge">Premium</div>
                     <h3>New Year Special</h3>
                     <p>Get 25% off on your first premium purchase. Valid for orders above ₹1,500.</p>
@@ -206,7 +207,7 @@
                         <span class="offer-code">WEEKEND200</span>
                         <button class="apply-offer-btn">Apply Offer</button>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
 

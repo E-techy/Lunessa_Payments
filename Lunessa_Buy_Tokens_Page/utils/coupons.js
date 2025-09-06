@@ -52,7 +52,7 @@ function validateCouponApplication(couponCode) {
 }
 
 /**
- * Apply the validated coupon
+ * Apply the validated coupon (works with base discount)
  */
 function applyCoupon(couponCode, coupon) {
     // Reset any existing offers
@@ -61,13 +61,17 @@ function applyCoupon(couponCode, coupon) {
     const discount = calculateDiscount(coupon.type, coupon.value, currentCalculation.basePrice);
 
     currentCalculation.discount = discount;
-    currentCalculation.totalPrice = currentCalculation.basePrice - discount;
+    // Total = base price - base discount - additional discount (offer/coupon)
+    const baseDiscountedPrice = currentCalculation.basePrice - (currentCalculation.baseDiscount || 0);
+    currentCalculation.totalPrice = baseDiscountedPrice - discount;
     currentCalculation.appliedCoupon = couponCode;
     currentCalculation.discountSource = 'coupon';
 
-    updatePricingBreakdown();
+    updateBaseDiscountDisplay();
     showAppliedCoupon(couponCode);
-    showNotification(`Coupon ${couponCode} applied successfully!`, 'success');
+    
+    const totalSaved = (currentCalculation.baseDiscount || 0) + discount;
+    showNotification(`Coupon ${couponCode} applied! Total saved: ₹${totalSaved.toFixed(2)}`, 'success');
 }
 
 /**
@@ -84,15 +88,16 @@ function showAppliedCoupon(couponCode) {
 }
 
 /**
- * Remove applied coupon
+ * Remove applied coupon (preserves base discount)
  */
 function removeCoupon() {
     currentCalculation.discount = 0;
-    currentCalculation.totalPrice = currentCalculation.basePrice;
+    // Keep base discount, only remove additional discount
+    currentCalculation.totalPrice = currentCalculation.basePrice - (currentCalculation.baseDiscount || 0);
     currentCalculation.appliedCoupon = null;
     currentCalculation.discountSource = '';
     
-    updatePricingBreakdown();
+    updateBaseDiscountDisplay();
     resetCouponInput();
     showNotification('Coupon removed', 'success');
 }
