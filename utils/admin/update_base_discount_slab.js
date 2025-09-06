@@ -1,5 +1,5 @@
 // utils/admin/update_base_discount_slab.js
-const { PrismaClient } = require('../node_modules/.prisma-customer-service');
+const { PrismaClient } = require('../../node_modules/.prisma-customer-service');
 const prisma = new PrismaClient();
 
 /**
@@ -109,7 +109,7 @@ async function updateBaseDiscountSlab({ adminRole, data, status = "active" }) {
   }
 }
 
-module.exports = { updateBaseDiscountSlab };
+module.exports = updateBaseDiscountSlab ;
 
 // Test runner
 // if (require.main === module) {

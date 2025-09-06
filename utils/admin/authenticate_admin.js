@@ -44,7 +44,6 @@ async function authenticateAdmin(req, res, next) {
     // 2. Verify token
     let decoded;
     try {
-        console.log(process.env.JWT_SECRET_KEY, token);
         
       decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
       
