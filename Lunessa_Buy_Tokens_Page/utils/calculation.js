@@ -1,7 +1,7 @@
 // Price Calculation Functions
 
 /**
- * Main price calculation function
+ * Main price calculation function with base discount integration
  */
 function calculatePrice() {
     const modelSelect = document.getElementById('model');
@@ -28,8 +28,16 @@ function calculatePrice() {
     currentCalculation.tokens = tokens;
     currentCalculation.rate = rate;
     currentCalculation.basePrice = basePrice;
-    currentCalculation.totalPrice = basePrice;
     currentCalculation.modelName = modelName;
+    
+    // Apply base discount first (from server data)
+    const hasBaseDiscount = applyBaseDiscount(basePrice);
+    
+    // Show next level suggestion if applicable
+    const nextLevel = getNextDiscountLevel(basePrice);
+    if (nextLevel && !hasBaseDiscount) {
+        showNotification(nextLevel.message, 'info');
+    }
 
     updatePricingBreakdown();
     resetOffers();
@@ -38,7 +46,11 @@ function calculatePrice() {
     const pricingSection = document.getElementById('pricingBreakdown');
     pricingSection.classList.add('show');
     
-    showNotification('Pricing calculated successfully!', 'success');
+    const discountMessage = hasBaseDiscount 
+        ? `Price calculated with base discount applied! Saved ₹${currentCalculation.baseDiscount.toFixed(2)}`
+        : 'Pricing calculated successfully!';
+    
+    showNotification(discountMessage, 'success');
 }
 
 /**
@@ -49,6 +61,8 @@ function resetCalculationState() {
     currentCalculation.appliedOffer = null;
     currentCalculation.appliedCoupon = null;
     currentCalculation.discountSource = '';
+    currentCalculation.baseDiscount = 0;
+    currentCalculation.baseDiscountInfo = null;
 }
 
 /**
@@ -58,14 +72,14 @@ function updatePricingBreakdown() {
     document.getElementById('billTokens').textContent = currentCalculation.tokens.toLocaleString();
     document.getElementById('tokenRate').textContent = `₹${currentCalculation.rate.toFixed(3)}`;
     document.getElementById('billPrice').textContent = `₹${currentCalculation.basePrice.toFixed(2)}`;
-    document.getElementById('discountAmount').textContent = `-₹${currentCalculation.discount.toFixed(2)}`;
     document.getElementById('totalPrice').textContent = `₹${currentCalculation.totalPrice.toFixed(2)}`;
     
     const modelBadge = document.getElementById('selectedModelBadge');
     modelBadge.textContent = currentCalculation.modelName;
     modelBadge.style.display = 'block';
     
-    updateDiscountDisplay();
+    // Use the new base discount display function
+    updateBaseDiscountDisplay();
 }
 
 /**
