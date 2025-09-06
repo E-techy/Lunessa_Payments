@@ -1,6 +1,7 @@
 // utils/admin/authenticate_admin.js
 const jwt = require("jsonwebtoken");
-const { PrismaClient } = require("../node_modules/.prisma-lunessa"); 
+const { PrismaClient } = require("../../node_modules/.prisma-lunessa");
+const { log } = require("console");
 const prisma = new PrismaClient();
 
 /**
@@ -10,6 +11,8 @@ const prisma = new PrismaClient();
  * - Sets req.username and req.adminRole if valid
  */
 async function authenticateAdmin(req, res, next) {
+    console.log("detected admin login");
+    
     // 🛡 reset before setting
     req.username = null;
     req.adminRole = null;
@@ -41,8 +44,12 @@ async function authenticateAdmin(req, res, next) {
     // 2. Verify token
     let decoded;
     try {
-      decoded = jwt.verify(token, JWT_SECRET_KEY);
+        console.log(process.env.JWT_SECRET_KEY, token);
+        
+      decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+      
     } catch (err) {
+        
       return res.status(401).json({
         success: false,
         error: "Invalid or expired token",

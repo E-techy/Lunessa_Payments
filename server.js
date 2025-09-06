@@ -4,7 +4,7 @@ const showAgentsTokenDetail = require("./utils/show_agents_token_detail");
 const authenticateUser = require("./utils/authenticate_user");
 const getBaseDiscountData = require("./utils/get_base_discount_data");
 const authenticateAdmin = require("./utils/admin/authenticate_admin");
-require("dotenv").config
+require("dotenv").config();
 
 const JWT_SECRET_KEY= process.env.JWT_SECRET_KEY;
 
@@ -12,7 +12,6 @@ const JWT_SECRET_KEY= process.env.JWT_SECRET_KEY;
 const Razorpay = require("razorpay");
 const shortid = require("shortid");
 
-require("dotenv").config();
 const PORT = process.env.LUNESSA_AGENT_TOKENS_BUYING_PORT || 3004;
 
 const app = express();
@@ -80,6 +79,7 @@ app.post("/base_discount", async (req, res) =>{
 // route for the admin to add or modify the base discount slab
 app.post("/admin/base_discount",authenticateAdmin, async (req, res)=>{
   
+  res.send(req.adminRole);
 })
 
 // listening on the port url
