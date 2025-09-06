@@ -3,6 +3,11 @@ const express = require("express");
 const showAgentsTokenDetail = require("./utils/show_agents_token_detail");
 const authenticateUser = require("./utils/authenticate_user");
 const getBaseDiscountData = require("./utils/get_base_discount_data");
+const authenticate_admin = require("./utils/admin/authenticate_admin");
+require("dotenv").config
+
+const JWT_SECRET_KEY= process.env.JWT_SECRET_KEY;
+
 
 const Razorpay = require("razorpay");
 const shortid = require("shortid");
