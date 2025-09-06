@@ -19,8 +19,8 @@ async function authenticateAdmin(req, res, next) {
     let token = null;
 
     // from cookie
-    if (req.cookies && req.cookies.token) {
-      token = req.cookies.token;
+    if (req.cookies && req.cookies.authToken) {
+      token = req.cookies.authToken;
     }
 
     // from Authorization header (Bearer <token>)

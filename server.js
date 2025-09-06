@@ -3,7 +3,7 @@ const express = require("express");
 const showAgentsTokenDetail = require("./utils/show_agents_token_detail");
 const authenticateUser = require("./utils/authenticate_user");
 const getBaseDiscountData = require("./utils/get_base_discount_data");
-const authenticate_admin = require("./utils/admin/authenticate_admin");
+const authenticateAdmin = require("./utils/admin/authenticate_admin");
 require("dotenv").config
 
 const JWT_SECRET_KEY= process.env.JWT_SECRET_KEY;
@@ -78,7 +78,7 @@ app.post("/base_discount", async (req, res) =>{
 
 
 // route for the admin to add or modify the base discount slab
-app.post("/admin/base_discount", async (req, res)=>{
+app.post("/admin/base_discount",authenticateAdmin, async (req, res)=>{
   
 })
 
