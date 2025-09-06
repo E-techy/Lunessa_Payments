@@ -1,6 +1,6 @@
 // utils/admin/authenticate_admin.js
 const jwt = require("jsonwebtoken");
-const { PrismaClient } = require("../../node_modules/.prisma-lunessa");
+const { PrismaClient } = require("../../generated/lunessa");
 const { log } = require("console");
 const prisma = new PrismaClient();
 

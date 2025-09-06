@@ -1,5 +1,5 @@
 // utils/show_agents_token_detail.js
-const { PrismaClient } = require('../node_modules/.prisma-customer-service');
+const { PrismaClient } = require('../generated/customer-service');
 const prisma = new PrismaClient();
 
 /**
@@ -84,10 +84,10 @@ async function showAgentsTokenDetail(username) {
   }
 }
 
-(async () => {
-const all = await  showAgentsTokenDetail("aman123");
-console.log(all);
+// (async () => {
+// const all = await  showAgentsTokenDetail("aman123");
+// console.log(all);
 
-})();
+// })();
 
 module.exports = showAgentsTokenDetail;

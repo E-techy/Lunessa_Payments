@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/lunessa"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("LUNESSA_DATABASE_URL")
+}
+
+/// Admin model for managing reviews
+model Admin {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  username    String @unique // 🔑 unique username
+  apiKey      String
+  email       String @unique
+  phoneNumber String @unique
+  role        String // e.g. "admin", "moderator"
+
+  // ⚠️ Removed @@index([username]) since @unique already indexes it
+}

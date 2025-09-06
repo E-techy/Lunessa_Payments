@@ -3,7 +3,7 @@
  * @description Utility function to create new offers in the Offer model.
  */
 
-const { PrismaClient } = require('../node_modules/.prisma-customer-service');
+const { PrismaClient } = require('../../generated/customer-service');
 const prisma = new PrismaClient();
 const { v4: uuidv4 } = require("uuid");
 
@@ -68,18 +68,19 @@ module.exports = createNewOffer;
 
 // (async () => {
 //   let result = await createNewOffer({
-//     title: "Independence Day Sale",
+//     title: "Inde holla",
 //     description: "Flat ₹500 off on orders above ₹2000",
-//     offerCode: "IND500", // coupon code type
+//     offerCode: "200THV", // coupon code type
 //     discountType: "flat", // can be "percentage" or "flat"
-//     discountValue: 500,
+//     discountValue: 5000,
 //     maxDiscountAmount: null, // not needed for flat discount
 //     offerType: "festival", // e.g. festival, referral, welcome
 //     applicableTo: ["all"], // all users can apply
-//     minPurchaseAmount: 2000,
+//     minPurchaseAmount: 20000,
 //     applicableProducts: ["all"], // applicable for all products
 //     usageLimit: 100, // total 100 times globally
-//     usageLimitPerUser: 2, // each user can use 2 times
+//     usageLimitPerUser: 10, // each user can use 2 times
+//     globalUsedCount: 100,
 //     startDate: new Date(),
 //     endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days validity
 //     status: "active",

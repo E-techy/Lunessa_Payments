@@ -1,7 +1,7 @@
 // 🔥 Multiple datasources
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/.prisma-customer-service"
+  output   = "../generated/customer-service"
 }
 
 datasource db {

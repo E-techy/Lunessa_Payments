@@ -5,6 +5,7 @@ const authenticateUser = require("./utils/authenticate_user");
 const getBaseDiscountData = require("./utils/get_base_discount_data");
 const authenticateAdmin = require("./utils/admin/authenticate_admin");
 const handleAdminBaseDiscount = require("./utils/routes_handler/admin_base_discount");
+const getAvailableOffers = require("./utils/get_available_offers");
 
 require("dotenv").config();
 
@@ -83,6 +84,19 @@ app.post("/admin/base_discount", authenticateAdmin, async (req, res) => {
   const adminRole = req.adminRole; // ✅ provided by authenticateAdmin middleware
   await handleAdminBaseDiscount(req, res, adminRole);
 });
+
+
+// route for fetching the currently running offers which are applicable for the user
+app.post("/offers", authenticateUser, async (req, res) => {
+  const username = req.user?.username || null; // assume middleware sets req.user if logged in
+  const result = await getAvailableOffers(username);
+
+  if (!result.success) {
+    return res.status(500).json(result);
+  }
+  res.json(result);
+});
+
 
 
 // listening on the port url

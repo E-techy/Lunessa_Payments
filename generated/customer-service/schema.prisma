@@ -1,0 +1,196 @@
+// 🔥 Multiple datasources
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/customer-service"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("LUNESSA_CUSTOMER_SERVICE_AGENTS_DATABASE_URL")
+}
+
+// 1️⃣ Customer Service Agents model
+model CustomerServiceAgents {
+  id                        String   @id @default(auto()) @map("_id") @db.ObjectId
+  companyName               String
+  establishmentDate         DateTime
+  companyOwnerName          String
+  companyHumanServiceNumber String
+  companyEmail              String
+  companyDescription        String
+  agentId                   String   @unique
+  agentName                 String
+  username                  String   @unique // New unique username field
+  createdAt                 DateTime @default(now())
+  availableTokens           Int      @default(0)
+  items                     Item[]
+
+  // New fields
+  lastModified        DateTime            @default(now())
+  modificationHistory AgentModification[]
+}
+
+// Embedded Item schema
+type Item {
+  itemName                      String
+  itemCode                      String
+  itemInitialWorkingExplanation String
+  itemRunningSteps              String[]
+  commonProblemsSolutions       ProblemSolution[]
+}
+
+type ProblemSolution {
+  problem  String
+  solution String
+}
+
+// 2️⃣ Agent Usage Statistics
+model AgentUsageStatistics {
+  id                   String                @id @default(auto()) @map("_id") @db.ObjectId
+  agentId              String                @unique
+  agentName            String
+  usageLogs            UsageLog[]
+  satisfactionRate     Int                   @default(0) // Current satisfaction rate in percentage
+  satisfactionRateLogs SatisfactionRateLog[] // History of review stars
+  customerReviews      CustomerReview[]
+}
+
+type UsageLog {
+  tokensUsed Int
+  timestamp  DateTime @default(now())
+}
+
+type SatisfactionRateLog {
+  reviewStar Int
+  timestamp  DateTime @default(now())
+}
+
+type CustomerReview {
+  username   String
+  comment    String
+  reviewStar Int
+  timestamp  DateTime @default(now())
+}
+
+model AgentRequestsHandledLogs {
+  id                   String              @id @default(auto()) @map("_id") @db.ObjectId
+  agentId              String              @unique
+  agentName            String
+  totalRequestsHandled Int                 @default(0)
+  requestLogs          RequestHandledLog[]
+}
+
+type RequestHandledLog {
+  timestamp DateTime @default(now())
+}
+
+model CompanyAgentsRegistered {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  username    String        @unique // ✅ Now unique
+  totalAgents Int           @default(0)
+  agents      AgentRecord[]
+}
+
+type AgentRecord {
+  agentId   String
+  agentName String
+}
+
+// Embedded type for agent modification history
+type AgentModification {
+  timestamp                 DateTime @default(now())
+  items                     Item[]
+  companyName               String
+  establishmentDate         DateTime
+  companyOwnerName          String
+  companyHumanServiceNumber String
+  companyEmail              String
+  companyDescription        String
+}
+
+model UserOrders {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+type Order {
+  orderId     String
+  amount      Float
+  paymentInfo Json
+  receipt     String
+  fulfillment Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+}
+
+/// Offer model to store promotional campaigns, discounts, and coupon codes
+model Offer {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  offerId           String  @unique // 🔑 unique identifier (UUID)
+  title             String // short title e.g. "New Year Sale"
+  description       String? // detailed description
+  offerCode         String? @unique // optional coupon code
+  discountType      String // e.g. "percentage" | "flat"
+  discountValue     Float // e.g. 20 (for 20%) or 500 (₹500 flat)
+  maxDiscountAmount Float? // optional cap for percentage discounts
+
+  offerType String // e.g. "festival", "referral", "welcome"
+
+  applicableTo      String[] // e.g. ["all", "new-users", "premium-users"]
+  minPurchaseAmount Float? // e.g. must spend ₹1000
+
+  applicableProducts String[] // product IDs or categories
+  usageLimit         Int? // total number of times offer can be used globally
+  usageLimitPerUser  Int? // per user usage cap
+
+  globalUsedCount Int @default(0) // 🔥 how many times this offer has been applied (any user)
+
+  startDate DateTime
+  endDate   DateTime
+  status    String   @default("active") // "active" | "expired" | "upcoming" | "paused"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Track which user has used which offer and how many times
+model OfferUsage {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  username String @unique // user identifier
+
+  offersUsed OfferUsed[] // embedded type for tracking offer usage
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Embedded type to track individual offer usage by a user
+type OfferUsed {
+  offerId    String // linked to Offer.offerId
+  offerType  String // copied from Offer.offerType for easy querying
+  usageLimit Int // maximum usage allowed for this user (from Offer.usageLimitPerUser)
+  usedCount  Int      @default(0) // how many times user has applied the offer
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+}
+
+/// BaseDiscountSlab model → stores the global base discount logic
+model baseDiscountSlab {
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  levels    DiscountLevel[] // Array of discount levels/slabs
+  status    String          @default("active") // "active" | "inactive"
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+/// DiscountLevel → embedded type for each slab/level
+type DiscountLevel {
+  minOrderValue Float // Minimum order value (inclusive)
+  maxOrderValue Float? // Maximum order value (null = no upper limit)
+  discountType  String // "percentage" | "flat"
+  discountValue Float // e.g. 10 (%) or 500 (₹ flat discount)
+  createdAt     DateTime @default(now())
+}
