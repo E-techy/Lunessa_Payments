@@ -109,12 +109,12 @@ function applyBaseDiscount(basePrice) {
         // Apply base discount to total (base discounts are applied first)
         currentCalculation.totalPrice = basePrice - baseDiscountResult.discountAmount;
         
-        console.log('📊 Base discount applied:', {
-            basePrice: basePrice,
-            discountAmount: baseDiscountResult.discountAmount,
-            newTotal: currentCalculation.totalPrice,
-            discountInfo: baseDiscountResult.message
-        });
+        // console.log('📊 Base discount applied:', {
+        //     basePrice: basePrice,
+        //     discountAmount: baseDiscountResult.discountAmount,
+        //     newTotal: currentCalculation.totalPrice,
+        //     discountInfo: baseDiscountResult.message
+        // });
         
         return true;
     } else {
@@ -123,7 +123,7 @@ function applyBaseDiscount(basePrice) {
         currentCalculation.baseDiscountInfo = null;
         currentCalculation.totalPrice = basePrice;
         
-        console.log('📊 No base discount applicable for amount:', basePrice);
+        // console.log('📊 No base discount applicable for amount:', basePrice);
         return false;
     }
 }
