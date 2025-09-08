@@ -14,6 +14,7 @@ function initializeEventListeners() {
     setupTokenInputListener();
     setupModelSelectListener();
     setupCouponInputListener();
+    setupCalculateButtonListener();
 }
 
 /**
@@ -21,14 +22,12 @@ function initializeEventListeners() {
  */
 function setupTokenInputListener() {
     const tokensInput = document.getElementById('tokens');
-    const debouncedCalculate = createDebouncedHandler(function() {
-        const modelSelect = document.getElementById('model');
-        if (modelSelect.value && this.value) {
-            calculatePrice();
-        }
-    }, APP_CONFIG.debounceDelay);
-
-    tokensInput.addEventListener('input', debouncedCalculate);
+    
+    tokensInput.addEventListener('input', function() {
+        // Just validate the input but don't calculate price automatically
+        // Keep the pricing breakdown visible if it's already shown
+        // User can manually click Calculate again if they want updated prices
+    });
 }
 
 /**
@@ -38,10 +37,8 @@ function setupModelSelectListener() {
     const modelSelect = document.getElementById('model');
     
     modelSelect.addEventListener('change', function() {
-        const tokensInput = document.getElementById('tokens');
-        if (this.value && tokensInput.value) {
-            calculatePrice();
-        }
+        // Keep the pricing breakdown visible if it's already shown
+        // User can manually click Calculate again if they want updated prices
     });
 }
 
@@ -56,6 +53,34 @@ function setupCouponInputListener() {
             e.preventDefault();
             applyCouponCode();
         }
+    });
+}
+
+/**
+ * Setup calculate button click listener
+ */
+function setupCalculateButtonListener() {
+    const calculateBtn = document.getElementById('calculateBtn');
+    
+    calculateBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const modelSelect = document.getElementById('model');
+        const tokensInput = document.getElementById('tokens');
+        
+        // Validate inputs before calculating
+        if (!modelSelect.value) {
+            showNotification('Please select an AI model first', 'warning');
+            return;
+        }
+        
+        if (!tokensInput.value || parseInt(tokensInput.value) < 1) {
+            showNotification('Please enter a valid number of tokens (minimum 1)', 'warning');
+            return;
+        }
+        
+        // Only calculate and show pricing breakdown when button is clicked
+        calculatePrice();
     });
 }
 
