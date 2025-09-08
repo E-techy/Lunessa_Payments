@@ -71,12 +71,12 @@ module.exports = createNewOffer;
 //     title: "Inde holla",
 //     description: "Flat ₹500 off on orders above ₹2000",
 //     offerCode: "200THV", // coupon code type
-//     discountType: "flat", // can be "percentage" or "flat"
-//     discountValue: 5000,
+//     discountType: "percentage", // can be "percentage" or "flat"
+//     discountValue: 90,
 //     maxDiscountAmount: null, // not needed for flat discount
 //     offerType: "festival", // e.g. festival, referral, welcome
 //     applicableTo: ["all"], // all users can apply
-//     minPurchaseAmount: 20000,
+//     minPurchaseAmount: 1000,
 //     applicableProducts: ["all"], // applicable for all products
 //     usageLimit: 100, // total 100 times globally
 //     usageLimitPerUser: 10, // each user can use 2 times

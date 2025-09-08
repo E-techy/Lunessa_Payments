@@ -164,24 +164,38 @@ model Offer {
 
 /// Track which user has used which offer and how many times
 model OfferUsage {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  username  String   @unique                                // user identifier
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  username    String       @unique                      // user identifier
 
-  offersUsed OfferUsed[]                              // embedded type for tracking offer usage
+  offersUsed  OfferUsed[]                              // embedded type for tracking offer usage
+  availableCoupons Coupon[]                            // array of coupons assigned to this user
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-} 
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
 
 /// Embedded type to track individual offer usage by a user
 type OfferUsed {
-  offerId      String   // linked to Offer.offerId
-  offerType    String   // copied from Offer.offerType for easy querying
-  usageLimit   Int      // maximum usage allowed for this user (from Offer.usageLimitPerUser)
-  usedCount    Int      @default(0)  // how many times user has applied the offer
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
+  offerId      String     // linked to Offer.offerId
+  offerType    String     // copied from Offer.offerType for easy querying
+  usageLimit   Int        // maximum usage allowed for this user (from Offer.usageLimitPerUser)
+  usedCount    Int        @default(0)  // how many times user has applied the offer
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now())
 }
+
+/// Embedded type for individual coupons
+type Coupon {
+  couponCode        String   // unique coupon identifier
+  used              Boolean  @default(false)  // whether coupon has been redeemed
+  minOrderValue     Int      @default(0)      // minimum order value to apply coupon
+  discountType      String   // "percentage" | "flat"
+  discountValue     Int      // percentage value or flat discount
+  maxDiscountAmount Int?     // maximum discount applicable (null if not capped)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
+}
+
 
 
 /// BaseDiscountSlab model → stores the global base discount logic
