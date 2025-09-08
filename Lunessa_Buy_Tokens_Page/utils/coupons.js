@@ -55,23 +55,24 @@ function validateCouponApplication(couponCode) {
  * Apply the validated coupon (works with base discount)
  */
 function applyCoupon(couponCode, coupon) {
-    // Reset any existing offers
+    // IMPORTANT: Remove any existing offer/coupon first and reset calculation
+    removeCurrentDiscounts();
     resetOffers();
 
-    const discount = calculateDiscount(coupon.type, coupon.value, currentCalculation.basePrice);
+    // Use the new applyCouponDiscount function from calculation.js
+    // This applies the coupon discount on the amount AFTER base discount
+    const couponDiscount = applyCouponDiscount(coupon.type, coupon.value, couponCode);
 
-    currentCalculation.discount = discount;
-    // Total = base price - base discount - additional discount (offer/coupon)
-    const baseDiscountedPrice = currentCalculation.basePrice - (currentCalculation.baseDiscount || 0);
-    currentCalculation.totalPrice = baseDiscountedPrice - discount;
-    currentCalculation.appliedCoupon = couponCode;
-    currentCalculation.discountSource = 'coupon';
-
-    updateBaseDiscountDisplay();
+    updatePricingBreakdown();
     showAppliedCoupon(couponCode);
     
-    const totalSaved = (currentCalculation.baseDiscount || 0) + discount;
-    showNotification(`Coupon ${couponCode} applied! Total saved: ₹${totalSaved.toFixed(2)}`, 'success');
+    // Show success message with breakdown
+    const totalSaved = (currentCalculation.baseDiscount || 0) + couponDiscount;
+    const message = currentCalculation.baseDiscount > 0 
+        ? `Coupon ${couponCode} applied! Base discount (₹${currentCalculation.baseDiscount.toFixed(2)}) + Coupon discount (₹${couponDiscount.toFixed(2)}) = Total saved: ₹${totalSaved.toFixed(2)}`
+        : `Coupon ${couponCode} applied! You saved: ₹${couponDiscount.toFixed(2)}`;
+    
+    showNotification(message, 'success');
 }
 
 /**
@@ -91,13 +92,8 @@ function showAppliedCoupon(couponCode) {
  * Remove applied coupon (preserves base discount)
  */
 function removeCoupon() {
-    currentCalculation.discount = 0;
-    // Keep base discount, only remove additional discount
-    currentCalculation.totalPrice = currentCalculation.basePrice - (currentCalculation.baseDiscount || 0);
-    currentCalculation.appliedCoupon = null;
-    currentCalculation.discountSource = '';
-    
-    updateBaseDiscountDisplay();
+    removeCurrentDiscounts();
+    updatePricingBreakdown();
     resetCouponInput();
     showNotification('Coupon removed', 'success');
 }

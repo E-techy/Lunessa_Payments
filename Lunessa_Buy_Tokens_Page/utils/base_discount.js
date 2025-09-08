@@ -109,12 +109,12 @@ function applyBaseDiscount(basePrice) {
         // Apply base discount to total (base discounts are applied first)
         currentCalculation.totalPrice = basePrice - baseDiscountResult.discountAmount;
         
-        // console.log('📊 Base discount applied:', {
-        //     basePrice: basePrice,
-        //     discountAmount: baseDiscountResult.discountAmount,
-        //     newTotal: currentCalculation.totalPrice,
-        //     discountInfo: baseDiscountResult.message
-        // });
+        console.log('📊 Base discount applied:', {
+            originalPrice: basePrice,
+            baseDiscountAmount: baseDiscountResult.discountAmount,
+            priceAfterBaseDiscount: currentCalculation.totalPrice,
+            discountInfo: baseDiscountResult.message
+        });
         
         return true;
     } else {
@@ -123,7 +123,7 @@ function applyBaseDiscount(basePrice) {
         currentCalculation.baseDiscountInfo = null;
         currentCalculation.totalPrice = basePrice;
         
-        // console.log('📊 No base discount applicable for amount:', basePrice);
+        console.log('📊 No base discount applicable for amount:', basePrice);
         return false;
     }
 }
@@ -206,21 +206,38 @@ function updateBaseDiscountDisplay() {
         discountRow.style.display = 'flex';
         discountAmount.textContent = `-₹${totalDiscount.toFixed(2)}`;
         
-        // Update discount source text
+        // Update discount source text - show breakdown when both discounts are applied
         const sources = [];
+        const discountBreakdown = [];
+        
         if (currentCalculation.baseDiscount > 0) {
             sources.push('Base Discount');
+            discountBreakdown.push(`-₹${currentCalculation.baseDiscount.toFixed(2)}`);
         }
         if (currentCalculation.discount > 0) {
             if (currentCalculation.discountSource === 'coupon') {
                 sources.push(`Coupon: ${currentCalculation.appliedCoupon}`);
+                discountBreakdown.push(`-₹${currentCalculation.discount.toFixed(2)}`);
             } else if (currentCalculation.appliedOffer) {
                 sources.push(`Offer: ${currentCalculation.appliedOffer}`);
+                discountBreakdown.push(`-₹${currentCalculation.discount.toFixed(2)}`);
             }
         }
         
-        discountLabel.textContent = sources.length > 1 ? 'Combined Discounts' : (sources[0] || 'Discount Applied');
-        discountSource.textContent = sources.length > 1 ? `(${sources.join(' + ')})` : '';
+        if (sources.length > 1) {
+            discountLabel.textContent = 'Combined Discounts';
+            discountSource.textContent = `(${sources.join(' + ')})`;
+            // Add breakdown in console for debugging
+            console.log('💰 Discount Breakdown:', {
+                baseDiscount: currentCalculation.baseDiscount || 0,
+                offerDiscount: currentCalculation.discount || 0,
+                totalDiscount: totalDiscount,
+                breakdown: discountBreakdown
+            });
+        } else {
+            discountLabel.textContent = sources[0] || 'Discount Applied';
+            discountSource.textContent = '';
+        }
         
     } else {
         discountRow.style.display = 'none';
