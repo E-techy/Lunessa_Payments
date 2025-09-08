@@ -8,6 +8,7 @@ const handleAdminBaseDiscount = require("./utils/routes_handler/admin_base_disco
 const getAvailableOffers = require("./utils/get_available_offers");
 const adminOffersHandler = require("./utils/routes_handler/admin_offers");
 const verifyCoupon = require("./utils/routes_handler/verify_coupon");
+const allotCouponsHandler = require("./utils/routes_handler/admin_allot_coupons");
 
 
 require("dotenv").config();
@@ -132,6 +133,24 @@ app.post("/verify_coupons", authenticateUser, async (req, res) => {
       error: "Internal server error",
     });
   }
+});
+
+
+// route for the admin to give coupons to different users 
+app.post("/admin/allot_coupons", authenticateAdmin, async (req, res) => {
+  const { users, couponData } = req.body;
+
+  const result = await allotCouponsHandler({
+    adminRole: req.adminRole,
+    users,
+    couponData,
+  });
+
+  if (!result.success) {
+    return res.status(400).json(result);
+  }
+
+  return res.status(200).json(result);
 });
 
 
