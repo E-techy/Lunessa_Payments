@@ -81,7 +81,7 @@ async function addCouponsToUser({ username, couponsData }) {
     }));
 
     // Check if user already exists
-    const existingUser = await prisma.offerUsage.findUnique({
+    const existingUser = await prisma.OfferUsage.findUnique({
       where: { username },
     });
 
@@ -107,7 +107,7 @@ async function addCouponsToUser({ username, couponsData }) {
 
       const mergedCoupons = Array.from(couponMap.values());
 
-      updatedUser = await prisma.offerUsage.update({
+      updatedUser = await prisma.OfferUsage.update({
         where: { username },
         data: {
           availableCoupons: mergedCoupons,
@@ -116,7 +116,7 @@ async function addCouponsToUser({ username, couponsData }) {
       });
     } else {
       // Create new user record with coupons
-      updatedUser = await prisma.offerUsage.create({
+      updatedUser = await prisma.OfferUsage.create({
         data: {
           username,
           offersUsed: [], // default empty
@@ -133,3 +133,44 @@ async function addCouponsToUser({ username, couponsData }) {
 }
 
 module.exports = addCouponsToUser;
+
+
+
+// (async () => {
+//   try {
+//     const username = "aman123"; // change this to your test username
+
+//     const couponsData = [
+//       {
+//         couponCode: "WELCOME100",
+//         used: false,
+//         minOrderValue: 500,
+//         discountType: "percentage",
+//         discountValue: 10,
+//         maxDiscountAmount: 200, // cap discount at 200
+//       },
+//       {
+//         couponCode: "FLAT200",
+//         used: true,
+//         minOrderValue: 1000,
+//         discountType: "flat",
+//         discountValue: 200, // flat ₹200 off
+//         maxDiscountAmount: null,
+//       },
+//       {
+//         couponCode: "FESTIVAL50",
+//         used: false,
+//         minOrderValue: 2000,
+//         discountType: "percentage",
+//         discountValue: 20, // 20% off
+//         maxDiscountAmount: 500, // max 500 off
+//       },
+//     ];
+
+//     const result = await addCouponsToUser({ username, couponsData });
+
+//     console.log("✅ Coupons added/updated:", result);
+//   } catch (err) {
+//     console.error("❌ Error adding sample coupons:", err);
+//   }
+// })();
