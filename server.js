@@ -7,6 +7,8 @@ const authenticateAdmin = require("./utils/admin/authenticate_admin");
 const handleAdminBaseDiscount = require("./utils/routes_handler/admin_base_discount");
 const getAvailableOffers = require("./utils/get_available_offers");
 const adminOffersHandler = require("./utils/routes_handler/admin_offers");
+const verifyCoupon = require("./utils/routes_handler/verify_coupon");
+
 
 require("dotenv").config();
 
@@ -107,8 +109,30 @@ app.post("/admin/offers", authenticateAdmin, adminOffersHandler, async (req, res
 
 // route for verifying the coupons alloted to the users 
 app.post("/verify_coupons", authenticateUser, async (req, res) => {
-  
-})
+  try {
+    const { couponCode } = req.body;
+
+    if (!couponCode) {
+      return res.status(400).json({
+        success: false,
+        error: "Coupon code is required",
+      });
+    }
+
+    const result = await verifyCoupon({
+      username: req.user.username, 
+      couponCode,
+    });
+
+    return res.status(result.success ? 200 : 400).json(result);
+  } catch (err) {
+    console.error("❌ Route Error (/verify_coupons):", err);
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+    });
+  }
+});
 
 
 
