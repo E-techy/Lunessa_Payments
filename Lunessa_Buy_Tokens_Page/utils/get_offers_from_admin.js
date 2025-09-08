@@ -91,4 +91,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ✅ Event: On Calculate Price button click
   calculateBtn.addEventListener("click", fetchOffers);
+  
+  // ✅ Event delegation for Apply Offer buttons (since they're dynamically created)
+  offersGrid.addEventListener("click", (e) => {
+    if (e.target.classList.contains("apply-offer-btn")) {
+      applyOffer(e.target);
+    }
+  });
 });

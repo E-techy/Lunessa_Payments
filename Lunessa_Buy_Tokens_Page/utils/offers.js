@@ -48,23 +48,48 @@ function validateOfferApplication(minAmount) {
  * Apply offer discount to calculation (works with base discount)
  */
 function applyOfferDiscount(discount, offerName, card, button) {
+    // Set the exclusive discount from offer
     currentCalculation.discount = discount;
-    // Total = base price - base discount - additional discount (offer/coupon)
-    const baseDiscountedPrice = currentCalculation.basePrice - (currentCalculation.baseDiscount || 0);
-    currentCalculation.totalPrice = baseDiscountedPrice - discount;
+    
+    // Calculate final price based on base discount availability
+    if (currentCalculation.baseDiscount && currentCalculation.baseDiscount > 0) {
+        // Base discount is available - apply both discounts
+        // Formula: Total = base price - base discount - exclusive discount (offer)
+        const baseDiscountedPrice = currentCalculation.basePrice - currentCalculation.baseDiscount;
+        currentCalculation.totalPrice = Math.max(0, baseDiscountedPrice - discount);
+        
+        const totalSaved = currentCalculation.baseDiscount + discount;
+        showNotification(`🎉 Exclusive offer applied! Base discount (₹${currentCalculation.baseDiscount.toFixed(2)}) + Offer discount (₹${discount.toFixed(2)}) = Total saved: ₹${totalSaved.toFixed(2)}`, 'success');
+    } else {
+        // Base discount is NOT available - apply only exclusive discount
+        // Formula: Total = base price - exclusive discount (offer only)
+        currentCalculation.totalPrice = Math.max(0, currentCalculation.basePrice - discount);
+        
+        showNotification(`🎉 Exclusive offer applied! You saved: ₹${discount.toFixed(2)}`, 'success');
+    }
+    
+    // Update calculation state
     currentCalculation.appliedOffer = offerName;
     currentCalculation.appliedCoupon = null;
     currentCalculation.discountSource = 'offer';
     
-    // Update UI
+    // Update UI elements
     card.classList.add('applied');
     button.classList.add('applied');
     button.textContent = 'Applied ✓';
     
+    // Update the pricing breakdown display
+    updatePricingBreakdown();
     updateBaseDiscountDisplay();
     
-    const totalSaved = (currentCalculation.baseDiscount || 0) + discount;
-    showNotification(`Offer applied! Total saved: ₹${totalSaved.toFixed(2)}`, 'success');
+    console.log('💰 Offer Applied Summary:', {
+        offerName: offerName,
+        basePrice: currentCalculation.basePrice,
+        baseDiscount: currentCalculation.baseDiscount || 0,
+        exclusiveDiscount: discount,
+        finalTotal: currentCalculation.totalPrice,
+        totalSaved: (currentCalculation.baseDiscount || 0) + discount
+    });
 }
 
 /**
