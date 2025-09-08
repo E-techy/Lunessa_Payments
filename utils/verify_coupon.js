@@ -1,5 +1,5 @@
 // utils/routes_handler/verify_coupon.js
-const { PrismaClient } = require("../../generated/customer-service");
+const { PrismaClient } = require("../generated/customer-service");
 const prisma = new PrismaClient();
 
 /**

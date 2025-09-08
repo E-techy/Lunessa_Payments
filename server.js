@@ -7,7 +7,7 @@ const authenticateAdmin = require("./utils/admin/authenticate_admin");
 const handleAdminBaseDiscount = require("./utils/routes_handler/admin_base_discount");
 const getAvailableOffers = require("./utils/get_available_offers");
 const adminOffersHandler = require("./utils/routes_handler/admin_offers");
-const verifyCoupon = require("./utils/routes_handler/verify_coupon");
+const verifyCoupon = require("./utils/verify_coupon");
 const allotCouponsHandler = require("./utils/routes_handler/admin_allot_coupons");
 
 
