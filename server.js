@@ -105,6 +105,12 @@ app.post("/admin/offers", authenticateAdmin, adminOffersHandler, async (req, res
 })
 
 
+// route for verifying the coupons alloted to the users 
+app.post("/verify_coupons", authenticateUser, async (req, res) => {
+  
+})
+
+
 
 // listening on the port url
 app.listen(PORT, () => {
