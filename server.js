@@ -11,6 +11,7 @@ const verifyCoupon = require("./utils/verify_coupon");
 const allotCouponsHandler = require("./utils/routes_handler/admin_allot_coupons");
 const getAIModelPricingData = require("./utils/get_AI_model_pricing_data");
 const adminHandleAIModelPricingData = require("./utils/routes_handler/admin_handle_AI_pricing_data");
+const handleOrderCreation = require("./utils/routes_handler/handle_order_creation");
 
 
 
@@ -73,10 +74,7 @@ app.post("/agents_tokens_bill", authenticateUser, async (req, res) => {
   
 })
 
-// razorpay payments page redirect, 
-app.post("/confirm_payment", authenticateUser, async (req, res) => {
-  
-})
+
 
 // route for sending the base discount slab to all users
 app.post("/base_discount", async (req, res) =>{
@@ -190,6 +188,18 @@ app.post("/AI_models_pricing_data", async (req, res) => {
 
 // handle the addition , deletion and modification of the Ai pricing data, 
 app.post("/admin/AI_pricing_data", authenticateAdmin, adminHandleAIModelPricingData);
+
+
+// razorpay payments page redirect, 
+app.post("/confirm_payment", authenticateUser, async (req, res) => {
+  
+})
+
+// create purchase data, with razorpay orderId
+app.post("/create_order", authenticateUser, async (req, res) => {
+  
+})
+
 
 
 
