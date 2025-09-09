@@ -86,8 +86,5 @@ function setupCalculateButtonListener() {
 
 // Global functions that need to be accessible from HTML onclick attributes
 window.calculatePrice = calculatePrice;
-window.applyCouponCode = applyCouponCode;
-window.removeCoupon = removeCoupon;
-window.toggleCouponInput = toggleCouponInput;
 window.applyOffer = applyOffer;
 window.handlePurchase = handlePurchase;

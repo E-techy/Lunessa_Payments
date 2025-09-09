@@ -41,7 +41,6 @@ function calculatePrice() {
 
     updatePricingBreakdown();
     resetOffers();
-    resetCouponInput();
     
     const pricingSection = document.getElementById('pricingBreakdown');
     pricingSection.classList.add('show');

@@ -16,7 +16,6 @@ function applyOffer(button) {
     // IMPORTANT: Remove any existing offer/coupon first and reset calculation
     removeCurrentDiscounts();
     resetOffers();
-    resetCouponInput();
     
     const offerName = card.querySelector('h3').textContent;
     
