@@ -9,6 +9,7 @@ const getAvailableOffers = require("./utils/get_available_offers");
 const adminOffersHandler = require("./utils/routes_handler/admin_offers");
 const verifyCoupon = require("./utils/verify_coupon");
 const allotCouponsHandler = require("./utils/routes_handler/admin_allot_coupons");
+const getAIModelPricingData = require("./utils/get_AI_model_pricing_data");
 
 
 require("dotenv").config();
@@ -152,6 +153,39 @@ app.post("/admin/allot_coupons", authenticateAdmin, async (req, res) => {
 
   return res.status(200).json(result);
 });
+
+
+// route for fetching the latest Ai models with their pricing data, 
+app.post("/AI_models_pricing_data", async (req, res) => {
+  try {
+    // Read modelName from body or query (client can send either)
+    const modelName = req.body.modelName || req.query.modelName || null;
+
+    const result = await getAIModelPricingData({ modelName });
+
+    if (!result.success) {
+      return res.status(404).json({
+        success: false,
+        message: result.error || "Failed to fetch AI model pricing data.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: modelName
+        ? `Pricing data for model '${modelName}' fetched successfully.`
+        : "All AI models pricing data fetched successfully.",
+      data: result.data,
+    });
+  } catch (error) {
+    console.error("❌ Route error in /AI_models_pricing_data:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error while fetching AI model pricing data.",
+    });
+  }
+});
+
 
 
 

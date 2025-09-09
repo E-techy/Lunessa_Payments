@@ -53,18 +53,20 @@ async function getAIModelPricingData({ modelName = null }) {
   }
 }
 
-module.exports = { getAIModelPricingData };
+module.exports = getAIModelPricingData;
+
+
 
 
 // 🧪 Simple test runner (run: node utils/get_AI_model_pricing_data.js)
-if (require.main === module) {
-  (async () => {
-    console.log("🔍 Fetching ALL models...");
-    console.log(await getAIModelPricingData({}));
+// if (require.main === module) {
+//   (async () => {
+//     console.log("🔍 Fetching ALL models...");
+//     console.log(await getAIModelPricingData({}));
 
-    console.log("\n🔍 Fetching specific model: gpt-4...");
-    console.log(await getAIModelPricingData({ modelName: "gpt-4" }));
+//     console.log("\n🔍 Fetching specific model: gpt-4...");
+//     console.log(await getAIModelPricingData({ modelName: "gpt-4" }));
 
-    process.exit(0);
-  })();
-}
+//     process.exit(0);
+//   })();
+// }
