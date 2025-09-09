@@ -1,3 +1,4 @@
+// utils/calculate_coupons.js
 /**
  * Applies the coupon to the calculation
  * @param {object} couponData - { couponCode, discountType, discountValue, minAmount }

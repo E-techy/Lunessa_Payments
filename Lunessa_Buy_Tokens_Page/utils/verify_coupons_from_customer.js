@@ -1,4 +1,8 @@
+// utils/verify_coupons_from_customer.js
 document.addEventListener("DOMContentLoaded", () => {
+  /** -------------------------
+   * Elements
+   * ------------------------- */
   const couponToggle = document.getElementById("couponToggle");
   const couponInputSection = document.getElementById("couponInputSection");
   const couponInput = document.getElementById("couponInput");
@@ -8,6 +12,52 @@ document.addEventListener("DOMContentLoaded", () => {
   const removeCouponBtn = document.querySelector(".remove-coupon-btn");
 
   if (!couponToggle || !couponInputSection) return;
+
+  /** -------------------------
+   * Global Helper Functions
+   * ------------------------- */
+
+  // Remove coupon from UI (global)
+  window.removeCouponFromUI = function() {
+    if (typeof removeCoupon === "function") removeCoupon();
+    else {
+      if (typeof removeCurrentDiscounts === "function") removeCurrentDiscounts();
+      if (typeof updatePricingBreakdown === "function") updatePricingBreakdown();
+      appliedCouponSection.style.display = 'none';
+      couponInputSection.style.display = 'none';
+      couponFeedback.style.display = 'none';
+      if (typeof showNotification === 'function') showNotification('Coupon removed', 'success');
+    }
+    if (currentCalculation) currentCalculation.couponApplied = false;
+  };
+
+  // Show error message
+  window.showCouponError = (msg) => {
+    couponFeedback.textContent = msg;
+    couponFeedback.style.color = "#ef4444";
+    couponFeedback.style.display = "block";
+    setTimeout(() => (couponFeedback.style.display = "none"), 4000);
+  };
+
+  // Show success message
+  window.showCouponSuccess = (msg) => {
+    couponFeedback.textContent = msg;
+    couponFeedback.style.color = "#10b981";
+    couponFeedback.style.display = "block";
+    setTimeout(() => (couponFeedback.style.display = "none"), 3000);
+  };
+
+  // Apply button loading state
+  window.setApplyButtonLoading = (isLoading) => {
+    if (!applyCouponBtn) return;
+    applyCouponBtn.disabled = isLoading;
+    applyCouponBtn.textContent = isLoading ? "Verifying..." : "Apply";
+    applyCouponBtn.style.opacity = isLoading ? "0.7" : "1";
+  };
+
+  /** -------------------------
+   * Coupon UI Logic
+   * ------------------------- */
 
   // Toggle coupon input section
   couponToggle.addEventListener("click", () => {
@@ -19,51 +69,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Apply coupon on click or Enter
+  // Apply coupon on click or Enter key
   if (applyCouponBtn) applyCouponBtn.addEventListener("click", () => verifyCouponCode(couponInput.value));
   if (couponInput) couponInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") verifyCouponCode(couponInput.value);
   });
 
-  // Remove coupon
+  // Remove coupon button
   if (removeCouponBtn) removeCouponBtn.addEventListener("click", removeCouponFromUI);
 
-  // Show error / success
-  window.showCouponError = (msg) => {
-    couponFeedback.textContent = msg;
-    couponFeedback.style.color = "#ef4444";
-    couponFeedback.style.display = "block";
-    setTimeout(() => (couponFeedback.style.display = "none"), 4000);
-  };
-
-  window.showCouponSuccess = (msg) => {
-    couponFeedback.textContent = msg;
-    couponFeedback.style.color = "#10b981";
-    couponFeedback.style.display = "block";
-    setTimeout(() => (couponFeedback.style.display = "none"), 3000);
-  };
-
-  window.setApplyButtonLoading = (isLoading) => {
-    if (!applyCouponBtn) return;
-    applyCouponBtn.disabled = isLoading;
-    applyCouponBtn.textContent = isLoading ? "Verifying..." : "Apply";
-    applyCouponBtn.style.opacity = isLoading ? "0.7" : "1";
-  };
-
-  // Remove coupon UI
-  function removeCouponFromUI() {
-    if (typeof removeCoupon === "function") removeCoupon();
-    else {
-      if (typeof removeCurrentDiscounts === "function") removeCurrentDiscounts();
-      if (typeof updatePricingBreakdown === "function") updatePricingBreakdown();
-      appliedCouponSection.style.display = 'none';
-      couponInputSection.style.display = 'none';
-      couponFeedback.style.display = 'none';
-      if (typeof showNotification === 'function') showNotification('Coupon removed', 'success');
-    }
-  }
-
-  // Verify coupon (calls backend)
+  /** -------------------------
+   * Verify Coupon Backend
+   * ------------------------- */
   async function verifyCouponCode(couponCode) {
     if (!couponCode) return showCouponError("⚠️ Please enter a coupon code.");
     if (!currentCalculation || currentCalculation.basePrice === 0) return showCouponError("⚠️ Please calculate pricing first.");
