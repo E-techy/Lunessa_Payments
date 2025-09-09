@@ -24,12 +24,22 @@ model CustomerServiceAgents {
   username                  String               @unique // New unique username field
   createdAt                 DateTime             @default(now())
   availableTokens           Int                  @default(0)
+  // New field to store per-model token counts and status
+  tokenBalances             TokenBalance[]       
   items                     Item[]
 
   // New fields
   lastModified              DateTime             @default(now())
   modificationHistory       AgentModification[]
 } 
+
+type TokenBalance {
+  modelName  String
+  tokens     Int
+  status     String    // e.g. "active" | "inactive"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+}
 
 // Embedded Item schema
 type Item {
