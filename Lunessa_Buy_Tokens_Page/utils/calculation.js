@@ -41,7 +41,6 @@ function calculatePrice() {
 
     updatePricingBreakdown();
     resetOffers();
-    resetCouponInput();
     
     const pricingSection = document.getElementById('pricingBreakdown');
     pricingSection.classList.add('show');
@@ -104,7 +103,29 @@ function updateDiscountDisplay() {
 }
 
 /**
+ * Remove current discounts and reset calculation to base state
+ * This ensures proper calculation when switching between offers/coupons
+ */
+function removeCurrentDiscounts() {
+    // Reset discount-related calculations while preserving base discount
+    currentCalculation.discount = 0;
+    currentCalculation.appliedOffer = null;
+    currentCalculation.appliedCoupon = null;
+    currentCalculation.discountSource = '';
+    
+    // Reset total price to base price minus base discount only
+    currentCalculation.totalPrice = currentCalculation.basePrice - (currentCalculation.baseDiscount || 0);
+    
+    console.log('🔄 Current discounts removed - Reset to base state:', {
+        basePrice: currentCalculation.basePrice,
+        baseDiscount: currentCalculation.baseDiscount || 0,
+        totalPrice: currentCalculation.totalPrice
+    });
+}
+
+/**
  * Calculate discount amount based on type and value
+ * This function now works on the amount AFTER base discount has been applied
  */
 function calculateDiscount(discountType, discountValue, baseAmount) {
     let discount = 0;
@@ -117,4 +138,64 @@ function calculateDiscount(discountType, discountValue, baseAmount) {
     
     // Ensure discount doesn't exceed base amount
     return Math.min(discount, baseAmount);
+}
+
+/**
+ * Apply offer discount to the current calculation
+ * This applies the offer discount on the amount AFTER base discount
+ */
+function applyOfferDiscount(discountType, discountValue, offerTitle) {
+    // Calculate offer discount on the amount after base discount (currentCalculation.totalPrice)
+    const offerDiscount = calculateDiscount(discountType, discountValue, currentCalculation.totalPrice);
+    
+    // Update calculation with offer discount
+    currentCalculation.discount = offerDiscount;
+    currentCalculation.appliedOffer = offerTitle;
+    currentCalculation.discountSource = 'offer';
+    
+    // Apply the offer discount to get the final total
+    currentCalculation.totalPrice = currentCalculation.totalPrice - offerDiscount;
+    
+    console.log('📊 Offer discount applied:', {
+        offerTitle: offerTitle,
+        discountType: discountType,
+        discountValue: discountValue,
+        basePrice: currentCalculation.basePrice,
+        baseDiscount: currentCalculation.baseDiscount,
+        priceAfterBaseDiscount: currentCalculation.totalPrice + offerDiscount,
+        offerDiscount: offerDiscount,
+        finalTotal: currentCalculation.totalPrice
+    });
+    
+    return offerDiscount;
+}
+
+/**
+ * Apply coupon discount to the current calculation
+ * This applies the coupon discount on the amount AFTER base discount
+ */
+function applyCouponDiscount(discountType, discountValue, couponCode) {
+    // Calculate coupon discount on the amount after base discount (currentCalculation.totalPrice)
+    const couponDiscount = calculateDiscount(discountType, discountValue, currentCalculation.totalPrice);
+    
+    // Update calculation with coupon discount
+    currentCalculation.discount = couponDiscount;
+    currentCalculation.appliedCoupon = couponCode;
+    currentCalculation.discountSource = 'coupon';
+    
+    // Apply the coupon discount to get the final total
+    currentCalculation.totalPrice = currentCalculation.totalPrice - couponDiscount;
+    
+    console.log('📊 Coupon discount applied:', {
+        couponCode: couponCode,
+        discountType: discountType,
+        discountValue: discountValue,
+        basePrice: currentCalculation.basePrice,
+        baseDiscount: currentCalculation.baseDiscount,
+        priceAfterBaseDiscount: currentCalculation.totalPrice + couponDiscount,
+        couponDiscount: couponDiscount,
+        finalTotal: currentCalculation.totalPrice
+    });
+    
+    return couponDiscount;
 }
