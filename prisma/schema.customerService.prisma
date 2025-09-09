@@ -217,6 +217,24 @@ type DiscountLevel {
 }
 
 
+/// AI models, pricing data
+model AIModel {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  
+  modelName     String   @unique                           // e.g. "gpt-4", "gpt-3.5", "claude-3-opus"
+  provider      String                                   // e.g. "OpenAI", "Anthropic", "Google"
+  
+  pricePerToken Float                                    // price per token (in USD or INR)
+  currency      String   @default("USD")                 // currency for price, default USD
+
+  availableTill DateTime                                 // until when this model will be available (like end of support)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+ 
+
+
 
 
 
