@@ -10,6 +10,8 @@ const adminOffersHandler = require("./utils/routes_handler/admin_offers");
 const verifyCoupon = require("./utils/verify_coupon");
 const allotCouponsHandler = require("./utils/routes_handler/admin_allot_coupons");
 const getAIModelPricingData = require("./utils/get_AI_model_pricing_data");
+const adminHandleAIModelPricingData = require("./utils/routes_handler/admin_handle_AI_pricing_data");
+
 
 
 require("dotenv").config();
@@ -186,6 +188,8 @@ app.post("/AI_models_pricing_data", async (req, res) => {
   }
 });
 
+// handle the addition , deletion and modification of the Ai pricing data, 
+app.post("/admin/AI_pricing_data", authenticateAdmin, adminHandleAIModelPricingData);
 
 
 
