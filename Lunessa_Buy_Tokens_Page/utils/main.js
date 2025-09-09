@@ -78,11 +78,17 @@ function setupCalculateButtonListener() {
             showNotification('Please enter a valid number of tokens (minimum 1)', 'warning');
             return;
         }
+
+        // ✅ Reset coupon whenever recalculating
+        if (typeof removeCouponFromUI === 'function') {
+            removeCouponFromUI();
+        }
         
         // Only calculate and show pricing breakdown when button is clicked
         calculatePrice();
     });
 }
+
 
 // Global functions that need to be accessible from HTML onclick attributes
 window.calculatePrice = calculatePrice;
