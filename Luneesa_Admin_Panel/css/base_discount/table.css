@@ -1,0 +1,100 @@
+/* Table Styles */
+
+.discount-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.discount-table th {
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    color: white;
+    border-bottom: 2px solid #E5E7EB;
+}
+
+.discount-table td {
+    padding: 16px;
+    border-bottom: 1px solid #E5E7EB;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.editable-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #8B5CF6;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+}
+
+.editable-input:focus {
+    outline: none;
+    border-color: #7C3AED;
+}
+
+.discount-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #8B5CF6;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+}
+
+.discount-select:focus {
+    outline: none;
+    border-color: #7C3AED;
+}
+
+.readonly-field {
+    background: transparent;
+    border: none;
+    color: #18181B;
+    font-size: 14px;
+}
+
+.edit-mode {
+    background: #FEF3C7;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* New row styling */
+.new-row {
+    background: #F0F9FF;
+    border: 2px solid #8B5CF6;
+    animation: highlight 0.5s ease-in-out;
+}
+
+.new-field {
+    border: 2px solid #8B5CF6 !important;
+    background: #FFFFFF;
+}
+
+.new-field.error {
+    border-color: #EF4444 !important;
+    background: #FEF2F2;
+}
+
+.new-field:focus {
+    border-color: #0369A1 !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+/* Section styling */
+.add-level-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.save-section {
+    display: flex;
+    justify-content: flex-end;
+}
