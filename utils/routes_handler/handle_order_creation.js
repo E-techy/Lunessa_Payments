@@ -120,7 +120,7 @@ const generatePaymentOrder = require("../payment/razorpay_payment_order_generato
  * @param {import('express').Request} req - Express request. Expects `req.user.username`.
  * @param {import('express').Response} res - Express response.
  */
-async function handleOrderCreation(req, res) {
+async function handleOrderCreation(req, res, RAZORPAY_KEY_ID ,RAZORPAY_KEY_SECRET) {
   try {
     // -------------------- Auth check --------------------
     const actor = req.user;
@@ -283,7 +283,7 @@ async function handleOrderCreation(req, res) {
     const razorpayNotes = buildRazorpayNotes(billing);
 
     // -------------------- Create Razorpay order --------------------
-    if (!RAZORPAY_KEY_ID || RAZORPAY_KEY_SECRET) {
+    if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
       console.error("Missing Razorpay env keys.");
       return res.status(500).json({ success: false, error: "Payment gateway not configured." });
     }
