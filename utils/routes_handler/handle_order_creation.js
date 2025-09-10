@@ -4,38 +4,104 @@
  * Route handler for: POST /create_order
  * (attach to your Express app as: app.post("/create_order", authenticateUser, handleOrderCreation))
  *
- * Responsibilities:
- *  - Use server-populated req.user.username (from authenticateUser middleware) — do NOT trust client-provided username.
- *  - Read tokens, agentId, modelName, couponCode | offerCode from req.body and validate them.
- *  - Call utils/verify_final_purchase_data.js to compute a final, itemized bill (base discount + coupon OR offer).
- *  - Persist an initial Order entry into UserOrders (orders array) BEFORE creating a Razorpay order.
- *    • Insert a placeholder order with orderId: "" (so we can later update it when Razorpay returns an order id).
- *    • Save the full billing snapshot into paymentInfo (for audit) — this is stored server-side only.
- *  - Create a Razorpay order using utils/payment/razorpay_payment_order_generator.js
- *    • Razorpay notes / metadata MUST be small — we include a minimal summary (short keys).
- *    • Do NOT attempt currency conversion here (Razorpay handles necessary behaviour).
- *  - Update the saved order entry (matching receipt) to include the returned razorpay orderId.
- *  - NEVER set fulfillment: true here (other routes/webhooks will handle fulfillment).
+ * ===========================================================================================
+ * FULL JAVASCRIPT DOCBLOCK (behaviour, inputs, outputs, security and error handling)
+ * ===========================================================================================
  *
- * Error handling & security:
- *  - All internal errors are logged server-side; client receives sanitized messages only.
- *  - Input validation is strict (tokens must be positive integer, strings must be non-empty).
- *  - Uses the verifyFinalPurchaseData function to enforce business rules about coupons/offers and discount caps.
+ * @file handle_order_creation.js
  *
- * Input: req.body
- *  - { number } tokens        - Number of tokens to purchase (positive integer)
- *  - { string } agentId       - Agent ID the purchase is for
- *  - { string } modelName     - Model name (e.g., "gpt-4")
- *  - { string } [couponCode]  - optional coupon code (mutually exclusive with offerCode)
- *  - { string } [offerCode]   - optional offer code (mutually exclusive with couponCode)
+ * @description
+ * Secure route handler that accepts a request to purchase AI tokens for an agent,
+ * computes the final itemized billing (via business rules), records a draft order in the
+ * database, creates a payment order with Razorpay, and then updates the saved draft
+ * with the Razorpay order id. This route only records the payment intent and returns
+ * the Razorpay order object to the client so the client can complete the payment flow.
  *
- * Output (responses):
- *  - 200 success (payment required): { success: true, message, razorpayOrder, receipt, billing }
- *  - 200 success (no payment required): { success: true, message, receipt, billing }
- *  - 4xx / 5xx failure: { success: false, error: "client-safe message" }
+ * Key responsibilities:
+ *  - Validate the caller and the input.
+ *  - Use server-supplied `req.user.username` (do NOT trust client-supplied username).
+ *  - Compute final billing using `verifyFinalPurchaseData` (enforces business rules).
+ *  - Record an initial draft Order (orderId: "", status: "draft") into `UserOrders` before
+ *    making any network call to the payment gateway. This preserves audit trail if payment
+ *    creation fails.
+ *  - Create a Razorpay order using `generatePaymentOrder` and pass the currency returned
+ *    by the verification function.
+ *  - Update the stored Order record to include the Razorpay `orderId` and set `status: "pending"`.
+ *  - Return a minimal sanitized billing object and the Razorpay order to the client.
  *
- * Exports:
- *  - async function handleOrderCreation(req, res)
+ * Security & design notes:
+ *  - All sensitive business logic (coupon/offer validation, discount caps) must reside in
+ *    `verifyFinalPurchaseData`. This route only calls it and enforces its output.
+ *  - The route logs internal errors server-side. Responses to the client contain sanitized,
+ *    user-friendly error messages — never raw stack traces or DB errors.
+ *  - The route never marks fulfillment as complete. Fulfillment/consumption of tokens must
+ *    occur on successful payment confirmation (webhook or separate capture flow).
+ *  - Currency management: currency is derived from the AI model pricing returned by
+ *    `verifyFinalPurchaseData` and passed to the Razorpay generator. No conversion is
+ *    performed here.
+ *
+ * Input (HTTP POST JSON body):
+ *  {
+ *    tokens: number,          // positive integer, required
+ *    agentId: string,         // non-empty string ID of the agent, required
+ *    modelName: string,       // non-empty model name (e.g., "gpt-4"), required
+ *    couponCode?: string,     // optional, mutually exclusive with offerCode
+ *    offerCode?: string       // optional, mutually exclusive with couponCode
+ *  }
+ *
+ * The currently authenticated user must be available as req.user (authenticateUser middleware).
+ * This handler expects req.user.username to exist and will use it to identify the purchaser.
+ *
+ * Output (HTTP JSON):
+ *
+ * Success (payment required):
+ *  HTTP 200
+ *  {
+ *    success: true,
+ *    message: "Order created. Use the provided razorpayOrder to complete payment.",
+ *    razorpayOrder: { id, amount, currency, ... }, // object returned by Razorpay SDK
+ *    receipt: string,                              // locally generated receipt id
+ *    billing: { ... }                              // sanitized billing object (small)
+ *  }
+ *
+ * Success (no payment required; final payable is 0):
+ *  HTTP 200
+ *  {
+ *    success: true,
+ *    message: "Order recorded. Final payable is 0 — no payment required. Complete fulfillment via the usual flow.",
+ *    receipt: string,
+ *    billing: { ... } // sanitized billing object
+ *  }
+ *
+ * Failure:
+ *  HTTP 4xx / 5xx
+ *  { success: false, error: "client-safe error message" }
+ *
+ * Side-effects:
+ *  - Creates/updates an entry in UserOrders (stores the FULL billing snapshot in paymentInfo)
+ *  - Calls out to Razorpay to create an order (passing a small `notes` object)
+ *
+ * Database shape expectations (relevant parts):
+ *  - UserOrders: { username: string, orders: Order[] }
+ *  - Order: {
+ *      orderId: string,
+ *      amount: float,
+ *      paymentInfo: json,
+ *      receipt: string,
+ *      fulfillment: boolean,
+ *      status: "draft" | "pending" | "failed" | "paid",
+ *      createdAt: DateTime,
+ *      updatedAt: DateTime|null
+ *    }
+ *
+ * Error mapping:
+ *  - Validation errors return 400.
+ *  - Authorization/authentication errors return 401.
+ *  - Business verification errors (coupon invalid, offer invalid, etc.) return 400 with
+ *    the `verification.error` message (verifyFinalPurchaseData provides client-safe messages).
+ *  - Internal errors (DB/3rd-party) return 500 with a generic message and server-side logs.
+ *
+ * ===========================================================================================
  */
 
 "use strict";
@@ -49,6 +115,10 @@ const generatePaymentOrder = require("../payment/razorpay_payment_order_generato
 
 /**
  * Express route handler.
+ *
+ * @async
+ * @param {import('express').Request} req - Express request. Expects `req.user.username`.
+ * @param {import('express').Response} res - Express response.
  */
 async function handleOrderCreation(req, res) {
   try {
@@ -57,6 +127,7 @@ async function handleOrderCreation(req, res) {
     if (!actor || !actor.username) {
       return res.status(401).json({ success: false, error: "Authentication required." });
     }
+    // ALWAYS use server-populated username; never trust client-supplied username
     const username = String(actor.username);
 
     // -------------------- Input validation --------------------
@@ -95,7 +166,8 @@ async function handleOrderCreation(req, res) {
       return res.status(500).json({ success: false, error: "Failed to verify purchase." });
     }
     if (!verification.success) {
-      // verifyFinalPurchaseData returns client-safe messages
+      // verifyFinalPurchaseData returns client-safe messages; if it signals an "internal" issue,
+      // map to 500, else 400.
       const isServerErr = String(verification.error || "").toLowerCase().includes("internal");
       return res.status(isServerErr ? 500 : 400).json({ success: false, error: verification.error || "Verification failed." });
     }
@@ -106,7 +178,7 @@ async function handleOrderCreation(req, res) {
       return res.status(500).json({ success: false, error: "Invalid billing data." });
     }
 
-    // Defensive check: finalPayable must not be negative
+    // Defensive: finalPayable must not be negative
     if (billing.finalPayable < 0) {
       console.error("Billing finalPayable negative — rejecting:", billing);
       return res.status(500).json({ success: false, error: "Computed payable amount is invalid." });
@@ -122,7 +194,7 @@ async function handleOrderCreation(req, res) {
     }
     const receipt = receiptResult.receipt;
 
-    // -------------------- Build payment info --------------------
+    // -------------------- Build payment info (DB copy) --------------------
     // Save FULL billing snapshot in DB (for audit). This can be large but DB stores it.
     // In Razorpay notes (below) we will include a minimal, compact summary (short keys).
     const paymentInfoForDB = {
@@ -144,6 +216,7 @@ async function handleOrderCreation(req, res) {
               paymentInfo: paymentInfoForDB,
               receipt,
               fulfillment: false, // do NOT set to true here (webhooks/routes will update after payment)
+              status: "draft", // initial draft state
               createdAt: new Date(),
               updatedAt: new Date(),
             },
@@ -158,6 +231,7 @@ async function handleOrderCreation(req, res) {
               paymentInfo: paymentInfoForDB,
               receipt,
               fulfillment: false,
+              status: "draft",
               createdAt: new Date(),
               updatedAt: new Date(),
             },
@@ -169,7 +243,7 @@ async function handleOrderCreation(req, res) {
       return res.status(500).json({ success: false, error: "Failed to record order. Please try again." });
     }
 
-    // -------------------- If payable is zero -> don't create Razorpay order (but do NOT mark fulfillment true) ----------------    //
+    // -------------------- If payable is zero -> don't create Razorpay order ----------------    //
     // The client can be informed that payable is zero and that further handling will be done externally.
     if (Number(billing.finalPayable) === 0) {
       return res.status(200).json({
@@ -216,14 +290,16 @@ async function handleOrderCreation(req, res) {
 
     let razorpayResult;
     try {
+      // Use billing.currency (derived from AIModel) to instruct the payment gateway
       razorpayResult = await generatePaymentOrder(
         process.env.RAZORPAY_KEY_ID,
         process.env.RAZORPAY_KEY_SECRET,
-        { username },                  // userDetails (kept minimal)
-        razorpayNotes,                 // tiny paymentInfo used in notes (stringified by generator)
-        Number(billing.finalPayable),  // amount in rupees (generator multiplies by 100)
+        { username },                     // userDetails (kept minimal)
+        razorpayNotes,                    // tiny paymentInfo used in notes
+        Number(billing.finalPayable),     // amount in main currency unit (generator multiplies by 100)
         receipt,
-        "normal"
+        "normal",
+        billing.currency || "INR"         // use currency from billing (fall back to INR)
       );
     } catch (err) {
       console.error("Razorpay generator threw:", err);
@@ -248,9 +324,9 @@ async function handleOrderCreation(req, res) {
       });
     }
 
-    // -------------------- Update DB record with razorpay orderId --------------------
+    // -------------------- Update DB record with razorpay orderId and status --------------------
     try {
-      // Update the specific order (matched by receipt)
+      // Update the specific order (matched by receipt). Set orderId and mark status = "pending"
       await prisma.UserOrders.update({
         where: { username },
         data: {
@@ -259,6 +335,7 @@ async function handleOrderCreation(req, res) {
               where: { receipt },
               data: {
                 orderId: String(razorpayOrder.id),
+                status: "pending",
                 updatedAt: new Date(),
               },
             },
