@@ -11,7 +11,9 @@ const prisma = new PrismaClient();
  * Returned fields include:
  *  - agentId
  *  - agentName
- *  - availableTokens
+ *  - tokenBalances   → array of all model balances
+ *  - usingModel      → currently active model
+ *  - defaultModel    → fallback model
  *  - lastModified
  *  - createdAt
  *
@@ -27,7 +29,9 @@ const prisma = new PrismaClient();
  *     {
  *       agentId: string,
  *       agentName: string,
- *       availableTokens: number,
+ *       tokenBalances: Array<{ modelName, availableTokens, status, createdAt, updatedAt }>,
+ *       usingModel: { modelName, availableTokens, status } | null,
+ *       defaultModel: { modelName, availableTokens } | null,
  *       lastModified: Date,
  *       createdAt: Date
  *     }
@@ -56,7 +60,9 @@ async function showAgentsTokenDetail(username) {
       select: {
         agentId: true,
         agentName: true,
-        availableTokens: true,
+        tokenBalances: true,
+        usingModel: true,
+        defaultModel: true,
         lastModified: true,
         createdAt: true,
       },
@@ -85,9 +91,8 @@ async function showAgentsTokenDetail(username) {
 }
 
 // (async () => {
-// const all = await  showAgentsTokenDetail("aman123");
-// console.log(all);
-
+//   const all = await showAgentsTokenDetail("arjun_agent01");
+//   console.log(JSON.stringify(all, null, 2));
 // })();
 
 module.exports = showAgentsTokenDetail;
