@@ -51,7 +51,6 @@ function setupCouponInputListener() {
     couponInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            applyCouponCode();
         }
     });
 }
