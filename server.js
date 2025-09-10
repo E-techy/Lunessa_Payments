@@ -13,7 +13,7 @@ const getAIModelPricingData = require("./utils/get_AI_model_pricing_data");
 const adminHandleAIModelPricingData = require("./utils/routes_handler/admin_handle_AI_pricing_data");
 const handleOrderCreation = require("./utils/routes_handler/handle_order_creation");
 const confirmPaymentHandler = require("./utils/routes_handler/confirm_payment");
-const modifyAgentUsingModelValue = require("./utils/modify_agent_usingModel_value");
+const modifyAgentUsingModelHandler = require("./utils/routes_handler/modify_agent_usingModel");
 
 
 
@@ -77,9 +77,7 @@ app.post("/view_agent_tokens", authenticateUser, async (req, res) => {
 
 
 // modify the status of the currently active model
-app.post("/modify_agent_usingModel", authenticateUser, async (req, res) => {
-  
-}) 
+app.post("/modify_agent_usingModel", authenticateUser, modifyAgentUsingModelHandler);
 
 
 
