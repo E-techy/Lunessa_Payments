@@ -12,27 +12,27 @@ const Razorpay = require("razorpay");
  * @param {number} amount - Amount (in main unit, e.g., rupees for INR, USD for dollars).
  * @param {string} receiptNumber - Unique receipt number for tracking.
  * @param {"normal"|"manual_capture"} [orderType="normal"] - Type of order:
- *   - "normal": Default flow (auto-captures after payment success)
- *   - "manual_capture": Payment is authorized only, must be captured later
+ * - "normal": Default flow (auto-captures after payment success)
+ * - "manual_capture": Payment is authorized only, must be captured later
  * @param {string} [currency="INR"] - Currency code (e.g., "INR", "USD", "EUR").
  * @returns {Promise<{success: boolean, order?: Object, error?: string}>}
  *
  * @example
  * const result = await generatePaymentOrder(
- *   "rzp_test_xxxxx",
- *   "secret_xxxxx",
- *   { userId: "123", name: "Ashutosh", email: "ashu@example.com" },
- *   { plan: "gold", tokens: 50 },
- *   500,
- *   "receipt#101",
- *   "manual_capture",
- *   "USD"
+ * "rzp_test_xxxxx",
+ * "secret_xxxxx",
+ * { userId: "123", name: "Ashutosh", email: "ashu@example.com" },
+ * { plan: "gold", tokens: 50 },
+ * 500,
+ * "receipt#101",
+ * "manual_capture",
+ * "USD"
  * );
  *
  * if (result.success) {
- *   console.log("Order Created:", result.order);
+ * console.log("Order Created:", result.order);
  * } else {
- *   console.error("Error:", result.error);
+ * console.error("Error:", result.error);
  * }
  */
 async function generatePaymentOrder(
@@ -53,7 +53,7 @@ async function generatePaymentOrder(
   try {
     const order = await razorpay.orders.create({
       amount: amount * 100, // Razorpay expects the smallest currency unit
-      currency,             // use provided currency
+      currency, // use provided currency
       receipt: receiptNumber,
       payment_capture: orderType === "normal" ? 1 : 0, // auto-capture or manual
       notes: {
@@ -63,7 +63,16 @@ async function generatePaymentOrder(
       },
     });
 
-    return { success: true, order };
+    // Return only the essential details required by the client
+    return {
+      success: true,
+      order: {
+        id: order.id,
+        amount: order.amount,
+        currency: order.currency,
+        keyId: keyId, // Include the key ID as it's required by the client to open the checkout
+      },
+    };
   } catch (error) {
     console.error("❌ Error creating Razorpay order:", error);
 
