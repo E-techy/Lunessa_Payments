@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Payment Services</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="offers.css">
     <!-- Add Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="utils/tab_switching.js"></script>
+    <script src="utils/event-listeners.js"></script>
     
     <!-- base discount  -->
     <script src="utils/base_discount/config.js"></script>
@@ -14,8 +17,18 @@
     <script src="utils/base_discount/status.js"></script>
     <script src="utils/base_discount/table.js"></script>
     <script src="utils/base_discount/validation.js"></script>
-    <script src="utils/base_discount/navigation.js"></script>
     <script src="utils/base_discount/app.js"></script>
+    
+    <!-- offers -->
+    <script src="utils/offers/data.js"></script>
+    <script src="utils/offers/utils.js"></script>
+    <script src="utils/offers/navigation.js"></script>
+    <script src="utils/offers/form-handler.js"></script>
+    <script src="utils/offers/inline-editor.js"></script>
+    <script src="utils/offers/table-manager.js"></script>
+    <script src="utils/offers/search-filter.js"></script>
+    <script src="utils/offers/export-duplicate.js"></script>
+    <script src="utils/offers/app.js"></script>
 </head>
 <body>
     <div class="container">
@@ -24,23 +37,25 @@
         </div>
 
         <div class="tabs">
-            <div class="tab active">Base discount</div>
-            <div class="tab">offers</div>
-            <div class="tab">coupons</div>
-            <div class="tab">payments</div>
+            <div class="tab active" id="base-discount-tab-btn">Base discount</div>
+            <div class="tab" id="offers-tab-btn">offers</div>
+            <div class="tab" id="coupons-tab-btn">coupons</div>
+            <div class="tab" id="payments-tab-btn">payments</div>
         </div>
 
         <div class="content">
-            <div class="status-section">
+            <!-- Base Discount Tab Content -->
+            <div class="tab-content active" id="base-discount-content">
+                <div class="status-section">
                 <div class="status-toggle">
                     <span>Status</span>
-                    <div class="toggle-switch active" onclick="toggleStatus()">
+                    <div class="toggle-switch active" id="base-discount-status-toggle">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
                 <div class="status-actions">
-                    <button class="modify-btn controllable-btn" onclick="toggleModifyMode()">Modify</button>
-                    <button class="save-status-btn hidden" onclick="saveStatusChanges()">Save Changes</button>
+                    <button class="modify-btn controllable-btn" id="base-discount-modify-btn">Modify</button>
+                    <button class="save-status-btn hidden" id="base-discount-save-status-btn">Save Changes</button>
                 </div>
             </div>
 
@@ -57,46 +72,413 @@
                 </thead>
                 <tbody id="discountTableBody">
                     <tr data-row="0">
-                        <td><span class="readonly-field">500</span></td>
-                        <td><span class="readonly-field">1000</span></td>
-                        <td><span class="readonly-field">flat</span></td>
-                        <td><span class="readonly-field">100</span></td>
+                        <td><span class="readonly-field-base-discount">500</span></td>
+                        <td><span class="readonly-field-base-discount">1000</span></td>
+                        <td><span class="readonly-field-base-discount">flat</span></td>
+                        <td><span class="readonly-field-base-discount">100</span></td>
                         <td>17 Aug 2025</td>
-                        <td><button class="delete-btn controllable-btn" onclick="deleteRow(0)"><i class="fas fa-trash"></i></button></td>
+                        <td><button class="delete-btn controllable-btn" id="base-discount-delete-row-0"><i class="fas fa-trash"></i></button></td>
                     </tr>
                     <tr data-row="1">
-                        <td><span class="readonly-field">5000</span></td>
-                        <td><span class="readonly-field">10000</span></td>
-                        <td><span class="readonly-field">percentage</span></td>
-                        <td><span class="readonly-field">10</span></td>
+                        <td><span class="readonly-field-base-discount">5000</span></td>
+                        <td><span class="readonly-field-base-discount">10000</span></td>
+                        <td><span class="readonly-field-base-discount">percentage</span></td>
+                        <td><span class="readonly-field-base-discount">10</span></td>
                         <td>17 Aug 2025</td>
-                        <td><button class="delete-btn controllable-btn" onclick="deleteRow(1)"><i class="fas fa-trash"></i></button></td>
+                        <td><button class="delete-btn controllable-btn" id="base-discount-delete-row-1"><i class="fas fa-trash"></i></button></td>
                     </tr>
                     <tr data-row="2">
-                        <td><span class="readonly-field">10000</span></td>
-                        <td><span class="readonly-field">20000</span></td>
-                        <td><span class="readonly-field">flat</span></td>
-                        <td><span class="readonly-field">1000</span></td>
+                        <td><span class="readonly-field-base-discount">10000</span></td>
+                        <td><span class="readonly-field-base-discount">20000</span></td>
+                        <td><span class="readonly-field-base-discount">flat</span></td>
+                        <td><span class="readonly-field-base-discount">1000</span></td>
                         <td>17 Aug 2025</td>
-                        <td><button class="delete-btn controllable-btn" onclick="deleteRow(2)"><i class="fas fa-trash"></i></button></td>
+                        <td><button class="delete-btn controllable-btn" id="base-discount-delete-row-2"><i class="fas fa-trash"></i></button></td>
                     </tr>
                     <tr data-row="3">
-                        <td><span class="readonly-field">1000</span></td>
-                        <td><span class="readonly-field">5000</span></td>
-                        <td><span class="readonly-field">percentage</span></td>
-                        <td><span class="readonly-field">20</span></td>
+                        <td><span class="readonly-field-base-discount">1000</span></td>
+                        <td><span class="readonly-field-base-discount">5000</span></td>
+                        <td><span class="readonly-field-base-discount">percentage</span></td>
+                        <td><span class="readonly-field-base-discount">20</span></td>
                         <td>17 Aug 2025</td>
-                        <td><button class="delete-btn controllable-btn" onclick="deleteRow(3)"><i class="fas fa-trash"></i></button></td>
+                        <td><button class="delete-btn controllable-btn" id="base-discount-delete-row-3"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 </tbody>
             </table>
 
             <div class="add-level-section">
-                <button class="add-level-btn controllable-btn" onclick="addNewLevel()">Add new level</button>
+                <button class="add-level-btn controllable-btn" id="base-discount-add-level-btn">Add new level</button>
             </div>
 
-            <div class="save-section">
-                <button class="save-btn controllable-btn" onclick="saveChanges()">Save Changes</button>
+                <div class="save-section">
+                    <button class="save-btn controllable-btn" id="base-discount-save-changes-btn">Save Changes</button>
+                </div>
+            </div>
+            
+            <!-- Offers Tab Content -->
+            <div class="tab-content" id="offers-content">
+                <!-- Sub-tabs for Offers section -->
+                <div class="sub-tabs" id="offerSubTabs">
+                    <div class="sub-tab active" id="offers-sub-tab-btn">
+                        <i class="fas fa-list"></i> Offers
+                    </div>
+                    <div class="sub-tab" id="offers-create-sub-tab-btn">
+                        <i class="fas fa-plus"></i> Create
+                    </div>
+                </div>
+
+                <!-- Offers View Tab Content -->
+                <div class="tab-content active" id="offersContent">
+                    <div class="offers-layout">
+                        <!-- Offers List -->
+                        <div class="offers-list" id="offersList">
+                            <div class="offers-header">
+                                <i class="fas fa-list-alt"></i> <span id="offersListTitle">Offers List</span>
+                            </div>
+                            
+                            <!-- Search and Filter Controls -->
+                            <div class="offers-controls" style="padding: 16px; background: #f8fafc; border-bottom: 1px solid #e5e7eb;">
+                                <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center;">
+                                    <div class="search-box">
+                                        <input type="text" placeholder="Search offers..." 
+                                               style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;"
+                                               id="offers-search-input">
+                                    </div>
+                                    <select id="offers-status-filter" 
+                                            style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                        <option value="all">All Status</option>
+                                        <option value="active">Active</option>
+                                        <option value="paused">Paused</option>
+                                        <option value="upcoming">Upcoming</option>
+                                        <option value="expired">Expired</option>
+                                    </select>
+                                    <button class="btn btn-secondary btn-sm" id="offers-export-btn" 
+                                            style="padding: 8px 12px; font-size: 12px;">
+                                        <i class="fas fa-download"></i> Export
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="offers-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Discount Value</th>
+                                            <th>Created</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="offersTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Inline Edit Form (hidden by default) -->
+                        <div class="inline-edit-form" id="inlineEditForm" style="display: none;">
+                            <div class="edit-form-header">
+                                <h3><i class="fas fa-edit"></i> <span id="editFormTitle">Edit Offer</span></h3>
+                                <button class="btn btn-secondary btn-sm" id="offers-inline-cancel-btn">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                            <div class="edit-form-content">
+                                <form id="inlineOfferForm">
+                                    <!-- Read-only Database Fields -->
+                                    <div class="readonly-section">
+                                        <h4><i class="fas fa-database"></i> Database Information</h4>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>ID</label>
+                                                <input type="text" id="inlineOfferId" disabled class="readonly-field">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Offer ID</label>
+                                                <input type="text" id="inlineOfferIdValue" disabled class="readonly-field">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Created At</label>
+                                                <input type="text" id="inlineCreatedAt" disabled class="readonly-field">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Updated At</label>
+                                                <input type="text" id="inlineUpdatedAt" disabled class="readonly-field">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Editable Fields -->
+                                    <div class="editable-section">
+                                        <h4><i class="fas fa-edit"></i> Editable Information</h4>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Title *</label>
+                                                <input type="text" id="inlineTitle" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Status</label>
+                                                <select id="inlineStatus">
+                                                    <option value="active">Active</option>
+                                                    <option value="paused">Paused</option>
+                                                    <option value="upcoming">Upcoming</option>
+                                                    <option value="expired">Expired</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Description</label>
+                                            <textarea id="inlineDescription" rows="3"></textarea>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Offer Code</label>
+                                                <input type="text" id="inlineOfferCode" style="text-transform: uppercase;">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Global Used Count</label>
+                                                <input type="tel" id="inlineGlobalUsedCount" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Discount Type</label>
+                                                <select id="inlineDiscountType">
+                                                    <option value="percentage">Percentage</option>
+                                                    <option value="flat">Flat Amount</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Discount Value *</label>
+                                                <input type="tel" id="inlineDiscountValue" min="0" step="1" pattern="[0-9]*" inputmode="numeric" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" id="inlineMaxDiscountGroup">
+                                            <label>Max Discount Amount</label>
+                                            <input type="tel" id="inlineMaxDiscountAmount" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Min Purchase Amount</label>
+                                                <input type="tel" id="inlineMinPurchaseAmount" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Offer Type</label>
+                                                <select id="inlineOfferType">
+                                                    <option value="festival">Festival</option>
+                                                    <option value="referral">Referral</option>
+                                                    <option value="welcome">Welcome</option>
+                                                    <option value="seasonal">Seasonal</option>
+                                                    <option value="flash">Flash Sale</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Usage Limit</label>
+                                                <input type="tel" id="inlineUsageLimit" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Usage Limit Per User</label>
+                                                <input type="tel" id="inlineUsageLimitPerUser" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label>Start Date *</label>
+                                                <input type="datetime-local" id="inlineStartDate" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>End Date *</label>
+                                                <input type="datetime-local" id="inlineEndDate" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="inline-form-actions">
+                                    <button type="button" class="btn btn-success" id="offers-inline-save-btn">
+                                        <i class="fas fa-save"></i> Update Offer
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="offers-inline-cancel-footer-btn">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create/Edit Tab Content -->
+                <div class="tab-content" id="createContent">
+                    <div class="create-panel-full">
+                        <div class="create-header">
+                            <i class="fas fa-plus-circle"></i> <span id="createHeaderText">Create New Offer</span>
+                        </div>
+                        <form id="offerForm" class="form-container">
+                            <!-- Non-editable fields (hidden for new offers, shown for editing) -->
+                            <div class="form-group hidden" id="idField">
+                                <label>ID</label>
+                                <input type="text" id="offerId" disabled>
+                            </div>
+                            
+                            <div class="form-group hidden" id="offerIdField">
+                                <label>Offer ID</label>
+                                <input type="text" id="offerIdValue" disabled>
+                            </div>
+
+                            <div class="form-row hidden" id="timestampFields">
+                                <div class="form-group">
+                                    <label>Created At</label>
+                                    <input type="text" id="createdAt" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Updated At</label>
+                                    <input type="text" id="updatedAt" disabled>
+                                </div>
+                            </div>
+
+                            <!-- Editable fields -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Title *</label>
+                                    <input type="text" id="title" placeholder="e.g., New Year Sale" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Offer Code</label>
+                                    <input type="text" id="offerCode" placeholder="e.g., SAVE20" style="text-transform: uppercase;">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea id="description" placeholder="Detailed description of the offer"></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Discount Type *</label>
+                                    <select id="discountType" required>
+                                        <option value="">Select type</option>
+                                        <option value="percentage">Percentage</option>
+                                        <option value="flat">Flat Amount</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Discount Value *</label>
+                                    <input type="tel" id="discountValue" placeholder="e.g., 20 or 500" min="0" step="1" pattern="[0-9]*" inputmode="numeric" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="maxDiscountGroup">
+                                <label>Max Discount Amount</label>
+                                <input type="tel" id="maxDiscountAmount" placeholder="Maximum discount cap (for percentage only)" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Offer Type *</label>
+                                    <select id="offerType" required>
+                                        <option value="">Select type</option>
+                                        <option value="festival">Festival</option>
+                                        <option value="referral">Referral</option>
+                                        <option value="welcome">Welcome</option>
+                                        <option value="seasonal">Seasonal</option>
+                                        <option value="flash">Flash Sale</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="status">
+                                        <option value="active">Active</option>
+                                        <option value="paused">Paused</option>
+                                        <option value="upcoming">Upcoming</option>
+                                        <option value="expired">Expired</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Applicable To</label>
+                                <select id="applicableTo">
+                                    <option value="all" selected>All Users</option>
+                                    <option value="new-users">New Users</option>
+                                    <option value="premium-users">Premium Users</option>
+                                    <option value="returning-users">Returning Users</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Min Purchase Amount</label>
+                                <input type="tel" id="minPurchaseAmount" placeholder="Minimum order value required" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Applicable Products</label>
+                                <select id="applicableProducts">
+                                    <option value="all" selected>All Products</option>
+                                    <option value="electronics">Electronics</option>
+                                    <option value="fashion">Fashion</option>
+                                    <option value="home">Home & Garden</option>
+                                    <option value="sports">Sports</option>
+                                </select>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Usage Limit (Global)</label>
+                                    <input type="tel" id="usageLimit" placeholder="Total usage limit" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
+                                </div>
+                                <div class="form-group">
+                                    <label>Usage Limit Per User</label>
+                                    <input type="tel" id="usageLimitPerUser" placeholder="Per user limit" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="globalUsedCountGroup" style="display: none;">
+                                <label>Global Used Count</label>
+                                <input type="tel" id="globalUsedCount" min="0" step="1" pattern="[0-9]*" inputmode="numeric" disabled>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Start Date *</label>
+                                    <input type="datetime-local" id="startDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>End Date *</label>
+                                    <input type="datetime-local" id="endDate" required>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="action-buttons">
+                            <button type="button" class="btn btn-success" id="offers-save-offer-btn">
+                                <i class="fas fa-save"></i> Save Offer
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="offers-clear-form-btn">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
+                            <button type="button" class="btn btn-danger hidden" id="offers-delete-current-btn">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Coupons Tab Content -->
+            <div class="tab-content" id="coupons-content">
+                <h2>Coupons Management</h2>
+                <p>Coupons functionality will be implemented here.</p>
+            </div>
+            
+            <!-- Payments Tab Content -->
+            <div class="tab-content" id="payments-content">
+                <h2>Payments Management</h2>
+                <p>Payments functionality will be implemented here.</p>
             </div>
         </div>
     </div>

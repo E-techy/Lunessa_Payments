@@ -1,0 +1,87 @@
+/* Base/Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #F4F4F5;
+    color: #18181B;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+/* Utility classes */
+.hidden {
+    display: none !important;
+}
+
+.text-sm {
+    font-size: 12px;
+    color: #6B7280;
+}
+
+/* Flexbox utility classes */
+.d-flex {
+    display: flex !important;
+    align-items: center;
+}
+
+.gap-2 {
+    gap: 8px;
+}
+
+/* Override button margin when using flex container */
+.d-flex .btn {
+    margin-right: 0 !important;
+}
+
+/* Scrollbar styling */
+.offers-table::-webkit-scrollbar,
+.form-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.offers-table::-webkit-scrollbar-track,
+.form-container::-webkit-scrollbar-track {
+    background: #F1F5F9;
+    border-radius: 4px;
+}
+
+.offers-table::-webkit-scrollbar-thumb,
+.form-container::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+}
+
+.offers-table::-webkit-scrollbar-thumb:hover,
+.form-container::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.tab-content.active {
+    animation: fadeIn 0.3s ease;
+}

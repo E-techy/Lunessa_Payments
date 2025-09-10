@@ -65,8 +65,8 @@
     cursor: not-allowed;
 }
 
-/* Add a message when content is hidden */
-.status-disabled::after {
+/* Add a message when content is hidden - ONLY for base discount tab */
+.content.status-disabled #base-discount-content::after {
     content: "⚠️ System is currently disabled. Toggle the status switch to enable all features.";
     display: block;
     text-align: center;
