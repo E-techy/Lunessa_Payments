@@ -1,0 +1,41 @@
+/* Animations & Effects */
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes highlight {
+    0% { background: #DBEAFE; }
+    100% { background: #F0F9FF; }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Apply animations to elements */
+.save-status-btn {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.new-row {
+    animation: highlight 0.5s ease-in-out;
+}
+
+.notification {
+    animation: slideIn 0.3s ease-out;
+}

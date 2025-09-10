@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Payment Services</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- base discount  -->
+    <script src="utils/base_discount/config.js"></script>
+    <script src="utils/base_discount/utils.js"></script>
+    <script src="utils/base_discount/status.js"></script>
+    <script src="utils/base_discount/table.js"></script>
+    <script src="utils/base_discount/validation.js"></script>
+    <script src="utils/base_discount/navigation.js"></script>
+    <script src="utils/base_discount/app.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Admin Payment Services</h1>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active">Base discount</div>
+            <div class="tab">offers</div>
+            <div class="tab">coupons</div>
+            <div class="tab">payments</div>
+        </div>
+
+        <div class="content">
+            <div class="status-section">
+                <div class="status-toggle">
+                    <span>Status</span>
+                    <div class="toggle-switch active" onclick="toggleStatus()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="status-actions">
+                    <button class="modify-btn controllable-btn" onclick="toggleModifyMode()">Modify</button>
+                    <button class="save-status-btn hidden" onclick="saveStatusChanges()">Save Changes</button>
+                </div>
+            </div>
+
+            <table class="discount-table">
+                <thead style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">
+                    <tr>
+                        <th>Minimum Value</th>
+                        <th>Maximum Value</th>
+                        <th>Discount Type</th>
+                        <th>Discount Value</th>
+                        <th>Created</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="discountTableBody">
+                    <tr data-row="0">
+                        <td><span class="readonly-field">500</span></td>
+                        <td><span class="readonly-field">1000</span></td>
+                        <td><span class="readonly-field">flat</span></td>
+                        <td><span class="readonly-field">100</span></td>
+                        <td>17 Aug 2025</td>
+                        <td><button class="delete-btn controllable-btn" onclick="deleteRow(0)"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                    <tr data-row="1">
+                        <td><span class="readonly-field">5000</span></td>
+                        <td><span class="readonly-field">10000</span></td>
+                        <td><span class="readonly-field">percentage</span></td>
+                        <td><span class="readonly-field">10</span></td>
+                        <td>17 Aug 2025</td>
+                        <td><button class="delete-btn controllable-btn" onclick="deleteRow(1)"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                    <tr data-row="2">
+                        <td><span class="readonly-field">10000</span></td>
+                        <td><span class="readonly-field">20000</span></td>
+                        <td><span class="readonly-field">flat</span></td>
+                        <td><span class="readonly-field">1000</span></td>
+                        <td>17 Aug 2025</td>
+                        <td><button class="delete-btn controllable-btn" onclick="deleteRow(2)"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                    <tr data-row="3">
+                        <td><span class="readonly-field">1000</span></td>
+                        <td><span class="readonly-field">5000</span></td>
+                        <td><span class="readonly-field">percentage</span></td>
+                        <td><span class="readonly-field">20</span></td>
+                        <td>17 Aug 2025</td>
+                        <td><button class="delete-btn controllable-btn" onclick="deleteRow(3)"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="add-level-section">
+                <button class="add-level-btn controllable-btn" onclick="addNewLevel()">Add new level</button>
+            </div>
+
+            <div class="save-section">
+                <button class="save-btn controllable-btn" onclick="saveChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

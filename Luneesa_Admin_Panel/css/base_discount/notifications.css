@@ -1,0 +1,31 @@
+/* Notification Styles */
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 1000;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.notification.success {
+    background: #10B981;
+}
+
+.notification.error {
+    background: #EF4444;
+    white-space: pre-line;
+}
+
+.notification.warning {
+    background: #F59E0B;
+}
+
+.notification.info {
+    background: #3B82F6;
+}

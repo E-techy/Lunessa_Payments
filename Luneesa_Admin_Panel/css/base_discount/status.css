@@ -1,0 +1,81 @@
+/* Status Toggle Components */
+
+.status-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #F4F4F5;
+}
+
+.status-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.status-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    background: #EF4444;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.toggle-switch.active {
+    background: #10B981;
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch.active .toggle-slider {
+    transform: translateX(30px);
+}
+
+/* Status functionality - hide content when status is off */
+.controllable-btn.hidden,
+.discount-table.hidden,
+.add-level-section.hidden,
+.save-section.hidden {
+    display: none !important;
+}
+
+.status-disabled .controllable-btn {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* Add a message when content is hidden */
+.status-disabled::after {
+    content: "⚠️ System is currently disabled. Toggle the status switch to enable all features.";
+    display: block;
+    text-align: center;
+    padding: 40px 20px;
+    margin: 20px 0;
+    background: #FEF3C7;
+    border: 2px solid #F59E0B;
+    border-radius: 8px;
+    color: #92400E;
+    font-weight: 500;
+    font-size: 16px;
+}
