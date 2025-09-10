@@ -27,7 +27,10 @@ function saveChanges() {
     });
     
     if (!isValid) {
-        showNotification(`Please fix the following errors:\n${validationErrors.join('\n')}`, 'error');
+        showNotification(
+            `Please fix the following errors:\n${validationErrors.join('\n')}`,
+            'error'
+        );
         return;
     }
     
@@ -56,17 +59,20 @@ function validateRow(row) {
         }
     });
     
-    // Validate min value is less than max value
-    const minValue = parseFloat(inputs[0].value);
-    const maxValue = parseFloat(inputs[1].value);
-    
-    if (!isNaN(minValue) && !isNaN(maxValue) && minValue >= maxValue) {
-        isValid = false;
-        inputs[0].classList.add('error');
-        inputs[1].classList.add('error');
-        errors.push('Min Value must be less than Max Value');
+    // ✅ Only check min/max if at least 2 inputs exist
+    if (inputs.length >= 2) {
+        const minValue = parseFloat(inputs[0].value);
+        const maxValue = parseFloat(inputs[1].value);
+
+        if (!isNaN(minValue) && !isNaN(maxValue) && minValue >= maxValue) {
+            isValid = false;
+            inputs[0].classList.add('error');
+            inputs[1].classList.add('error');
+            errors.push('Min Value must be less than Max Value');
+        }
     }
     
+    // If fewer than 2 inputs, skip min/max validation (row might not need it)
     return { isValid, errors };
 }
 
@@ -80,7 +86,7 @@ function convertRowToReadonly(row) {
         const parentTd = input.parentNode;
         const value = input.value;
         const span = document.createElement('span');
-        span.className = 'readonly-field';
+        span.className = 'readonly-field-base-discount';
         span.textContent = value;
         parentTd.innerHTML = '';
         parentTd.appendChild(span);

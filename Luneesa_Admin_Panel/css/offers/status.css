@@ -1,0 +1,38 @@
+/* Status badges */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-active {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.status-expired {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.status-paused {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.status-upcoming {
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
+/* Enhanced status badges */
+.status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    margin-right: 4px;
+}

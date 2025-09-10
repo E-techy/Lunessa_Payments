@@ -1,0 +1,11 @@
+/* Main CSS file - imports all component stylesheets */
+
+/* Import order is important for proper CSS cascading */
+@import url('./css/offers/base.css');
+@import url('./css/offers/navigation.css');
+@import url('./css/offers/buttons.css');
+@import url('./css/offers/forms.css');
+@import url('./css/offers/tables.css');
+@import url('./css/offers/panels.css');
+@import url('./css/offers/status.css');
+@import url('./css/offers/responsive.css');

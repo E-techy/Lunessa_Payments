@@ -1,0 +1,85 @@
+/* Offers Layout */
+.offers-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.offers-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.offers-header {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.offers-table {
+    flex: 1;
+    overflow-y: visible;
+    border: 1px solid #E5E7EB;
+    border-top: none;
+}
+
+.offers-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.offers-table th,
+.offers-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.offers-table th {
+    background: #F9FAFB;
+    font-weight: 600;
+    color: #374151;
+    position: sticky;
+    top: 0;
+}
+
+.offers-table tr:hover {
+    background: #F9FAFB;
+}
+
+.offers-table tr.selected {
+    background: #EEF2FF;
+    border-left: 4px solid #8B5CF6;
+}
+
+/* Enhanced table hover effects */
+.offers-table tr {
+    transition: all 0.2s ease;
+    animation: slideUp 0.2s ease;
+}
+
+.offers-table tr:hover {
+    background: #F9FAFB;
+    transform: translateX(2px);
+}
+
+.offers-table tr.selected {
+    background: #EEF2FF;
+    border-left: 4px solid #8B5CF6;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+}
+
+/* Better button spacing in table actions */
+.offers-table td button {
+    margin-right: 8px;
+}
+
+.offers-table td button:last-child {
+    margin-right: 0;
+}

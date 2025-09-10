@@ -1,0 +1,101 @@
+/* Header */
+.header {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(24, 24, 27, 0.1);
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.header h1 {
+    color: #18181B;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Main Tabs */
+.tabs {
+    display: flex;
+    background: white;
+    border-radius: 12px;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(24, 24, 27, 0.1);
+}
+
+.tab {
+    flex: 1;
+    padding: 12px 20px;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: #6B7280;
+}
+
+.tab.active {
+    background: #8B5CF6;
+    color: white;
+}
+
+.tab:not(.active):hover {
+    background: #F9FAFB;
+    color: #18181B;
+}
+
+/* Sub Tabs */
+.sub-tabs {
+    display: flex;
+    background: white;
+    border-radius: 8px;
+    padding: 6px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(24, 24, 27, 0.08);
+    max-width: 400px;
+}
+
+.sub-tab {
+    flex: 1;
+    padding: 10px 16px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.sub-tab.active {
+    background: #8B5CF6;
+    color: white;
+    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2);
+}
+
+.sub-tab:not(.active):hover {
+    background: #F3F4F6;
+    color: #374151;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Content */
+.content {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(24, 24, 27, 0.1);
+}

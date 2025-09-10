@@ -1,0 +1,87 @@
+/* Responsive Styles */
+
+/* Responsive inline edit */
+@media (max-width: 768px) {
+    .edit-form-content .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .inline-form-actions {
+        flex-direction: column;
+    }
+    
+    .inline-form-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Main Responsive Breakpoints */
+@media (max-width: 1024px) {
+    .offers-layout {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        height: auto;
+    }
+
+    .quick-actions-panel {
+        order: -1;
+        max-height: 300px;
+    }
+
+    .form-container {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .sub-tabs {
+        max-width: 100%;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        padding: 10px;
+    }
+    
+    .tabs {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .tab {
+        padding: 8px 16px;
+    }
+    
+    .offers-table {
+        font-size: 12px;
+    }
+    
+    .offers-table th,
+    .offers-table td {
+        padding: 8px 12px;
+    }
+    
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}

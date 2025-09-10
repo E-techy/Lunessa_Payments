@@ -5,7 +5,6 @@
  */
 function initializeApp() {
     initializeStatus();
-    initializeTabs();
     
     // Add any other initialization code here
     console.log('Payment Admin System initialized successfully');
