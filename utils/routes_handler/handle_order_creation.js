@@ -292,8 +292,8 @@ async function handleOrderCreation(req, res) {
     try {
       // Use billing.currency (derived from AIModel) to instruct the payment gateway
       razorpayResult = await generatePaymentOrder(
-        process.env.RAZORPAY_KEY_ID,
-        process.env.RAZORPAY_KEY_SECRET,
+        RAZORPAY_KEY_ID,
+        RAZORPAY_KEY_SECRET,
         { username },                     // userDetails (kept minimal)
         razorpayNotes,                    // tiny paymentInfo used in notes
         Number(billing.finalPayable),     // amount in main currency unit (generator multiplies by 100)

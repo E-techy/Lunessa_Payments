@@ -19,6 +19,9 @@ require("dotenv").config();
 
 const JWT_SECRET_KEY= process.env.JWT_SECRET_KEY;
 
+const RAZORPAY_KEY_ID = process.env.KEY_ID;
+const RAZORPAY_KEY_SECRET = process.env.KEY_SECRET;
+
 
 const Razorpay = require("razorpay");
 const shortid = require("shortid");
