@@ -9,11 +9,12 @@ const Razorpay = require("razorpay");
  * @param {string} keySecret - Razorpay Key Secret (test or live).
  * @param {Object} userDetails - JSON object containing user details (e.g., { userId, name, email }).
  * @param {Object} paymentInfo - JSON object with payment-related info (e.g., { plan, tokens }).
- * @param {number} amount - Amount in INR (in rupees, not paise).
+ * @param {number} amount - Amount (in main unit, e.g., rupees for INR, USD for dollars).
  * @param {string} receiptNumber - Unique receipt number for tracking.
  * @param {"normal"|"manual_capture"} [orderType="normal"] - Type of order:
  *   - "normal": Default flow (auto-captures after payment success)
  *   - "manual_capture": Payment is authorized only, must be captured later
+ * @param {string} [currency="INR"] - Currency code (e.g., "INR", "USD", "EUR").
  * @returns {Promise<{success: boolean, order?: Object, error?: string}>}
  *
  * @example
@@ -24,7 +25,8 @@ const Razorpay = require("razorpay");
  *   { plan: "gold", tokens: 50 },
  *   500,
  *   "receipt#101",
- *   "manual_capture"
+ *   "manual_capture",
+ *   "USD"
  * );
  *
  * if (result.success) {
@@ -40,7 +42,8 @@ async function generatePaymentOrder(
   paymentInfo,
   amount,
   receiptNumber,
-  orderType = "normal"
+  orderType = "normal",
+  currency = "INR"
 ) {
   const razorpay = new Razorpay({
     key_id: keyId,
@@ -49,8 +52,8 @@ async function generatePaymentOrder(
 
   try {
     const order = await razorpay.orders.create({
-      amount: amount * 100, // Razorpay expects paise
-      currency: "INR",
+      amount: amount * 100, // Razorpay expects the smallest currency unit
+      currency,             // use provided currency
       receipt: receiptNumber,
       payment_capture: orderType === "normal" ? 1 : 0, // auto-capture or manual
       notes: {
@@ -59,7 +62,6 @@ async function generatePaymentOrder(
         orderType,
       },
     });
-
 
     return { success: true, order };
   } catch (error) {
