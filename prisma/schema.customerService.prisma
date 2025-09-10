@@ -23,9 +23,16 @@ model CustomerServiceAgents {
   agentName                 String
   username                  String               @unique // New unique username field
   createdAt                 DateTime             @default(now())
-  availableTokens           Int                  @default(0)
+  
   // New field to store per-model token counts and status
   tokenBalances             TokenBalance[]       
+
+  // Currently active model in use for this agent
+  usingModel                UsingModel?
+
+  // Default model when no explicit usingModel is set
+  defaultModel              DefaultModel?
+
   items                     Item[]
 
   // New fields
@@ -33,12 +40,26 @@ model CustomerServiceAgents {
   modificationHistory       AgentModification[]
 } 
 
+// 2️⃣ Token balances for all models the agent owns
 type TokenBalance {
-  modelName  String
-  tokens     Int
-  status     String    // e.g. "active" | "inactive"
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
+  modelName        String
+  availableTokens  Int
+  status           String  @default("inactive")  // e.g. "active" | "inactive"
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
+}
+
+// 3️⃣ The currently active model with tokens in use
+type UsingModel {
+  modelName        String
+  availableTokens  Int
+  status           String @default("inactive")   // e.g. "active" | "inactive"
+}
+
+// 4️⃣ The default fallback model and its token availability
+type DefaultModel {
+  modelName        String
+  availableTokens  Int
 }
 
 // Embedded Item schema
@@ -54,6 +75,7 @@ type ProblemSolution {
   problem  String
   solution String
 }
+
 
 // 2️⃣ Agent Usage Statistics
 model AgentUsageStatistics {

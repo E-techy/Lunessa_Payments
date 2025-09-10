@@ -197,8 +197,8 @@ app.post("/confirm_payment", authenticateUser, async (req, res) => {
 
 // create purchase data, with razorpay orderId
 app.post("/create_order", authenticateUser, async (req, res) => {
-  
-})
+  return handleOrderCreation(req, res);
+});
 
 
 
