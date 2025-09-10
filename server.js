@@ -39,6 +39,13 @@ app.use(cookieParser());
 // Sending static files to the clients
 app.use(express.static(__dirname + "/Lunessa_Buy_Tokens_Page"));
 
+
+
+// Display all the agents 
+app.get("/view_all_agents", async (req, res) => {
+  res.sendFile(__dirname + "/Lunessa_Agents_token_viewer/agents_viewer.html");
+})
+
 // Agent tokens viewer Page for buying tokens
 app.get("/view_agent_tokens", async (req, res) => {
   // Sending the tokens viewer page
@@ -68,16 +75,10 @@ app.post("/view_agent_tokens", authenticateUser, async (req, res) => {
 });
 
 
-// buy agent tokens, with offers
-app.post("/offer_selection", authenticateUser, async (req, res) => {
+// modify the status of the currently active model
+app.post("/modify_agent_usingModel", authenticateUser, async (req, res) => {
   
-})
-
-
-// generate final bill
-app.post("/agents_tokens_bill", authenticateUser, async (req, res) => {
-  
-})
+}) 
 
 
 
@@ -205,6 +206,8 @@ app.post("/create_order", authenticateUser, async (req, res) => {
 app.post("/confirm_payment", authenticateUser, async (req, res) => {
   return confirmPaymentHandler(req, res, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET );
 });
+
+
 
 
 
