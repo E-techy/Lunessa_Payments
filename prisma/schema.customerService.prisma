@@ -156,11 +156,11 @@ type Order {
   amount       Float
   paymentInfo  Json
   receipt      String
-  fulfillment  Boolean  @default(false)
+  fulfillment  Boolean @default(false)
+  status       String?  @default("draft") // "draft" | "pending" | "failed" | "paid"
   createdAt    DateTime @default(now())
-  updatedAt    DateTime 
+  updatedAt    DateTime @default(now())
 }
-
 
 
 /// Offer model to store promotional campaigns, discounts, and coupon codes

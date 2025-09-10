@@ -283,7 +283,7 @@ async function handleOrderCreation(req, res) {
     const razorpayNotes = buildRazorpayNotes(billing);
 
     // -------------------- Create Razorpay order --------------------
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    if (!RAZORPAY_KEY_ID || RAZORPAY_KEY_SECRET) {
       console.error("Missing Razorpay env keys.");
       return res.status(500).json({ success: false, error: "Payment gateway not configured." });
     }
