@@ -12,6 +12,8 @@ const allotCouponsHandler = require("./utils/routes_handler/admin_allot_coupons"
 const getAIModelPricingData = require("./utils/get_AI_model_pricing_data");
 const adminHandleAIModelPricingData = require("./utils/routes_handler/admin_handle_AI_pricing_data");
 const handleOrderCreation = require("./utils/routes_handler/handle_order_creation");
+const confirmPaymentHandler = require("./utils/routes_handler/confirm_payment");
+
 
 
 
@@ -193,14 +195,15 @@ app.post("/AI_models_pricing_data", async (req, res) => {
 app.post("/admin/AI_pricing_data", authenticateAdmin, adminHandleAIModelPricingData);
 
 
-// razorpay payments page redirect, 
-app.post("/confirm_payment", authenticateUser, async (req, res) => {
-  
-})
 
 // create purchase data, with razorpay orderId
 app.post("/create_order", authenticateUser, async (req, res) => {
   return handleOrderCreation(req, res, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET );
+});
+
+// razorpay payments page redirect, 
+app.post("/confirm_payment", authenticateUser, async (req, res) => {
+  return confirmPaymentHandler(req, res, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET );
 });
 
 

@@ -161,7 +161,7 @@ async function verifyFinalPurchaseData({
       return { success: false, error: "Pricing error: per-token price must be > 0." };
     }
 
-    const currency = model.currency || "USD";
+    const currency = model.currency || "INR";
     const baseAmount = round2(tokens * perTokenPrice);
 
     /* ---------- 4. Base discount slab ---------- */

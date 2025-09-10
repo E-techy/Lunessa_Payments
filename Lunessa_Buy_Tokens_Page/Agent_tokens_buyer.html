@@ -219,4 +219,131 @@
         </footer>
     </div>
 </body>
+  <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        // This is the JSON response you receive from your backend.
+const apiResponse = {
+    "success": true,
+    "message": "Order created. Use the provided razorpayOrder to complete payment.",
+    "razorpayOrder": {
+        "id": "order_RG23t62zvsgHIz",
+        "amount": 19000,
+        "currency": "USD",
+        "keyId": "rzp_test_RCor7m7EQVQcnW"
+    },
+    "receipt": "order_arjun_age1757536441632",
+    "billing": {
+        "username": "arjun_agent01",
+        "agentId": "AGT-50345a8fdb40c313",
+        "modelName": "gpt-4",
+        "currency": "USD",
+        "tokens": 800000,
+        "perTokenPrice": 0.0003,
+        "baseAmount": 240,
+        "baseDiscount": {
+            "applied": true,
+            "amount": 45,
+            "level": {
+                "minOrderValue": 50,
+                "maxOrderValue": 1000,
+                "discountType": "flat",
+                "discountValue": 45
+            }
+        },
+        "promo": {
+            "type": "offer",
+            "code": "IND500",
+            "discountAmount": 5
+        },
+        "totalDiscount": 50,
+        "finalPayable": 190
+    }
+};
+
+// Check if the order creation was successful before proceeding.
+if (apiResponse.success && apiResponse.razorpayOrder) {
+
+    // Extract the necessary data from the response object
+    const orderData = apiResponse.razorpayOrder;
+    const billingInfo = apiResponse.billing;
+
+    const options = {
+        // Essential details for the checkout
+        key: orderData.keyId,
+        amount: orderData.amount, // Amount in subunits
+        currency: orderData.currency,
+        order_id: orderData.id,
+
+        // Optional: Customizing the checkout modal
+        name: "Agent Services",
+        description: `Purchase of ${billingInfo.tokens.toLocaleString()} tokens for ${billingInfo.modelName}`,
+        image: "https://your-company-logo.com/logo.png", // Replace with your logo URL
+        
+        // Prefill user details (optional but recommended)
+        prefill: {
+            name: billingInfo.username,
+            // email: "user@example.com", // You can get this from the user session
+            // contact: "9999999999" // You can get this from the user session
+        },
+        
+        // Notes to be attached to the payment (can be useful for your records)
+        notes: {
+            username: billingInfo.username,
+            agent_id: billingInfo.agentId,
+            tokens: billingInfo.tokens,
+            promo_code: billingInfo.promo.code,
+        },
+        
+        // Define the success handler
+        handler: function(response) {
+            // This function is called on successful payment
+            alert("Payment successful! Payment ID: " + response.razorpay_payment_id);
+            
+            // Send the response back to your backend for verification
+            console.log("Sending verification data to server:", response);
+            
+            // Example of a fetch call to your server
+            // fetch('/verify-payment', {
+            //   method: 'POST',
+            //   headers: { 'Content-Type': 'application/json' },
+            //   body: JSON.stringify(response)
+            // })
+            // .then(res => res.json())
+            // .then(data => {
+            //   if (data.success) {
+            //     console.log("Payment successfully verified by server!");
+            //   } else {
+            //     console.error("Payment verification failed on server.");
+            //   }
+            // });
+        },
+        
+        // Define a failure handler (optional but recommended)
+        "modal.onclose": function() {
+          console.log("Payment modal was closed.");
+        },
+        "modal.onOpen": function() {
+          console.log("Payment modal was opened.");
+        },
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+
+    // Create a new Razorpay instance and open the checkout
+    const rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function (response){
+        alert("Payment failed: " + response.error.description);
+        console.error("Payment failed with error code: " + response.error.code);
+        console.error("Error description: " + response.error.description);
+        console.error("Contact support with ID: " + response.error.source + " - " + response.error.reason);
+    });
+    rzp1.open();
+    
+} else {
+    // Handle the case where the backend call was not successful
+    console.error("Failed to create Razorpay order:", apiResponse.message);
+    alert("Could not create the payment order. Please try again later.");
+}
+    </script> -->
 </html>
