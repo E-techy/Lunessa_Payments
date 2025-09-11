@@ -1,0 +1,100 @@
+/* AI Models Status Indicators */
+.ai-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ai-status-indicator.active {
+    background: #DCFCE7;
+    color: #166534;
+}
+
+.ai-status-indicator.active::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22C55E;
+}
+
+.ai-status-indicator.inactive {
+    background: #FEF2F2;
+    color: #991B1B;
+}
+
+.ai-status-indicator.inactive::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #EF4444;
+}
+
+.ai-status-indicator.expired {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.ai-status-indicator.expired::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #F59E0B;
+}
+
+/* Form validation states */
+.ai-form-group.has-error input,
+.ai-form-group.has-error select {
+    border-color: #EF4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.ai-form-group.has-success input,
+.ai-form-group.has-success select {
+    border-color: #22C55E;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.ai-form-error-message {
+    color: #EF4444;
+    font-size: 12px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ai-form-error-message i {
+    font-size: 11px;
+}
+
+/* Loading states */
+.ai-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.ai-loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #E5E7EB;
+    border-top: 3px solid #7C3AED;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}

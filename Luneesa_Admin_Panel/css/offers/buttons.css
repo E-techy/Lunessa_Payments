@@ -28,6 +28,7 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     background: #F4F4F5;
     color: #71717A;
+    gap: 8px;
 }
 
 .btn-primary:hover {

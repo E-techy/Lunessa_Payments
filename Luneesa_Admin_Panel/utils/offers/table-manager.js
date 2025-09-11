@@ -42,11 +42,11 @@ function updateOffersTableWithData(data) {
             <td>${createdDate}</td>
             <td><span class="status-badge status-${offer.status}">${offer.status}</span></td>
             <td>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-primary btn-sm edit-offer-btn" data-offer-index="${originalIndex}">
+                <div class="d-flex ">
+                    <button class="btn-primary btn-sm edit-offer-btn" data-offer-index="${originalIndex}">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn btn-danger btn-sm delete-offer-btn" data-offer-index="${originalIndex}">
+                    <button class="btn-danger btn-sm delete-offer-btn" data-offer-index="${originalIndex}">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>

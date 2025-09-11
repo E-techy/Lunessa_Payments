@@ -1,0 +1,98 @@
+/* AI Models Button Styles */
+.ai-action-buttons {
+    padding: 20px;
+    background: #F8FAFC;
+    border-top: 1px solid #E5E7EB;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.ai-inline-edit-btn:hover {
+    background: #EDE9FE;
+    color: #7C3AED;
+    transform: translateY(-1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.ai-action-buttons .btn {
+    margin: 0;
+}
+
+.ai-inline-form-actions {
+    padding: 20px;
+    background: #F8FAFC;
+    border-top: 1px solid #E5E7EB;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.ai-inline-form-actions .btn {
+    margin: 0;
+}
+
+/* AI Models specific button variants */
+.ai-primary,
+.ai-primary-create,
+.ai-primary-export,
+.ai-primary-edit-header-cancel {
+    background: #6B7280;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ai-primary:hover,
+.ai-primary-create:hover,
+.ai-primary-export:hover,
+.ai-primary-edit-header-cancel:hover {
+    background: #4B5563;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ai-success, 
+.ai-success-create {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #10B981;
+    color: white;
+}
+
+.ai-success:hover,
+.ai-success-create:hover {
+    background: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ai-delete-btn{
+    background: #F4F4F5;
+    color: #9CA3AF;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    width: 40px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

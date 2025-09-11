@@ -20,6 +20,29 @@ function showTab(tabName) {
         content.classList.add('active');
     }
     
+    // Special handling for AI Models tab
+    if (tabName === 'ai-models') {
+        // Ensure AI Models list sub-tab is active by default
+        setTimeout(() => {
+            const aiListTab = document.getElementById('ai-models-list-sub-tab-btn');
+            const aiCreateTab = document.getElementById('ai-models-create-sub-tab-btn');
+            const aiListContent = document.getElementById('aiModelsListContent');
+            const aiCreateContent = document.getElementById('aiModelsCreateContent');
+            
+            if (aiListTab && aiCreateTab && aiListContent && aiCreateContent) {
+                aiListTab.classList.add('active');
+                aiCreateTab.classList.remove('active');
+                aiListContent.classList.add('active');
+                aiCreateContent.classList.remove('active');
+            }
+            
+            // Hide any open inline edit form
+            if (typeof hideAiInlineEditForm === 'function') {
+                hideAiInlineEditForm();
+            }
+        }, 10);
+    }
+    
     // Special handling for offers tab - automatically activate the "Offers" sub-tab
     if (tabName === 'offers') {
         // Small delay to ensure the offers content is visible first
