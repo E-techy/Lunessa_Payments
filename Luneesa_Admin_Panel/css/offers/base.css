@@ -34,9 +34,6 @@ body {
     align-items: center;
 }
 
-.gap-2 {
-    gap: 8px;
-}
 
 /* Override button margin when using flex container */
 .d-flex .btn {

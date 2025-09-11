@@ -1,0 +1,156 @@
+/* AI Models Responsive Styles */
+
+/* Tablet styles */
+@media (max-width: 1024px) {
+    .ai-models-layout {
+        gap: 16px;
+    }
+    
+    .ai-models-controls > div {
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+    }
+    
+    .ai-models-controls select,
+    .ai-models-controls button {
+        grid-column: 1 / -1;
+        margin-top: 8px;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .ai-sub-tabs {
+        max-width: none;
+        margin: 0 -10px 20px -10px;
+    }
+    
+    .ai-models-controls {
+        padding: 12px;
+    }
+    
+    .ai-models-controls > div {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .ai-models-table {
+        font-size: 12px;
+    }
+    
+    .ai-models-table th,
+    .ai-models-table td {
+        padding: 8px 10px;
+    }
+    
+    .ai-models-header {
+        padding: 16px;
+        font-size: 18px;
+    }
+    
+    .ai-create-header {
+        padding: 16px;
+        font-size: 16px;
+    }
+    
+    .ai-form-container {
+        padding: 16px;
+    }
+    
+    .ai-action-buttons,
+    .ai-inline-form-actions {
+        padding: 16px;
+        flex-wrap: wrap;
+    }
+    
+    .ai-action-buttons .btn,
+    .ai-inline-form-actions .btn {
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    /* Stack form rows on mobile */
+    .ai-form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    
+    /* Adjust table for mobile */
+    .ai-models-table table {
+        min-width: 600px;
+    }
+    
+    /* Hide less important columns on mobile */
+    .ai-models-table .hide-mobile {
+        display: none;
+    }
+}
+
+/* Small mobile styles */
+@media (max-width: 480px) {
+    .ai-models-header {
+        padding: 12px;
+        font-size: 16px;
+    }
+    
+    .ai-create-header {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .ai-sub-tabs {
+        padding: 4px;
+        margin: 0 -15px 16px -15px;
+    }
+    
+    .ai-sub-tab {
+        padding: 8px 12px;
+        font-size: 13px;
+        gap: 6px;
+    }
+    
+    .ai-form-container {
+        padding: 12px;
+    }
+    
+    .ai-action-buttons,
+    .ai-inline-form-actions {
+        padding: 12px;
+    }
+    
+    .ai-models-table table {
+        min-width: 500px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .ai-models-controls,
+    .ai-action-buttons,
+    .ai-inline-form-actions,
+    .ai-sub-tabs {
+        display: none !important;
+    }
+    
+    .ai-models-table {
+        box-shadow: none;
+    }
+    
+    .ai-models-table table {
+        border: 1px solid #000;
+    }
+    
+    .ai-models-table th,
+    .ai-models-table td {
+        border: 1px solid #000;
+        padding: 8px;
+    }
+    
+    .ai-models-header,
+    .ai-create-header {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+        -webkit-print-color-adjust: exact;
+    }
+}

@@ -1,0 +1,41 @@
+/* AI Models Sub Tabs Navigation */
+.ai-sub-tabs {
+    display: flex;
+    background: white;
+    border-radius: 8px;
+    padding: 6px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(24, 24, 27, 0.08);
+    max-width: 400px;
+}
+
+.ai-sub-tab {
+    flex: 1;
+    padding: 10px 16px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.ai-sub-tab.active {
+    background: #7C3AED;
+    color: white;
+    box-shadow: 0 2px 4px rgba(124, 58, 237, 0.2);
+}
+
+.ai-sub-tab:not(.active):hover {
+    background: #F3F4F6;
+    color: #374151;
+}
+
+.ai-sub-tab i {
+    font-size: 14px;
+}

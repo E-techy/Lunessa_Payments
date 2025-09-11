@@ -1,0 +1,91 @@
+/* AI Models Panel Styles */
+.ai-models-layout {
+    position: relative;
+}
+
+/* Search and controls panel */
+.ai-models-controls {
+    background: #F8FAFC;
+    border-bottom: 1px solid #E5E7EB;
+    border-radius: 0;
+}
+
+.ai-search-box {
+    position: relative;
+}
+
+.ai-search-box input {
+    padding-left: 36px;
+}
+
+/* Panel transitions */
+.ai-models-layout > div {
+    transition: all 0.3s ease;
+}
+
+/* Panel shadows and borders */
+.ai-models-list,
+.ai-create-panel-full,
+.ai-inline-edit-form {
+    border: 1px solid #E5E7EB;
+    transition: box-shadow 0.3s ease;
+}
+
+.ai-models-list:hover,
+.ai-create-panel-full:hover {
+    box-shadow: 0 4px 12px rgba(24, 24, 27, 0.12);
+}
+
+/* Panel headers with gradients */
+.ai-models-header,
+.ai-create-header,
+.ai-edit-form-header {
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-models-header::before,
+.ai-create-header::before,
+.ai-edit-form-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ai-models-header:hover::before,
+.ai-create-header:hover::before,
+.ai-edit-form-header:hover::before {
+    opacity: 1;
+}
+
+/* Content padding and spacing */
+.ai-models-layout .ai-models-list {
+    min-height: 400px;
+}
+
+.ai-create-panel-full {
+    min-height: 500px;
+}
+
+/* Panel animation on show */
+@keyframes aiPanelSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.ai-tab-content.active .ai-models-list,
+.ai-tab-content.active .ai-create-panel-full {
+    animation: aiPanelSlideIn 0.4s ease;
+}

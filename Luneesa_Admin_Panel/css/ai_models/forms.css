@@ -1,0 +1,129 @@
+/* AI Models Form Styles */
+.ai-form-container {
+    padding: 24px;
+    background: white;
+}
+
+.ai-form-group {
+    margin-bottom: 20px;
+}
+
+.ai-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+}
+
+.ai-form-group input,
+.ai-form-group select,
+.ai-form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.ai-form-group input:focus,
+.ai-form-group select:focus,
+.ai-form-group textarea:focus {
+    outline: none;
+    border-color: #7C3AED;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.ai-form-group input[disabled] {
+    background-color: #F9FAFB;
+    color: #6B7280;
+    cursor: not-allowed;
+}
+
+.ai-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* AI Models Inline Edit Form */
+.ai-inline-edit-form {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(24, 24, 27, 0.08);
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.ai-edit-form-header {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ai-edit-form-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ai-edit-form-content {
+    background: white;
+}
+
+.ai-edit-form-content form {
+    padding: 20px;
+}
+
+/* Section styling */
+.ai-readonly-section,
+.ai-editable-section {
+    margin-bottom: 24px;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.ai-readonly-section {
+    background: #F8FAFC;
+    border: 1px solid #E5E7EB;
+}
+
+.ai-editable-section {
+    background: #FEFFFE;
+    border: 1px solid #D1FAE5;
+}
+
+.ai-readonly-section h4,
+.ai-editable-section h4 {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ai-readonly-section h4 i {
+    color: #6B7280;
+}
+
+.ai-editable-section h4 i {
+    color: #059669;
+}
+
+/* Responsive form layout */
+@media (max-width: 768px) {
+    .ai-form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}

@@ -25,10 +25,18 @@ function initializeEventListeners() {
  */
 function setupMainTabListeners() {
     // Main tabs
+    const aiModelsTab = document.getElementById('ai-models-tab-btn');
     const baseDiscountTab = document.getElementById('base-discount-tab-btn');
     const offersTab = document.getElementById('offers-tab-btn');
     const couponsTab = document.getElementById('coupons-tab-btn');
     const paymentsTab = document.getElementById('payments-tab-btn');
+    
+    if (aiModelsTab) {
+        aiModelsTab.addEventListener('click', (e) => {
+            e.target = aiModelsTab; // Set event target for showTab function
+            showTab('ai-models');
+        });
+    }
     
     if (baseDiscountTab) {
         baseDiscountTab.addEventListener('click', (e) => {

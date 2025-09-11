@@ -6,6 +6,7 @@
     <title>Admin Payment Services</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="offers.css">
+    <link rel="stylesheet" href="ai_models.css">
     <!-- Add Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="utils/tab_switching.js"></script>
@@ -29,6 +30,17 @@
     <script src="utils/offers/search-filter.js"></script>
     <script src="utils/offers/export-duplicate.js"></script>
     <script src="utils/offers/app.js"></script>
+    
+    <!-- ai-models -->
+    <script src="utils/ai_models/data.js"></script>
+    <script src="utils/ai_models/utils.js"></script>
+    <script src="utils/ai_models/navigation.js"></script>
+    <script src="utils/ai_models/form-handler.js"></script>
+    <script src="utils/ai_models/inline-editor.js"></script>
+    <script src="utils/ai_models/table-manager.js"></script>
+    <script src="utils/ai_models/search-filter.js"></script>
+    <script src="utils/ai_models/export-duplicate.js"></script>
+    <script src="utils/ai_models/app.js"></script>
 </head>
 <body>
     <div class="container">
@@ -37,15 +49,203 @@
         </div>
 
         <div class="tabs">
-            <div class="tab active" id="base-discount-tab-btn">Base discount</div>
+            <div class="tab active" id="ai-models-tab-btn">AI-Models</div>
+            <div class="tab" id="base-discount-tab-btn">Base discount</div>
             <div class="tab" id="offers-tab-btn">offers</div>
             <div class="tab" id="coupons-tab-btn">coupons</div>
             <div class="tab" id="payments-tab-btn">payments</div>
         </div>
 
         <div class="content">
+            <!-- AI-Models Tab Content -->
+            <div class="tab-content active" id="ai-models-content">
+                <!-- Sub-tabs for AI-Models section -->
+                <div class="ai-sub-tabs" id="aiModelsSubTabs">
+                    <div class="ai-sub-tab active" id="ai-models-list-sub-tab-btn">
+                        <i class="fas fa-robot"></i> AI Models
+                    </div>
+                    <div class="ai-sub-tab" id="ai-models-create-sub-tab-btn">
+                        <i class="fas fa-plus"></i> Create
+                    </div>
+                </div>
+
+                <!-- AI Models List Tab Content -->
+                <div class="ai-tab-content active" id="aiModelsListContent">
+                    <div class="ai-models-layout">
+                        <!-- AI Models List -->
+                        <div class="ai-models-list" id="aiModelsList">
+                            <div class="ai-models-header">
+                                <i class="fas fa-robot"></i> <span id="aiModelsListTitle">AI Models List</span>
+                            </div>
+                            
+                            <!-- Search and Filter Controls -->
+                            <div class="ai-models-controls" style="padding: 16px; background: #f8fafc; border-bottom: 1px solid #e5e7eb;">
+                                <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center;">
+                                    <div class="ai-search-box">
+                                        <input type="text" placeholder="Search AI models..." 
+                                               style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;"
+                                               id="ai-models-search-input">
+                                    </div>
+                                    <select id="ai-models-provider-filter" 
+                                            style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                        <option value="all">All Providers</option>
+                                        <option value="OpenAI">OpenAI</option>
+                                        <option value="Anthropic">Anthropic</option>
+                                        <option value="Google">Google</option>
+                                    </select>
+                                    <button class="ai-primary-export" id="ai-models-export-btn" 
+                                            style="padding: 8px 12px; font-size: 12px;">
+                                        <i class="fas fa-download"></i> Export
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="ai-models-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Model Name</th>
+                                            <th>Provider</th>
+                                            <th>Price Per Token</th>
+                                            <th>Currency</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="aiModelsTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Inline Edit Form (hidden by default) -->
+                        <div class="ai-inline-edit-form" id="aiInlineEditForm" style="display: none;">
+                            <div class="ai-edit-form-header">
+                                <h3><i class="fas fa-edit"></i> <span id="aiEditFormTitle">Edit AI Model</span></h3>
+                                <button class="ai-primary-edit-header-cancel" id="ai-models-inline-cancel-btn" style="padding: 6px 12px; font-size: 12px; z-index: 1;">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                            <div class="ai-edit-form-content">
+                                <form id="aiInlineModelForm">
+                                    <!-- Read-only Database Fields -->
+                                    <div class="ai-readonly-section">
+                                        <h4><i class="fas fa-database"></i> Database Information</h4>
+                                        <div class="ai-form-row">
+                                            <div class="ai-form-group">
+                                                <label>ID</label>
+                                                <input type="text" id="aiInlineModelId" disabled class="readonly-field">
+                                            </div>
+                                        </div>
+                                        <div class="ai-form-row">
+                                            <div class="ai-form-group">
+                                                <label>Created At</label>
+                                                <input type="text" id="aiInlineCreatedAt" disabled class="readonly-field">
+                                            </div>
+                                            <div class="ai-form-group">
+                                                <label>Updated At</label>
+                                                <input type="text" id="aiInlineUpdatedAt" disabled class="readonly-field">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Editable Fields -->
+                                    <div class="ai-editable-section">
+                                        <h4><i class="fas fa-edit"></i> Editable Information</h4>
+                                        <div class="ai-form-row">
+                                            <div class="ai-form-group">
+                                                <label>Model Name *</label>
+                                                <input type="text" id="aiInlineModelName" required>
+                                            </div>
+                                            <div class="ai-form-group">
+                                                <label>Provider *</label>
+                                                <input type="text" id="aiInlineProvider" placeholder="e.g., OpenAI, Anthropic, Google" required>
+                                            </div>
+                                        </div>
+                                        <div class="ai-form-row">
+                                            <div class="ai-form-group">
+                                                <label>Price Per Token *</label>
+                                                <input type="number" id="aiInlinePricePerToken" step="0.000001" min="0" required>
+                                            </div>
+                                            <div class="ai-form-group">
+                                                <label>Currency</label>
+                                                <select id="aiInlineCurrency">
+                                                    <option value="USD">USD</option>
+                                                    <option value="INR">INR</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="ai-form-group">
+                                            <label>Available Till *</label>
+                                            <input type="datetime-local" id="aiInlineAvailableTill" required>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="ai-inline-form-actions">
+                                    <button type="button" class="ai-success" id="ai-models-inline-save-btn">
+                                        <i class="fas fa-save"></i> Update Model
+                                    </button>
+                                    <button type="button" class="ai-primary" id="ai-models-inline-cancel-footer-btn">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create AI Model Tab Content -->
+                <div class="ai-tab-content" id="aiModelsCreateContent">
+                    <div class="ai-create-panel-full">
+                        <div class="ai-create-header">
+                            <i class="fas fa-plus-circle"></i> <span id="aiCreateHeaderText">Create New AI Model</span>
+                        </div>
+                        <form id="aiModelForm" class="ai-form-container">
+                            <!-- Editable fields only for create -->
+                            <div class="ai-form-row">
+                                <div class="ai-form-group">
+                                    <label>Model Name *</label>
+                                    <input type="text" id="aiModelName" placeholder="e.g., gpt-4" required>
+                                </div>
+                                <div class="ai-form-group">
+                                    <label>Provider *</label>
+                                    <input type="text" id="aiProvider" placeholder="e.g., OpenAI, Anthropic, Google" required>
+                                </div>
+                            </div>
+
+                            <div class="ai-form-row">
+                                <div class="ai-form-group">
+                                    <label>Price Per Token *</label>
+                                    <input type="number" id="aiPricePerToken" placeholder="e.g., 0.005" step="0.000001" min="0" required>
+                                </div>
+                                <div class="ai-form-group">
+                                    <label>Currency</label>
+                                    <select id="aiCurrency">
+                                        <option value="USD" selected>USD</option>
+                                        <option value="INR">INR</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="ai-form-group">
+                                <label>Available Till *</label>
+                                <input type="datetime-local" id="aiAvailableTill" required>
+                            </div>
+                        </form>
+
+                        <div class="ai-action-buttons">
+                            <button type="button" class="ai-success-create" id="ai-models-save-model-btn">
+                                <i class="fas fa-save"></i> Save Model
+                            </button>
+                            <button type="button" class="ai-primary-create" id="ai-models-clear-form-btn">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Base Discount Tab Content -->
-            <div class="tab-content active" id="base-discount-content">
+            <div class="tab-content" id="base-discount-content">
                 <div class="status-section">
                 <div class="status-toggle">
                     <span>Status</span>
