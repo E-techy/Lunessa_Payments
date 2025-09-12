@@ -1,5 +1,90 @@
 // Save functionality and related UI components
 
+// Helper function to get authentication token
+function getAuthToken() {
+    // Try to get token from localStorage first
+    let token = localStorage.getItem('authToken');
+    
+    // If not in localStorage, try to get from cookies
+    if (!token) {
+        const cookies = document.cookie.split(';');
+        const authCookie = cookies.find(cookie => cookie.trim().startsWith('authToken='));
+        if (authCookie) {
+            token = authCookie.split('=')[1];
+        }
+    }
+    
+    return token;
+}
+
+// Helper function to show error messages
+function showErrorMessage(message) {
+    // Remove any existing error messages
+    const existingError = document.getElementById('error-message');
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    // Create error message element
+    const errorDiv = document.createElement('div');
+    errorDiv.id = 'error-message';
+    errorDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        z-index: 1000;
+        font-weight: 500;
+        max-width: 400px;
+        word-wrap: break-word;
+        animation: slideIn 0.3s ease-out;
+    `;
+    
+    errorDiv.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span>❌</span>
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" 
+                    style="background: none; border: none; color: white; 
+                           margin-left: auto; cursor: pointer; font-size: 16px;">
+                ×
+            </button>
+        </div>
+    `;
+    
+    // Add CSS animation if not already added
+    if (!document.getElementById('error-animation-style')) {
+        const style = document.createElement('style');
+        style.id = 'error-animation-style';
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(errorDiv);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (errorDiv && errorDiv.parentElement) {
+            errorDiv.remove();
+        }
+    }, 5000);
+}
+
 function showSaveButton(agentId) {
     const agentDetailsContent = document.querySelector(`#details-${agentId} .agent-details-content`);
     let saveButton = document.getElementById('save-changes-btn');
@@ -43,26 +128,61 @@ function showSaveButton(agentId) {
     }
 }
 
-function saveChanges() {
+async function saveChanges() {
     if (!getHasUnsavedChanges()) return;
     
     console.log('Saving changes:', getPendingChanges());
     
-    // Simulate API call
     const saveBtn = document.getElementById('save-changes-btn');
     const originalContent = saveBtn.innerHTML;
     
+    // Update UI to show saving state
     saveBtn.innerHTML = '<span>⏳</span> Saving...';
     saveBtn.disabled = true;
     saveBtn.style.opacity = '0.7';
     
-    // Simulate save delay
-    setTimeout(() => {
-        // Update timestamps for changed models
-        Object.keys(getPendingChanges()).forEach(agentId => {
-            Object.keys(getPendingChanges()[agentId]).forEach(modelName => {
-                updateModelTimestamp(agentId, modelName);
+    try {
+        const pendingChanges = getPendingChanges();
+        const savePromises = [];
+        
+        // Create API calls for each pending change
+        Object.keys(pendingChanges).forEach(agentId => {
+            Object.keys(pendingChanges[agentId]).forEach(modelName => {
+                const newStatus = pendingChanges[agentId][modelName];
+                
+                const savePromise = fetch('/modify_agent_usingModel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include auth token from cookies or localStorage
+                        'Authorization': getAuthToken() ? `Bearer ${getAuthToken()}` : undefined
+                    },
+                    credentials: 'include', // Include cookies for authentication
+                    body: JSON.stringify({
+                        agentId: agentId,
+                        modelName: modelName,
+                        status: newStatus
+                    })
+                }).then(async response => {
+                    const result = await response.json();
+                    
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.error || `Failed to update ${modelName} for agent ${agentId}`);
+                    }
+                    
+                    return { agentId, modelName, status: newStatus, result };
+                });
+                
+                savePromises.push(savePromise);
             });
+        });
+        
+        // Wait for all API calls to complete
+        const results = await Promise.all(savePromises);
+        
+        // Update timestamps for successfully changed models
+        results.forEach(({ agentId, modelName }) => {
+            updateModelTimestamp(agentId, modelName);
         });
         
         // Clear pending changes
@@ -72,11 +192,12 @@ function saveChanges() {
         saveBtn.innerHTML = '<span>✅</span> Changes Saved!';
         saveBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
         
-        // Re-render the details if expanded
+        // Re-render the details if expanded to show updated data
         getAllExpandedRows().forEach(agentId => {
             populateAgentDetails(agentId);
         });
         
+        // Remove save button after success
         setTimeout(() => {
             const saveButtonContainer = document.getElementById('save-button-container');
             if (saveButtonContainer) {
@@ -84,5 +205,24 @@ function saveChanges() {
             }
         }, 2000);
         
-    }, 1000);
+        console.log('All changes saved successfully:', results);
+        
+    } catch (error) {
+        console.error('Error saving changes:', error);
+        
+        // Update button to show error
+        saveBtn.innerHTML = '<span>❌</span> Save Failed';
+        saveBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        
+        // Re-enable button and restore original state after showing error
+        setTimeout(() => {
+            saveBtn.innerHTML = originalContent;
+            saveBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            saveBtn.disabled = false;
+            saveBtn.style.opacity = '1';
+        }, 3000);
+        
+        // Show error message to user
+        showErrorMessage(error.message || 'Failed to save changes. Please try again.');
+    }
 }
