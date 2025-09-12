@@ -220,4 +220,7 @@ app.listen(PORT, () => {
   console.log(
     `Server is listenting on port http://localhost:${PORT}/view_agent_tokens`
   );
+  console.log(
+    `Server is listenting on port http://localhost:${PORT}/view_all_agents`
+  );
 });
