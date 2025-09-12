@@ -40,7 +40,11 @@ app.use(cookieParser());
 // Sending static files to the clients
 app.use(express.static(__dirname + "/Lunessa_Buy_Tokens_Page"));
 
+// Setting static folder structure for sending static files in the ui 
 
+app.use(express.static(__dirname+ "/Lunessa_Agents_token_viewer"));
+app.use("/css_viewer", express.static(__dirname + "/Lunessa_Agents_token_viewer/css_viewer"));
+app.use("/utils_viewer", express.static(__dirname + "/Lunessa_Agents_token_viewer/utils_viewer"));
 
 // Display all the agents 
 app.get("/view_all_agents", async (req, res) => {
@@ -215,5 +219,8 @@ app.post("/confirm_payment", authenticateUser, async (req, res) => {
 app.listen(PORT, () => {
   console.log(
     `Server is listenting on port http://localhost:${PORT}/view_agent_tokens`
+  );
+  console.log(
+    `Server is listenting on port http://localhost:${PORT}/view_all_agents`
   );
 });

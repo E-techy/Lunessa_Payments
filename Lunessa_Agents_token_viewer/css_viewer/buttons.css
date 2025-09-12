@@ -1,0 +1,69 @@
+/* Button styles */
+.buy-btn {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.buy-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(135deg, #7C3AED, #6D28D9);
+}
+
+.buy-btn:active {
+    transform: translateY(0);
+}
+
+/* Viewer toggle button styles */
+.viewer-toggle {
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 39px;
+}
+
+.viewer-toggle:hover {
+    background-color: #F4F4F5;
+}
+
+.arrow-icon {
+    color: #6B7280;
+    transition: transform 0.3s ease;
+    width: 12px;
+    height: 8px;
+}
+
+.viewer-toggle.expanded .arrow-icon {
+    transform: rotate(180deg);
+}
+
+.refresh-view-btn{
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}

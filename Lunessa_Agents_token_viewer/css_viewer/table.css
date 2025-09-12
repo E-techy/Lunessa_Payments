@@ -1,0 +1,86 @@
+/* Table styles */
+.table-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+}
+
+th {
+    padding: 20px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: white;
+}
+
+tbody tr {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+tbody tr:hover {
+    background: rgba(139, 92, 246, 0.05);
+    transform: scale(1.01);
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+td {
+    padding: 20px;
+    text-align: center;
+    font-size: 1rem;
+    vertical-align: middle;
+}
+
+.agent-name {
+    font-weight: 600;
+    color: #1E293B;
+    font-size: 1.1rem;
+}
+
+.agent-id {
+    font-family: 'Courier New', monospace;
+    color: rgba(30, 41, 59, 0.7);
+    background: rgba(139, 92, 246, 0.15);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+
+.token-amount {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #8B5CF6;
+}
+
+.zero-tokens {
+    color: #ef4444;
+    opacity: 0.8;
+}
+
+/* Details row animations */
+.details-row {
+    transition: all 0.3s ease;
+}
+
+.agent-details-content {
+    animation: slideDown 0.3s ease-out;
+    border-left: 4px solid #8B5CF6;
+}
