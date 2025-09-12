@@ -20,23 +20,7 @@ function showSaveButton(agentId) {
         `;
         
         saveButtonContainer.innerHTML = `
-            <button id="save-changes-btn" style="
-                background: linear-gradient(135deg, #10b981, #059669);
-                color: white;
-                border: none;
-                padding: 12px 24px;
-                border-radius: 8px;
-                font-weight: 600;
-                font-size: 0.9rem;
-                cursor: pointer;
-                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                white-space: nowrap;
-            ">
-                <span>💾</span>
+            <button id="save-changes-btn" class="save-agents-btn">
                 Save Changes
             </button>
         `;

@@ -6,7 +6,7 @@
     <title>Agent Token</title>
     <link rel="stylesheet" href="/all_agents_viewer.css">
     <!-- JavaScript modules in dependency order -->
-    <script src="/utils_viewer/data.js"></script>
+
     <script src="/utils_viewer/state.js"></script>
     <script src="/utils_viewer/utils.js"></script>
     <script src="/utils_viewer/ui-renderer.js"></script>
@@ -19,8 +19,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Agent Token Marketplace</h1>
-            <p>Purchase tokens to unlock premium agent capabilities</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div>
+                    <h1>Agent Token Marketplace</h1>
+                    <p>Purchase tokens to unlock premium agent capabilities</p>
+                </div>
+                <button id="refresh-data-btn" class="refresh-view-btn"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(59, 130, 246, 0.4)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)';">
+                     Refresh Data
+                </button>
+            </div>
         </div>
 
         <div class="table-container">

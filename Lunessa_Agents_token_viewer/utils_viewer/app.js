@@ -18,6 +18,31 @@ function renderAgentsTable() {
     const tbody = document.querySelector('tbody');
     tbody.innerHTML = '';
 
+    // Handle empty or invalid data
+    if (!agentsData || !agentsData.agents || !Array.isArray(agentsData.agents)) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 2rem; color: #6b7280;">
+                    <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">📭 No Data Available</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7;">No agents found or data not loaded</div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    if (agentsData.agents.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 2rem; color: #6b7280;">
+                    <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">📭 No Agents Found</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7;">No agents are currently available</div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
     agentsData.agents.forEach(agent => {
         // Create main agent row
         const row = document.createElement('tr');
@@ -51,14 +76,34 @@ function animateTableRows() {
 }
 
 // Initialize the application
-function initializeApp() {
-    renderAgentsTable();
+async function initializeApp() {
+    // Show loading state
+    showLoadingState();
     
-    // Animate rows after rendering
-    setTimeout(() => {
-        animateTableRows();
-    }, 10);
+    try {
+        // Fetch data from database
+        await fetchAgentsFromDatabase();
+        
+        // Render table with fetched data
+        renderAgentsTable();
+        
+        // Animate rows after rendering
+        setTimeout(() => {
+            animateTableRows();
+        }, 10);
+    } catch (error) {
+        console.error('Failed to initialize app:', error);
+        // Error message will be shown by fetchAgentsFromDatabase
+    }
 }
 
 // Start the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeApp);
+
+// Add event listener for refresh button after DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    const refreshBtn = document.getElementById('refresh-data-btn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', refreshAgentsData);
+    }
+});

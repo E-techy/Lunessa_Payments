@@ -23,29 +23,8 @@ function createModelItemHTML(model, agentId, index) {
                                 data-model-name="${model.modelName}" 
                                 data-current-status="${model.status}"
                                 style="opacity: 0; width: 0; height: 0;">
-                        <span class="toggle-slider" style="
-                            position: absolute;
-                            cursor: pointer;
-                            top: 0;
-                            left: 0;
-                            right: 0;
-                            bottom: 0;
-                            background-color: ${model.status === 'active' ? '#10b981' : '#ccc'};
-                            transition: 0.3s;
-                            border-radius: 24px;
-                        ">
-                            <span style="
-                                position: absolute;
-                                content: '';
-                                height: 18px;
-                                width: 18px;
-                                left: ${model.status === 'active' ? '29px' : '3px'};
-                                bottom: 3px;
-                                background-color: white;
-                                transition: 0.3s;
-                                border-radius: 50%;
-                                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                            "></span>
+                            <span class="toggle-slider" style="background-color: ${model.status === 'active' ? '#10b981' : '#ccc'};">
+                            <span class="toggle-slider-circle" style="left: ${model.status === 'active' ? '29px' : '3px'};"></span>
                         </span>
                     </label>
                 </div>
