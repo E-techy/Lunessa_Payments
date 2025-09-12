@@ -1,0 +1,8 @@
+/* Main CSS file - imports all component styles */
+@import url('base.css');
+@import url('header.css');
+@import url('table.css');
+@import url('buttons.css');
+@import url('status.css');
+@import url('agent-viewer.css');
+@import url('responsive.css');

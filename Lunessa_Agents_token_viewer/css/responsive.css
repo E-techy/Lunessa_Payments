@@ -1,0 +1,87 @@
+/* Responsive design styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 10px;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    th, td {
+        padding: 15px 10px;
+        font-size: 0.9rem;
+    }
+
+    .agent-id {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+    }
+
+    .buy-btn {
+        padding: 10px 20px;
+        font-size: 0.8rem;
+    }
+
+    .viewer-header {
+        padding: 20px;
+    }
+    
+    .viewer-content {
+        padding: 20px;
+    }
+    
+    .agent-item {
+        padding: 16px;
+    }
+    
+    .agent-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .model-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .model-details {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .viewer-toggle {
+        padding: 6px 10px;
+        margin-right: 6px;
+    }
+    
+    .viewer-content {
+        padding: 16px;
+        margin-top: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .header p {
+        font-size: 1rem;
+    }
+    
+    th, td {
+        padding: 12px 8px;
+        font-size: 0.85rem;
+    }
+    
+    .agent-item {
+        padding: 12px;
+    }
+    
+    .model-item {
+        padding: 10px 12px;
+    }
+}
