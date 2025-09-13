@@ -15,6 +15,8 @@ const handleOrderCreation = require("./utils/routes_handler/handle_order_creatio
 const confirmPaymentHandler = require("./utils/routes_handler/confirm_payment");
 const modifyAgentUsingModelHandler = require("./utils/routes_handler/modify_agent_usingModel");
 const buyAgentTokensHandler = require("./utils/routes_handler/buy_agent_tokens");
+const viewAgentTokensHandler = require("./utils/routes_handler/view_agent_tokens");
+
 
 
 
@@ -61,26 +63,8 @@ app.get("/buy_agent_tokens", authenticateUser, buyAgentTokensHandler);
 
 
 
-// Sending the user agent details with their available tokens
-app.post("/view_agent_tokens", authenticateUser, async (req, res) => {
-  try {
-    const { username } = req.user; // comes from middleware
-
-    const result = await showAgentsTokenDetail(username);
-
-    if (!result.success) {
-      return res.status(404).json(result);
-    }
-
-    return res.json(result);
-  } catch (error) {
-    console.error("Error in /view_agent_tokens:", error);
-    return res.status(500).json({
-      success: false,
-      error: "Internal server error",
-    });
-  }
-});
+// Sending the user agent details with their available tokens , all agent detials if username not specified
+app.post("/view_agent_tokens", authenticateUser, viewAgentTokensHandler);
 
 
 // modify the status of the currently active model
