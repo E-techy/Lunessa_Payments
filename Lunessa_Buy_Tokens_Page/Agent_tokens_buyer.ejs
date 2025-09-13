@@ -188,6 +188,63 @@
                         <path d="M12 5L6.5 10.5L4 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg> 
                 </button>
+                <script>
+                    // Order details variable to store purchase information
+                    let orderDetails = {};
+                    
+                    // Add click event listener to purchase button
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const purchaseBtn = document.getElementById('purchaseBtn');
+                        
+                        purchaseBtn.addEventListener('click', function() {
+                            // Get current form values
+                            const modelSelect = document.getElementById('model');
+                            const tokensInput = document.getElementById('tokens');
+                            const couponInput = document.getElementById('couponInput');
+                            const appliedCouponCode = document.getElementById('appliedCouponCode');
+                            
+                            // Get applied offer code (if any)
+                            const appliedOfferCard = document.querySelector('.offer-card.applied');
+                            const offerCode = appliedOfferCard ? appliedOfferCard.querySelector('.offer-code').textContent : '';
+                            
+                            // Get actual model name from the AIModelPricingManager
+                            let actualModelName = '';
+                            if (modelSelect.value && window.AIModelPricingManager) {
+                                const modelsData = window.AIModelPricingManager.getModelsData();
+                                const selectedModel = modelsData.find(m => m.id === modelSelect.value);
+                                actualModelName = selectedModel ? selectedModel.modelName : modelSelect.value;
+                            } else {
+                                actualModelName = modelSelect.value || '';
+                            }
+                            
+                            // Prepare order details object
+                            orderDetails = {
+                                tokens: parseInt(tokensInput.value) || 0,
+                                agentId: selectedAgent || '',
+                                modelName: actualModelName,
+                                couponCode: appliedCouponCode ? appliedCouponCode.textContent : (couponInput.value || ''),
+                                offerCode: offerCode || ''
+                            };
+                            
+                            // Log details in JSON format to console
+                            console.log('=== PURCHASE BUTTON CLICKED ===');
+                            console.log('Order Details (JSON):');
+                            console.log(JSON.stringify(orderDetails, null, 2));
+                            
+                            // Also log individual details for clarity
+                            console.log('Individual Details:');
+                            console.log('Tokens:', orderDetails.tokens);
+                            console.log('Agent ID:', orderDetails.agentId);
+                            console.log('Model Name:', orderDetails.modelName);
+                            console.log('Coupon Code:', orderDetails.couponCode);
+                            console.log('Offer Code:', orderDetails.offerCode);
+                            console.log('================================');
+                            
+                            // You can also display an alert with the JSON for testing
+                            // alert('Order Details:\n' + JSON.stringify(orderDetails, null, 2));
+                        });
+                    });
+                </script>
             </div>
         </div>
 
