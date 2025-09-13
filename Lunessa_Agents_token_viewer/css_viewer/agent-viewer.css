@@ -136,15 +136,10 @@
 
 .token-count {
     display: flex;
-    align-items: center;
+    justify-content: flex-end;
     gap: 6px;
     color: #6B7280;
     font-size: 0.9rem;
-}
-
-.token-count::before {
-    content: "⚡";
-    color: #F59E0B;
 }
 
 .empty-state {
