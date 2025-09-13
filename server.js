@@ -17,6 +17,8 @@ const modifyAgentUsingModelHandler = require("./utils/routes_handler/modify_agen
 const buyAgentTokensHandler = require("./utils/routes_handler/buy_agent_tokens");
 const viewAgentTokensHandler = require("./utils/routes_handler/view_agent_tokens");
 const adminViewAgentsHandler = require("./utils/routes_handler/admin_view_agents");
+const adminGetUserCouponsHandler = require("./utils/routes_handler/admin_get_user_coupons");
+
 
 
 
@@ -154,6 +156,10 @@ app.post("/admin/allot_coupons", authenticateAdmin, async (req, res) => {
 
   return res.status(200).json(result);
 });
+
+// route for the admin to get the coupons alloted to user using their username
+app.post("/admin/get_user_coupons", authenticateAdmin, adminGetUserCouponsHandler);
+
 
 
 // route for fetching the latest Ai models with their pricing data, 
