@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Token Purchase - Professional</title>
     <link rel="stylesheet" href="main.css">
-
     <!-- loading the agentId -->
     <script>
-    const selectedAgent = "<%= selectedAgent %>";
-    console.log("Selected Agent ID:", selectedAgent);
+        const selectedAgent = "<%= selectedAgent %>";
+        console.log("Selected Agent ID:", selectedAgent);
     </script>
     <!-- JavaScript Modules -->
     <script src="utils/config.js"></script>
@@ -22,6 +21,7 @@
     <script src="utils/verify_coupons_from_customer.js"></script>
     <script src="utils/calculate_coupons.js"></script>
     <script src="utils/get_AI_model_pricing_data_from_admin.js"></script>
+    <script src="utils/agent-model-viewer.js"></script>
 </head>
 <body>
     <div class="container">
@@ -48,6 +48,26 @@
                 <div class="card-content">
                     <p class="token-count">5,000</p>
                     <span class="availability">Ready for Purchase</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent Model Viewer -->
+        <div class="agent-model-viewer">
+            <div class="viewer-header" id="viewerHeader">
+                <div class="viewer-title">
+                    <div class="viewer-icon">🤖</div>
+                    <h3>AGENT MODEL VIEWER</h3>
+                </div>
+                <button class="viewer-toggle" id="viewerToggle">
+                    <svg class="arrow-icon" width="12" height="8" viewBox="0 0 12 8" fill="none">
+                        <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="viewer-content" id="viewerContent" style="display: none;">
+                <div class="agents-grid" id="agentsGrid">
+                    <!-- Agents will be populated here -->
                 </div>
             </div>
         </div>
