@@ -76,10 +76,11 @@ function addRowEventListeners(agent) {
     }
     
     if (buyBtn) {
-        buyBtn.addEventListener('click', function() {
-            const agentName = this.dataset.agentName;
-            const agentId = this.dataset.agentId;
-            handlePurchase(agentName, agentId);
-        });
+        buyBtn.addEventListener("click", function () {
+        const agentId = this.dataset.agentId;
+
+        // Redirect to /buy_agent_tokens with agentId in query
+        window.location.href = `/buy_agent_tokens?agentId=${encodeURIComponent(agentId)}`;
+    });
     }
 }
