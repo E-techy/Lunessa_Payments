@@ -56,4 +56,15 @@
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.status-badge.active {
+    background: #10B981;
+    color: white;
+}
+
+.status-badge.inactive {
+    background: #EF4444;
+    color: white;
 }
