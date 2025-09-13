@@ -16,6 +16,8 @@ const confirmPaymentHandler = require("./utils/routes_handler/confirm_payment");
 const modifyAgentUsingModelHandler = require("./utils/routes_handler/modify_agent_usingModel");
 const buyAgentTokensHandler = require("./utils/routes_handler/buy_agent_tokens");
 const viewAgentTokensHandler = require("./utils/routes_handler/view_agent_tokens");
+const adminViewAgentsHandler = require("./utils/routes_handler/admin_view_agents");
+
 
 
 
@@ -65,6 +67,9 @@ app.get("/buy_agent_tokens", authenticateUser, buyAgentTokensHandler);
 
 // Sending the user agent details with their available tokens , all agent detials if username not specified
 app.post("/view_agent_tokens", authenticateUser, viewAgentTokensHandler);
+
+// Admin view agents
+app.post("/admin/view_agents", authenticateAdmin, adminViewAgentsHandler);
 
 
 // modify the status of the currently active model
