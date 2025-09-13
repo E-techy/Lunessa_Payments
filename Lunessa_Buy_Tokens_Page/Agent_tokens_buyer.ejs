@@ -8,6 +8,7 @@
     <!-- loading the agentId -->
     <script>
         const selectedAgent = "<%= selectedAgent %>";
+        window.selectedAgent = selectedAgent;
         console.log("Selected Agent ID:", selectedAgent);
     </script>
     <!-- JavaScript Modules -->
@@ -188,7 +189,7 @@
                         <path d="M12 5L6.5 10.5L4 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg> 
                 </button>
-                <script>
+                <!-- <script>
                     // Order details variable to store purchase information
                     let orderDetails = {};
                     
@@ -244,7 +245,9 @@
                             // alert('Order Details:\n' + JSON.stringify(orderDetails, null, 2));
                         });
                     });
-                </script>
+                </script> -->
+            
+            
             </div>
         </div>
 
@@ -429,4 +432,115 @@ if (apiResponse.success && apiResponse.razorpayOrder) {
     alert("Could not create the payment order. Please try again later.");
 }
     </script> -->
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  let orderDetails = {};
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const purchaseBtn = document.getElementById("purchaseBtn");
+
+    purchaseBtn.addEventListener("click", async function () {
+                console.log("abiobufsbivbaidfbvabifbivbaibfibi");
+
+        console.log(window.selectedAgent);
+        
+      try {
+        // Get form values
+        const modelSelect = document.getElementById("model");
+        const tokensInput = document.getElementById("tokens");
+        const couponInput = document.getElementById("couponInput");
+        const appliedCouponCode = document.getElementById("appliedCouponCode");
+
+        const appliedOfferCard = document.querySelector(".offer-card.applied");
+        const offerCode = appliedOfferCard
+          ? appliedOfferCard.querySelector(".offer-code").textContent
+          : "";
+
+        // Get actual model name
+        let actualModelName = "";
+        if (modelSelect.value && window.AIModelPricingManager) {
+          const modelsData = window.AIModelPricingManager.getModelsData();
+          const selectedModel = modelsData.find((m) => m.id === modelSelect.value);
+          actualModelName = selectedModel ? selectedModel.modelName : modelSelect.value;
+        } else {
+          actualModelName = modelSelect.value || "";
+        }
+
+        // Prepare order details
+        orderDetails = {
+          tokens: parseInt(tokensInput.value) || 0,
+          agentId: window.selectedAgent || "",
+          modelName: actualModelName,
+          couponCode: appliedCouponCode
+            ? appliedCouponCode.textContent
+            : couponInput.value || "",
+          offerCode: offerCode || "",
+        };
+
+        console.log("📦 Order Details:", orderDetails);
+
+        // Step 1 → Call backend to create Razorpay order
+        const createRes = await fetch("/create_order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderDetails),
+          credentials: "include", // send cookies for JWT auth
+        });
+
+        const createData = await createRes.json();
+        if (!createData.success || !createData.razorpayOrder) {
+          alert("❌ Failed to create order: " + (createData.error || "Unknown error"));
+          return;
+        }
+
+        const razorpayOrder = createData.razorpayOrder;
+        console.log("✅ Razorpay Order:", razorpayOrder);
+
+        // Step 2 → Open Razorpay Checkout
+        const options = {
+          key: razorpayOrder.keyId,
+          amount: razorpayOrder.amount,
+          currency: razorpayOrder.currency,
+          order_id: razorpayOrder.id,
+          name: "Your Company",
+          description: "AI Model Token Purchase",
+          handler: async function (response) {
+            console.log("💳 Razorpay Payment Response:", response);
+
+            // Step 3 → Confirm payment with backend
+            const confirmRes = await fetch("/confirm_payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+              }),
+              credentials: "include",
+            });
+
+            const confirmData = await confirmRes.json();
+            if (confirmData.success) {
+              alert("🎉 Payment successful! Tokens allotted.");
+              location.reload();
+            } else {
+              alert("❌ Payment confirmation failed: " + (confirmData.error || "Unknown error"));
+              location.reload();
+            }
+          },
+          theme: {
+            color: "#3399cc",
+          },
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+      } catch (err) {
+        console.error("⚠️ Error in purchase flow:", err);
+        alert("Something went wrong. Please try again.");
+      }
+    });
+  });
+</script>
+
 </html>

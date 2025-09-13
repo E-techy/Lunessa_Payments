@@ -295,7 +295,8 @@ async function verifyFinalPurchaseData({
     }
 
     /* ---------- 6. Final Totals ---------- */
-    const finalPayable = round2(Math.max(0, priceAfterBaseDiscount - promo.discountAmount));
+    const finalPayable = Math.round(Number(round2(Math.max(0, priceAfterBaseDiscount - promo.discountAmount))));
+    
 
     return {
       success: true,
