@@ -14,6 +14,8 @@ const adminHandleAIModelPricingData = require("./utils/routes_handler/admin_hand
 const handleOrderCreation = require("./utils/routes_handler/handle_order_creation");
 const confirmPaymentHandler = require("./utils/routes_handler/confirm_payment");
 const modifyAgentUsingModelHandler = require("./utils/routes_handler/modify_agent_usingModel");
+const buyAgentTokensHandler = require("./utils/routes_handler/buy_agent_tokens");
+
 
 
 
@@ -32,6 +34,9 @@ const shortid = require("shortid");
 const PORT = process.env.LUNESSA_AGENT_TOKENS_BUYING_PORT || 3004;
 
 const app = express();
+
+// Setting the view engine to ejs, to send dynamic file data
+app.set('view engine', 'ejs');
 
 // Middleware to parse JSON and cookies
 app.use(express.json());
@@ -52,10 +57,8 @@ app.get("/view_all_agents", async (req, res) => {
 })
 
 // Agent tokens viewer Page for buying tokens
-app.get("/view_agent_tokens", async (req, res) => {
-  // Sending the tokens viewer page
-  res.sendFile(__dirname + "/Lunessa_Buy_Tokens_Page/Agent_tokens_buyer.html");
-});
+app.get("/buy_agent_tokens", authenticateUser, buyAgentTokensHandler);
+
 
 
 // Sending the user agent details with their available tokens
@@ -218,7 +221,7 @@ app.post("/confirm_payment", authenticateUser, async (req, res) => {
 // listening on the port url
 app.listen(PORT, () => {
   console.log(
-    `Server is listenting on port http://localhost:${PORT}/view_agent_tokens`
+    `Server is listenting on port http://localhost:${PORT}/buy_agent_tokens`
   );
   console.log(
     `Server is listenting on port http://localhost:${PORT}/view_all_agents`
