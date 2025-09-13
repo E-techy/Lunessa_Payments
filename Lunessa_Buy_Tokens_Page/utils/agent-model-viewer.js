@@ -57,46 +57,135 @@ class AgentModelViewer {
         }
     }
 
-    loadAgentsData() {
+    async loadAgentsData() {
+        try {
+            // Show loading state
+            this.showLoadingState();
+            
+            // Fetch data from the API endpoint
+            const response = await fetch('/view_agent_tokens', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Include authorization header if token is stored in localStorage or cookies
+                    ...(this.getAuthToken() && { 'Authorization': `Bearer ${this.getAuthToken()}` })
+                },
+                credentials: 'include', // Include cookies for authentication
+                body: JSON.stringify({}) // Empty body - no specific agentId to get all agents
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                this.agentsData = data;
+                // Store original data for comparison
+                this.originalData = JSON.parse(JSON.stringify(this.agentsData));
+                this.hasUnsavedChanges = false;
+                this.updateInfoCards();
+            } else {
+                throw new Error(data.error || 'Failed to load agent data');
+            }
+            
+        } catch (error) {
+            console.error('Error loading agents data:', error);
+            this.handleLoadError(error.message);
+        }
+    }
+    
+    getAuthToken() {
+        // Try to get token from localStorage first, then from cookies
+        const tokenFromStorage = localStorage.getItem('authToken');
+        if (tokenFromStorage) {
+            return tokenFromStorage;
+        }
+        
+        // If not in localStorage, try to extract from cookies
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'authToken') {
+                return value;
+            }
+        }
+        
+        return null;
+    }
+    
+    showLoadingState() {
+        // Update info cards with loading state
+        const agentNameElement = document.querySelector('.agent-card .agent-name');
+        const statusBadgeElement = document.querySelector('.agent-card .status-badge');
+        const tokenCountElement = document.querySelector('.token-card .token-count');
+        const availabilityElement = document.querySelector('.token-card .availability');
+        
+        if (agentNameElement) agentNameElement.textContent = 'Loading...';
+        if (statusBadgeElement) {
+            statusBadgeElement.textContent = 'Loading';
+            statusBadgeElement.className = 'status-badge loading';
+        }
+        if (tokenCountElement) tokenCountElement.textContent = '---';
+        if (availabilityElement) availabilityElement.textContent = 'Loading agent data...';
+    }
+    
+    handleLoadError(errorMessage) {
+        // Set error state in UI
+        const agentNameElement = document.querySelector('.agent-card .agent-name');
+        const statusBadgeElement = document.querySelector('.agent-card .status-badge');
+        const tokenCountElement = document.querySelector('.token-card .token-count');
+        const availabilityElement = document.querySelector('.token-card .availability');
+        
+        if (agentNameElement) agentNameElement.textContent = 'Error Loading';
+        if (statusBadgeElement) {
+            statusBadgeElement.textContent = 'Error';
+            statusBadgeElement.className = 'status-badge error';
+        }
+        if (tokenCountElement) tokenCountElement.textContent = '0';
+        if (availabilityElement) availabilityElement.textContent = `Error: ${errorMessage}`;
+        
+        // Set empty agents data
         this.agentsData = {
-            "success": true,
-            "agents": [
-                {
-                    "agentId": "AGT-50345a8fdb40c313",
-                    "agentName": "Agent Arjun",
-                    "tokenBalances": [
-                        {
-                            "modelName": "gpt-4",
-                            "availableTokens": 800001500,
-                            "status": "active",
-                            "createdAt": "2024-09-10T18:16:26.338Z",
-                            "updatedAt": "2024-09-10T21:23:21.165Z"
-                        },
-                        {
-                            "modelName": "gpt-5",
-                            "availableTokens": 10000000,
-                            "status": "inactive",
-                            "createdAt": "2024-09-10T18:22:45.781Z",
-                            "updatedAt": "2024-09-10T18:22:45.781Z"
-                        }
-                    ],
-                    "usingModel": {
-                        "modelName": "gpt-4",
-                        "availableTokens": 800001500,
-                        "status": "active"
-                    },
-                    "defaultModel": null,
-                    "lastModified": "2025-09-10T21:23:21.165Z",
-                    "createdAt": "2025-08-17T20:43:05.583Z"
-                }
-            ]
+            success: false,
+            error: errorMessage,
+            agents: []
         };
         
-        // Store original data for comparison
-        this.originalData = JSON.parse(JSON.stringify(this.agentsData));
-        this.hasUnsavedChanges = false;
+        this.showErrorNotification(`Failed to load agent data: ${errorMessage}`);
+    }
+    
+    showErrorNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            max-width: 300px;
+        `;
+        notification.textContent = message;
         
-        this.updateInfoCards();
+        document.body.appendChild(notification);
+        
+        // Remove notification after 5 seconds
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 5000);
     }
     
     updateInfoCards() {
@@ -339,36 +428,77 @@ class AgentModelViewer {
         this.onModelStatusChange = callback;
     }
 
-    saveChanges() {
+    async saveChanges() {
         if (!this.hasUnsavedChanges) return;
         
         try {
-            // Here you can add API call to save changes to server
-            console.log('Saving changes:', this.agentsData);
+            // Show saving state
+            this.showSavingState();
             
-            // Update original data to current data
-            this.originalData = JSON.parse(JSON.stringify(this.agentsData));
-            this.hasUnsavedChanges = false;
-            
-            // Update info-cards with the latest data
-            this.updateInfoCards();
-            
-            // Update UI to hide save button
-            if (this.isExpanded) {
-                this.renderAgents();
+            // Prepare the data to save - extract the modified agent
+            const currentAgent = this.agentsData.agents[0];
+            if (!currentAgent) {
+                throw new Error('No agent data to save');
             }
             
-            // Optional: Show success message
-            this.showSaveNotification('Changes saved successfully!', 'success');
+            // API call to save changes to server
+            const response = await fetch('/update_agent_tokens', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Include authorization header if token is stored
+                    ...(this.getAuthToken() && { 'Authorization': `Bearer ${this.getAuthToken()}` })
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    agentId: currentAgent.agentId,
+                    tokenBalances: currentAgent.tokenBalances,
+                    usingModel: currentAgent.usingModel
+                })
+            });
             
-            // Optional: Trigger callback for external handling
-            if (typeof this.onSaveChanges === 'function') {
-                this.onSaveChanges(this.agentsData);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Update original data to current data
+                this.originalData = JSON.parse(JSON.stringify(this.agentsData));
+                this.hasUnsavedChanges = false;
+                
+                // Update info-cards with the latest data
+                this.updateInfoCards();
+                
+                // Update UI to hide save button
+                if (this.isExpanded) {
+                    this.renderAgents();
+                }
+                
+                // Show success message
+                this.showSaveNotification('Changes saved successfully!', 'success');
+                
+                // Optional: Trigger callback for external handling
+                if (typeof this.onSaveChanges === 'function') {
+                    this.onSaveChanges(this.agentsData);
+                }
+            } else {
+                throw new Error(result.error || 'Failed to save changes');
             }
             
         } catch (error) {
             console.error('Error saving changes:', error);
-            this.showSaveNotification('Error saving changes!', 'error');
+            this.showSaveNotification(`Error saving changes: ${error.message}`, 'error');
+        }
+    }
+    
+    showSavingState() {
+        const saveButton = document.querySelector('.save-changes-btn');
+        if (saveButton) {
+            saveButton.textContent = 'Saving...';
+            saveButton.disabled = true;
+            saveButton.style.opacity = '0.6';
         }
     }
     
@@ -423,12 +553,13 @@ class AgentModelViewer {
 
     async refreshData() {
         try {
-            this.loadAgentsData();
+            await this.loadAgentsData();
             if (this.isExpanded) {
                 this.renderAgents();
             }
         } catch (error) {
             console.error('Error refreshing agent data:', error);
+            this.showErrorNotification('Failed to refresh data');
         }
     }
 }
