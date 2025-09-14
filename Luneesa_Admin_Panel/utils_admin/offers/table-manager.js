@@ -6,6 +6,14 @@ function updateOffersTable() {
     updateOffersTableWithData(filteredOffersData);
 }
 
+// Function to populate offers data from database and update table
+function populateOffersFromDatabase(databaseOffers) {
+    offersData = databaseOffers;
+    filteredOffersData = [...offersData];
+    updateOffersTableWithData(filteredOffersData);
+    updateQuickStats();
+}
+
 // Update offers table with specific data
 function updateOffersTableWithData(data) {
     const tbody = document.getElementById('offersTableBody');
@@ -28,7 +36,7 @@ function updateOffersTableWithData(data) {
         
         const discountDisplay = offer.discountType === 'percentage' ? 
             `${offer.discountValue}%` : 
-            formatCurrency(offer.discountValue);
+            `$${offer.discountValue}`;
         
         const createdDate = new Date(offer.createdAt).toLocaleDateString('en-IN', {
             day: 'numeric',
