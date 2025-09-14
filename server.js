@@ -18,6 +18,8 @@ const buyAgentTokensHandler = require("./utils/routes_handler/buy_agent_tokens")
 const viewAgentTokensHandler = require("./utils/routes_handler/view_agent_tokens");
 const adminViewAgentsHandler = require("./utils/routes_handler/admin_view_agents");
 const adminGetUserCouponsHandler = require("./utils/routes_handler/admin_get_user_coupons");
+const adminDeleteCouponsHandler = require("./utils/routes_handler/admin_delete_coupons");
+
 
 
 
@@ -93,7 +95,7 @@ app.post("/base_discount", async (req, res) =>{
 });
 
 
-// route for the admin to add or modify the base discount slab
+// route for the admin to add or modify or delete the base discount slab
 app.post("/admin/base_discount", authenticateAdmin, async (req, res) => {
   const adminRole = req.adminRole; // ✅ provided by authenticateAdmin middleware
   await handleAdminBaseDiscount(req, res, adminRole);
@@ -167,6 +169,8 @@ app.post("/admin/allot_coupons", authenticateAdmin, async (req, res) => {
 app.post("/admin/get_user_coupons", authenticateAdmin, adminGetUserCouponsHandler);
 
 
+// route for the admin to delete the alloted coupons from the users
+app.post("/admin/delete_coupons", authenticateAdmin, adminDeleteCouponsHandler);
 
 // route for fetching the latest Ai models with their pricing data, 
 app.post("/AI_models_pricing_data", async (req, res) => {
