@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Token Purchase - Professional</title>
     <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="agent-model-viewer.css">
     <!-- loading the agentId -->
     <script>
         const selectedAgent = "<%= selectedAgent %>";
@@ -22,7 +23,13 @@
     <script src="utils/verify_coupons_from_customer.js"></script>
     <script src="utils/calculate_coupons.js"></script>
     <script src="utils/get_AI_model_pricing_data_from_admin.js"></script>
-    <script src="utils/agent-model-viewer.js"></script>
+    
+    <!-- Agent Model Viewer -->
+    <script src="utils/agent-model-viewer/AgentModelViewer.js"></script>
+    <script src="utils/agent-model-viewer/get_agent_token_details.js"></script>
+    <script src="utils/agent-model-viewer/EventHandler.js"></script>
+    <script src="utils/agent-model-viewer/UIManager.js"></script>
+    <script src="utils/agent-model-viewer/Utils.js"></script>
 </head>
 <body>
     <div class="container">

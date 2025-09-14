@@ -1,0 +1,45 @@
+/* Header Components */
+.viewer-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.viewer-icon {
+    font-size: 1.5rem;
+    color: #8B5CF6;
+}
+
+.viewer-title h3 {
+    color: #8B5CF6;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.viewer-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.viewer-toggle:hover {
+    background-color: #F4F4F5;
+}
+
+.arrow-icon {
+    color: #6B7280;
+    transition: transform 0.3s ease;
+}
+
+.viewer-toggle.expanded .arrow-icon {
+    transform: rotate(180deg);
+}
