@@ -48,6 +48,11 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(cookieParser());
 
+// Display Admin Page
+app.get("/lunessa_payment_admin", async (req, res) => {
+  res.sendFile(__dirname + "/Luneesa_Admin_Panel/paymets_admin.html");
+})
+
 // Sending static files to the clients
 app.use(express.static(__dirname + "/Lunessa_Buy_Tokens_Page"));
 
