@@ -25,19 +25,16 @@ class UIManager {
             statusBadgeElement.className = hasActiveModels ? 'status-badge active' : 'status-badge inactive';
         }
         
-        const tokenCountElement = document.querySelector('.token-card .token-count');
-        const availabilityElement = document.querySelector('.token-card .availability');
+        const modelNameElement = document.querySelector('.using-model-card .model-name');
+        const tokenCountElement = document.querySelector('.using-model-card .token-count');
         
-        if (currentAgent.usingModel && tokenCountElement) {
+        if (currentAgent.usingModel && modelNameElement && tokenCountElement) {
+            modelNameElement.textContent = currentAgent.usingModel.modelName;
             const formattedTokens = Utils.formatNumber(currentAgent.usingModel.availableTokens);
-            tokenCountElement.textContent = formattedTokens;
-            
-            if (availabilityElement) {
-                availabilityElement.textContent = `${currentAgent.usingModel.modelName} - Ready for Purchase`;
-            }
-        } else if (tokenCountElement && availabilityElement) {
-            tokenCountElement.textContent = '0';
-            availabilityElement.textContent = 'No Active Model';
+            tokenCountElement.textContent = `${formattedTokens} tokens`;
+        } else if (modelNameElement && tokenCountElement) {
+            modelNameElement.textContent = 'No Active Model';
+            tokenCountElement.textContent = '0 tokens';
         }
     }
 
@@ -134,8 +131,8 @@ class UIManager {
                 <div class="left-section" style="flex: 1;">
                     <div class="model-info" style="display: flex; align-items: center; margin-bottom: 12px;">
                         <div class="status-indicator ${statusClass}" style="background-color: ${statusColor}; width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px;"></div>
-                        <span class="model-name" style="font-weight: 600; font-size: 1.1em; margin-right: 12px;">${Utils.escapeHtml(model.modelName)}</span>
-                        <span class="status-text" style="font-size: 0.9em; color: ${statusColor}; text-transform: capitalize; font-weight: 500;">${model.status}</span>
+                        <span class="model-name" style="font-weight: 600; font-size: 1.1em; margin-right: 8px;">${Utils.escapeHtml(model.modelName)}</span>
+                        <span class="status-text" style="font-size: 0.9em; color: ${statusColor}; text-transform: capitalize; font-weight: 500; margin-right: auto;">${model.status}</span>
                     </div>
                     <div class="toggle-section" style="display: flex; align-items: center;">
                         <span style="margin-right: 12px; font-size: 0.9em; color: #666;">Status:</span>

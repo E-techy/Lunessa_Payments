@@ -68,3 +68,76 @@
     background: #EF4444;
     color: white;
 }
+
+/* Using Model Card Styles */
+.using-model-card {
+    background: white;
+    border: 2px solid #8B5CF6;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 1px 3px rgba(24, 24, 27, 0.1);
+    transition: all 0.3s ease;
+}
+
+.using-model-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+    border-color: #7C3AED;
+}
+
+.using-model-header {
+    margin-bottom: 15px;
+}
+
+.using-model-header h3 {
+    color: #8B5CF6;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.model-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+}
+
+.model-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #18181B;
+    margin: 0;
+}
+
+.token-info {
+    display: inline-flex;
+    align-items: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.token-label {
+    display: none;
+}
+
+.token-info .token-count {
+    color: #f59e0b;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.token-info .token-count::before {
+    content: "⚡";
+    margin-right: 4px;
+    font-size: 1rem;
+}

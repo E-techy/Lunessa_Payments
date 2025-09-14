@@ -97,19 +97,36 @@ class DataManager {
                 throw new Error('No agent data to save');
             }
 
-            // Find the currently active model
+            // Find the currently active model or handle the case where all models are inactive
             const activeModel = currentAgent.tokenBalances.find(model => model.status === 'active');
             
-            if (!activeModel) {
-                throw new Error('No active model found to save');
-            }
-
             // Prepare the request data for the modify_agent_usingModel endpoint
-            const requestData = {
-                agentId: currentAgent.agentId,
-                modelName: activeModel.modelName,
-                status: 'active' // We're always setting the active model
-            };
+            let requestData;
+            
+            if (activeModel) {
+                // There's an active model to save
+                requestData = {
+                    agentId: currentAgent.agentId,
+                    modelName: activeModel.modelName,
+                    status: 'active'
+                };
+            } else {
+                // No active model - we need to save the state where all models are inactive
+                // Check if there are any models that were recently deactivated
+                const recentlyModified = currentAgent.tokenBalances
+                    .filter(model => model.status === 'inactive')
+                    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))[0];
+                
+                if (recentlyModified) {
+                    requestData = {
+                        agentId: currentAgent.agentId,
+                        modelName: recentlyModified.modelName,
+                        status: 'inactive'
+                    };
+                } else {
+                    throw new Error('No model changes found to save');
+                }
+            }
             
             // API call to save changes to server using the modify_agent_usingModel endpoint
             const response = await fetch('/modify_agent_usingModel', {
