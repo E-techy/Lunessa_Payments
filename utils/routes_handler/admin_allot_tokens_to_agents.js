@@ -25,7 +25,8 @@ const prisma = new PrismaClient();
  * @param {Object} res - Express response
  * @param {string} adminRole - Role of the authenticated admin (from middleware)
  */
-async function handleAdminAllotTokens(req, res, adminRole) {
+async function handleAdminAllotTokens(req, res) {
+  const { adminRole } = req;
   try {
     const { usernames, agentId, tokensToAdd } = req.body;
 

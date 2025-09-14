@@ -19,6 +19,7 @@ const viewAgentTokensHandler = require("./utils/routes_handler/view_agent_tokens
 const adminViewAgentsHandler = require("./utils/routes_handler/admin_view_agents");
 const adminGetUserCouponsHandler = require("./utils/routes_handler/admin_get_user_coupons");
 const adminDeleteCouponsHandler = require("./utils/routes_handler/admin_delete_coupons");
+const handleAdminAllotTokens = require("./utils/routes_handler/admin_allot_tokens_to_agents");
 
 
 
@@ -218,6 +219,9 @@ app.post("/confirm_payment", authenticateUser, async (req, res) => {
   return confirmPaymentHandler(req, res, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET );
 });
 
+
+// route for the admin to allot tokens to the customer service agent using their username and agentId
+app.post("/admin/allot_tokens_to_agents", authenticateAdmin, handleAdminAllotTokens);
 
 
 
