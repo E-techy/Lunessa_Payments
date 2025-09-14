@@ -1,6 +1,5 @@
 const cookieParser = require("cookie-parser");
 const express = require("express");
-const showAgentsTokenDetail = require("./utils/show_agents_token_detail");
 const authenticateUser = require("./utils/authenticate_user");
 const getBaseDiscountData = require("./utils/get_base_discount_data");
 const authenticateAdmin = require("./utils/admin/authenticate_admin");
