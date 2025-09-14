@@ -7,6 +7,35 @@ let editingAiModelId = null;
 let isAiEditMode = false;
 let currentAiEditingIndex = -1;
 
+// Authentication token management
+function getAuthToken() {
+    // Try to get token from cookie first
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'authToken') {
+            return value;
+        }
+    }
+    
+    // Try localStorage as fallback (if used by your app)
+    return localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+}
+
+// Create authenticated fetch headers
+function createAuthHeaders() {
+    const headers = {
+        "Content-Type": "application/json"
+    };
+    
+    const token = getAuthToken();
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return headers;
+}
+
 // Initialize data loading from server
 async function initAiModelsData() {
     console.log('Loading AI models from server...');
@@ -24,11 +53,19 @@ async function loadAiModelsFromServer() {
     try {
         const response = await fetch("/AI_models_pricing_data", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: createAuthHeaders(),
             body: JSON.stringify({}), // empty = fetch all models
         });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                throw new Error('Authentication required. Please log in again.');
+            } else if (response.status === 403) {
+                throw new Error('Access denied. Insufficient permissions.');
+            } else {
+                throw new Error(`Server error: ${response.status}`);
+            }
+        }
 
         const result = await response.json();
 
@@ -83,16 +120,24 @@ async function refreshAiModelsData() {
 // Save model to server (create new model)
 async function saveAiModelToServer(modelData) {
     try {
-        const response = await fetch("/AI_models_pricing_data", {
-            method: "POST", // or PUT based on your API
-            headers: {
-                "Content-Type": "application/json",
-            },
+        const response = await fetch("/admin/AI_pricing_data", {
+            method: "POST",
+            headers: createAuthHeaders(),
             body: JSON.stringify({
-                action: 'create',
-                data: modelData
+                action: 'add',
+                modelsData: [modelData]
             }),
         });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                throw new Error('Authentication required. Please log in again.');
+            } else if (response.status === 403) {
+                throw new Error('Access denied. Only superAdmin can create models.');
+            } else {
+                throw new Error(`Server error: ${response.status}`);
+            }
+        }
 
         const result = await response.json();
 
@@ -113,17 +158,36 @@ async function saveAiModelToServer(modelData) {
 // Update model on server
 async function updateAiModelOnServer(modelId, modelData) {
     try {
-        const response = await fetch("/AI_models_pricing_data", {
-            method: "PUT", // or POST based on your API
-            headers: {
-                "Content-Type": "application/json",
-            },
+        // Find the current model to get the modelName for modification
+        const currentModel = currentAiModels.find(m => m.id === modelId);
+        if (!currentModel) {
+            throw new Error('Model not found for update');
+        }
+
+        // Prepare model data with modelName for server identification
+        const updateData = {
+            ...modelData,
+            modelName: currentModel.modelName // Use existing modelName for identification
+        };
+
+        const response = await fetch("/admin/AI_pricing_data", {
+            method: "POST",
+            headers: createAuthHeaders(),
             body: JSON.stringify({
-                action: 'update',
-                id: modelId,
-                data: modelData
+                action: 'modify',
+                modelsData: [updateData]
             }),
         });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                throw new Error('Authentication required. Please log in again.');
+            } else if (response.status === 403) {
+                throw new Error('Access denied. Only superAdmin can modify models.');
+            } else {
+                throw new Error(`Server error: ${response.status}`);
+            }
+        }
 
         const result = await response.json();
 
@@ -144,16 +208,30 @@ async function updateAiModelOnServer(modelId, modelData) {
 // Delete model from server
 async function deleteAiModelFromServer(modelId) {
     try {
-        const response = await fetch("/AI_models_pricing_data", {
-            method: "DELETE", // or POST based on your API
-            headers: {
-                "Content-Type": "application/json",
-            },
+        // Find the model to get its modelName for deletion
+        const modelToDelete = currentAiModels.find(m => m.id === modelId);
+        if (!modelToDelete) {
+            throw new Error('Model not found for deletion');
+        }
+
+        const response = await fetch("/admin/AI_pricing_data", {
+            method: "POST",
+            headers: createAuthHeaders(),
             body: JSON.stringify({
                 action: 'delete',
-                id: modelId
+                modelsData: [modelToDelete.modelName] // Send modelName for deletion
             }),
         });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                throw new Error('Authentication required. Please log in again.');
+            } else if (response.status === 403) {
+                throw new Error('Access denied. Only superAdmin can delete models.');
+            } else {
+                throw new Error(`Server error: ${response.status}`);
+            }
+        }
 
         const result = await response.json();
 

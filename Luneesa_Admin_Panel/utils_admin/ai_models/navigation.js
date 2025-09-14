@@ -230,3 +230,24 @@ function getAiCreateFormData() {
         availableTill: document.getElementById('aiAvailableTill').value
     };
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const listTab = document.getElementById("ai-models-list-sub-tab-btn");
+  const createTab = document.getElementById("ai-models-create-sub-tab-btn");
+
+  const listContent = document.getElementById("aiModelsListContent");
+  const createContent = document.getElementById("aiModelsCreateContent");
+
+  function switchTab(activeTab, activeContent) {
+    // Reset all tabs
+    [listTab, createTab].forEach(tab => tab.classList.remove("active"));
+    [listContent, createContent].forEach(content => content.classList.remove("active"));
+
+    // Activate selected
+    activeTab.classList.add("active");
+    activeContent.classList.add("active");
+  }
+
+  listTab.addEventListener("click", () => switchTab(listTab, listContent));
+  createTab.addEventListener("click", () => switchTab(createTab, createContent));
+});

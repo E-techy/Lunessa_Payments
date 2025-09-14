@@ -265,3 +265,79 @@ function deleteCurrentAiModel() {
     
     showAiNotification('AI model deleted successfully', 'success');
 }
+
+// Get form data from create form
+function getAiCreateFormData() {
+    return {
+        modelName: document.getElementById('aiModelName')?.value?.trim() || '',
+        provider: document.getElementById('aiProvider')?.value?.trim() || '',
+        pricePerToken: parseFloat(document.getElementById('aiPricePerToken')?.value) || 0,
+        currency: document.getElementById('aiCurrency')?.value?.trim() || 'USD',
+        availableTill: document.getElementById('aiAvailableTill')?.value || ''
+    };
+}
+
+// Clear create form
+function clearAiCreateForm() {
+    const form = document.getElementById('aiModelForm');
+    if (form) {
+        form.reset();
+    }
+    clearAllAiFormErrors();
+}
+
+// Update form for new model creation
+function updateAiCreateFormForNew() {
+    const saveBtn = document.getElementById('ai-models-save-model-btn');
+    if (saveBtn) {
+        saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Model';
+        saveBtn.className = 'ai-success-create';
+    }
+}
+
+// Update form for edit mode
+function updateAiCreateFormForEdit(modelName) {
+    const saveBtn = document.getElementById('ai-models-save-model-btn');
+    if (saveBtn) {
+        saveBtn.innerHTML = '<i class="fas fa-save"></i> Update Model';
+        saveBtn.className = 'ai-success';
+    }
+}
+
+// Show edit mode fields
+function showAiEditModeFields(model) {
+    // This function can be used to show additional fields during edit
+    console.log('Editing model:', model.modelName);
+}
+
+// Populate create form with model data
+function populateAiCreateForm(model) {
+    if (model) {
+        document.getElementById('aiModelName').value = model.modelName || '';
+        document.getElementById('aiProvider').value = model.provider || '';
+        document.getElementById('aiPricePerToken').value = model.pricePerToken || '';
+        document.getElementById('aiCurrency').value = model.currency || 'USD';
+        
+        if (model.availableTill) {
+            const date = new Date(model.availableTill);
+            document.getElementById('aiAvailableTill').value = date.toISOString().slice(0, 16);
+        }
+    }
+}
+
+// Switch to create tab functions
+function showAiModelsCreateTab() {
+    // Switch to the create tab (implementation depends on your tab system)
+    const createTab = document.querySelector('[data-tab="create"]');
+    if (createTab) {
+        createTab.click();
+    }
+}
+
+function showAiModelsListTab() {
+    // Switch to the list tab (implementation depends on your tab system)
+    const listTab = document.querySelector('[data-tab="list"]');
+    if (listTab) {
+        listTab.click();
+    }
+}

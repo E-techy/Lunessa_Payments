@@ -86,6 +86,18 @@ function attachAiRowEventListeners() {
     });
 }
 
+// Edit AI model function
+function editAiModel(modelId) {
+    const model = currentAiModels.find(m => m.id === modelId);
+    if (!model) {
+        showAiNotification('Model not found', 'error');
+        return;
+    }
+    
+    // Use inline editor to edit the model
+    showAiInlineEditForm(model, modelId);
+}
+
 // Handle model deletion
 async function handleAiModelDelete(modelId) {
     const model = currentAiModels.find(m => m.id === modelId);
