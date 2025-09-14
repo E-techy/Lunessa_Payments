@@ -75,7 +75,7 @@ function cancelInlineEdit() {
 }
 
 // Save inline edit
-function saveInlineEdit() {
+async function saveInlineEdit() {
     const form = document.getElementById('inlineOfferForm');
     if (!form.checkValidity()) {
         form.reportValidity();
@@ -88,12 +88,25 @@ function saveInlineEdit() {
         return;
     }
     
-    // Update the offer data
-    offersData[index] = {
-        ...offersData[index],
+    const currentOffer = offersData[index];
+    
+    // Debug: Log the offer object to see its structure
+    console.log('Inline update - Offer object:', currentOffer);
+    console.log('Inline update - Offer offerId:', currentOffer.offerId);
+    console.log('Inline update - Offer id:', currentOffer.id);
+    
+    // Use the correct identifier - check for offerId first, fallback to id
+    const offerIdentifier = currentOffer.offerId || currentOffer.id;
+    
+    if (!offerIdentifier) {
+        showNotification('Error: No valid offer identifier found for update', 'error');
+        return;
+    }
+    
+    const modificationData = {
         title: document.getElementById('inlineTitle').value,
         description: document.getElementById('inlineDescription').value,
-        offerCode: document.getElementById('inlineOfferCode').value,
+        offerCode: document.getElementById('inlineOfferCode').value || null,
         globalUsedCount: parseInt(document.getElementById('inlineGlobalUsedCount').value) || 0,
         discountType: document.getElementById('inlineDiscountType').value,
         discountValue: parseFloat(document.getElementById('inlineDiscountValue').value),
@@ -106,29 +119,79 @@ function saveInlineEdit() {
             parseInt(document.getElementById('inlineUsageLimit').value) : null,
         usageLimitPerUser: document.getElementById('inlineUsageLimitPerUser').value ?
             parseInt(document.getElementById('inlineUsageLimitPerUser').value) : null,
-        startDate: new Date(document.getElementById('inlineStartDate').value).toISOString(),
-        endDate: new Date(document.getElementById('inlineEndDate').value).toISOString(),
-        status: document.getElementById('inlineStatus').value,
-        updatedAt: new Date().toISOString()
+        startDate: new Date(document.getElementById('inlineStartDate').value),
+        endDate: new Date(document.getElementById('inlineEndDate').value),
+        status: document.getElementById('inlineStatus').value
     };
     
-    showNotification('Offer updated successfully!', 'success');
-    updateOffersTable();
-    cancelInlineEdit();
+    // Show loading state
+    showLoadingState(true, 'offers-inline-save-btn');
+    
+    try {
+        console.log('Inline update - Updating offer with identifier:', offerIdentifier);
+        const result = await updateOffer(offerIdentifier, modificationData);
+        
+        if (result.success) {
+            // Update local data with server response
+            offersData[index] = result.data;
+            showNotification('Offer updated successfully!', 'success');
+            updateOffersTable();
+            cancelInlineEdit();
+        } else {
+            throw new Error(result.error);
+        }
+    } catch (error) {
+        console.error('Error updating offer:', error);
+        showNotification(`Failed to update offer: ${error.message}`, 'error');
+    } finally {
+        // Remove loading state
+        showLoadingState(false, 'offers-inline-save-btn');
+    }
 }
 
 // Delete offer from inline edit
-function deleteInlineOffer() {
+async function deleteInlineOffer() {
     const index = window.currentInlineEditIndex;
     if (index === -1 || !offersData[index]) {
         showNotification('Error: Invalid offer index', 'error');
         return;
     }
     
-    if (confirm('Are you sure you want to delete this offer?')) {
-        offersData.splice(index, 1);
-        showNotification('Offer deleted successfully!', 'success');
-        updateOffersTable();
-        cancelInlineEdit();
+    if (!confirm('Are you sure you want to delete this offer?')) {
+        return;
+    }
+    
+    const offer = offersData[index];
+    
+    // Debug: Log the offer object to see its structure
+    console.log('Inline delete - Offer object:', offer);
+    console.log('Inline delete - Offer offerId:', offer.offerId);
+    console.log('Inline delete - Offer id:', offer.id);
+    
+    // Use the correct identifier - check for offerId first, fallback to id
+    const offerIdentifier = offer.offerId || offer.id;
+    
+    if (!offerIdentifier) {
+        showNotification('Error: No valid offer identifier found', 'error');
+        console.error('Offer object missing offerId and id:', offer);
+        return;
+    }
+    
+    try {
+        console.log('Inline delete - Deleting offer with identifier:', offerIdentifier);
+        const result = await deleteOffer(offerIdentifier);
+        
+        if (result.success) {
+            // Remove from local data
+            offersData.splice(index, 1);
+            showNotification('Offer deleted successfully!', 'success');
+            updateOffersTable();
+            cancelInlineEdit();
+        } else {
+            throw new Error(result.error);
+        }
+    } catch (error) {
+        console.error('Error deleting offer:', error);
+        showNotification(`Failed to delete offer: ${error.message}`, 'error');
     }
 }

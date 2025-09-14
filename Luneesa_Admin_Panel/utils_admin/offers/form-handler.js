@@ -60,7 +60,14 @@ function clearForm() {
 }
 
 // Save offer
-function saveOffer() {
+async function saveOffer() {
+    // Prevent duplicate submissions
+    const saveButton = document.getElementById('offers-save-offer-btn');
+    if (saveButton.disabled) {
+        console.log('⚠️ Save button is disabled, preventing duplicate submission');
+        return;
+    }
+    
     const form = document.getElementById('offerForm');
     if (!form.checkValidity()) {
         form.reportValidity();
@@ -69,49 +76,89 @@ function saveOffer() {
 
     const offerData = {
         title: document.getElementById('title').value,
-        description: document.getElementById('description').value,
-        offerCode: document.getElementById('offerCode').value,
+        description: document.getElementById('description').value || null,
+        offerCode: document.getElementById('offerCode').value || null,
         discountType: document.getElementById('discountType').value,
         discountValue: parseFloat(document.getElementById('discountValue').value),
-        maxDiscountAmount: document.getElementById('maxDiscountAmount').value ? parseFloat(document.getElementById('maxDiscountAmount').value) : null,
+        maxDiscountAmount: document.getElementById('maxDiscountAmount').value ? 
+            parseFloat(document.getElementById('maxDiscountAmount').value) : null,
         offerType: document.getElementById('offerType').value,
         applicableTo: getMultiSelectValues('applicableTo'),
-        minPurchaseAmount: document.getElementById('minPurchaseAmount').value ? parseFloat(document.getElementById('minPurchaseAmount').value) : null,
+        minPurchaseAmount: document.getElementById('minPurchaseAmount').value ? 
+            parseFloat(document.getElementById('minPurchaseAmount').value) : null,
         applicableProducts: getMultiSelectValues('applicableProducts'),
-        usageLimit: document.getElementById('usageLimit').value ? parseInt(document.getElementById('usageLimit').value) : null,
-        usageLimitPerUser: document.getElementById('usageLimitPerUser').value ? parseInt(document.getElementById('usageLimitPerUser').value) : null,
+        usageLimit: document.getElementById('usageLimit').value ? 
+            parseInt(document.getElementById('usageLimit').value) : null,
+        usageLimitPerUser: document.getElementById('usageLimitPerUser').value ? 
+            parseInt(document.getElementById('usageLimitPerUser').value) : null,
         startDate: new Date(document.getElementById('startDate').value),
         endDate: new Date(document.getElementById('endDate').value),
         status: document.getElementById('status').value
     };
 
-    if (isEditMode) {
-        // Update existing offer
-        const now = new Date();
-        offersData[currentEditingIndex] = {
-            ...offersData[currentEditingIndex],
-            ...offerData,
-            updatedAt: now.toISOString()
-        };
-        console.log('Updating offer:', offerData);
-        showNotification('Offer updated successfully!', 'success');
-    } else {
-        // Create new offer
-        const newOffer = {
-            id: generateId(),
-            offerId: generateOfferId(),
-            globalUsedCount: 0,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            ...offerData
-        };
-        offersData.push(newOffer);
-        console.log('Creating new offer:', newOffer);
-        showNotification('Offer created successfully!', 'success');
-    }
+    console.log('🚀 saveOffer called:', { isEditMode, currentEditingIndex, offerData });
+    
+    // Show loading state and disable button
+    showLoadingState(true, 'offers-save-offer-btn');
 
-    // Switch back to offers list
-    showOffersTab();
+    try {
+        if (isEditMode) {
+            // Update existing offer
+            const currentOffer = offersData[currentEditingIndex];
+            
+            // Debug: Log the offer object to see its structure
+            console.log('Update - Offer object:', currentOffer);
+            console.log('Update - Offer offerId:', currentOffer.offerId);
+            console.log('Update - Offer id:', currentOffer.id);
+            
+            // Use the correct identifier - check for offerId first, fallback to id
+            const offerIdentifier = currentOffer.offerId || currentOffer.id;
+            
+            if (!offerIdentifier) {
+                throw new Error('No valid offer identifier found for update');
+            }
+            
+            console.log('Updating offer with identifier:', offerIdentifier);
+            const result = await updateOffer(offerIdentifier, offerData);
+            
+            if (result.success) {
+                // Update local data with server response
+                offersData[currentEditingIndex] = result.data;
+                showNotification('Offer updated successfully!', 'success');
+            } else {
+                throw new Error(result.error);
+            }
+        } else {
+            // Create new offer
+            console.log('🆕 Creating new offer with data:', offerData);
+            const result = await createOffer(offerData);
+            console.log('🆕 Create offer result:', result);
+            
+            if (result.success) {
+                // Add new offer to local data
+                offersData.push(result.data);
+                showNotification('Offer created successfully!', 'success');
+                
+                // Clear form after successful creation
+                clearForm();
+            } else {
+                throw new Error(result.error);
+            }
+        }
+
+        // Refresh the offers table
+        updateOffersTable();
+        
+        // Switch back to offers list
+        showOffersTab();
+        
+    } catch (error) {
+        console.error('❌ Error saving offer:', error);
+        showNotification(`Failed to save offer: ${error.message}`, 'error');
+    } finally {
+        // Remove loading state and re-enable button
+        showLoadingState(false, 'offers-save-offer-btn');
+    }
 }
 
 // Delete current offer
