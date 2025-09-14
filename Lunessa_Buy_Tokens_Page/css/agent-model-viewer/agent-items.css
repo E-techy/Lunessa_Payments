@@ -1,0 +1,62 @@
+/* Agent Items */
+.agent-item {
+    background: #FAFAFA;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #E4E4E7;
+    transition: all 0.2s ease;
+}
+
+.agent-item:hover {
+    background: #F4F4F5;
+    border-color: #D1D5DB;
+}
+
+.agent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.agent-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #18181B;
+    margin: 0;
+}
+
+.agent-id {
+    font-size: 0.8rem;
+    color: #6B7280;
+    background: #F1F5F9;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* Agent Metadata Styles */
+.agent-metadata {
+    background: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    border: 1px solid #f0f0f0;
+}
+
+.metadata-item {
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.metadata-label {
+    font-weight: 600;
+    color: #555;
+    min-width: 120px;
+}
+
+.metadata-value {
+    margin-left: 8px;
+    color: #333;
+}

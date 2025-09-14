@@ -1,0 +1,87 @@
+/* Coupons Management - Edit Form Styles */
+
+/* Inline Edit Form - Full panel display like offers and ai_models */
+.coupon-inline-edit-form {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(24, 24, 27, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease;
+}
+
+.coupon-edit-form-header {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    color: white;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.coupon-edit-form-header h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.coupon-edit-form-content {
+    padding: 24px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.coupon-readonly-section,
+.coupon-editable-section {
+    margin-bottom: 24px;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #E5E7EB;
+}
+
+.coupon-readonly-section {
+    background: #F8FAFC;
+}
+
+.coupon-editable-section {
+    background: #FEFFFE;
+    border-color: #D1FAE5;
+}
+
+.coupon-readonly-section h4,
+.coupon-editable-section h4 {
+    margin: 0 0 16px 0;
+    color: #374151;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.coupon-readonly-section .readonly-field {
+    background-color: #F3F4F6 !important;
+    color: #6B7280 !important;
+    cursor: not-allowed !important;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 12px;
+}
+
+.coupon-inline-form-actions {
+    padding: 20px;
+    border-top: 1px solid #E5E7EB;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    background: white;
+    border-radius: 0 0 12px 12px;
+}

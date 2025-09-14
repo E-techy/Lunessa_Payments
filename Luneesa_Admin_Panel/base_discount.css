@@ -1,0 +1,10 @@
+/* Main Styles - Import all CSS modules */
+
+/* Base discount */
+@import url('./css_admin/base_discount/base.css');
+@import url('./css_admin/base_discount/layout.css');
+@import url('./css_admin/base_discount/status.css');
+@import url('./css_admin/base_discount/buttons.css');
+@import url('./css_admin/base_discount/table.css');
+@import url('./css_admin/base_discount/animations.css');
+@import url('./css_admin/base_discount/notifications.css');

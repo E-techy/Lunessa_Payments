@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Token Purchase - Professional</title>
     <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="agent-model-viewer.css">
     <!-- loading the agentId -->
     <script>
         const selectedAgent = "<%= selectedAgent %>";
@@ -22,7 +23,13 @@
     <script src="utils/verify_coupons_from_customer.js"></script>
     <script src="utils/calculate_coupons.js"></script>
     <script src="utils/get_AI_model_pricing_data_from_admin.js"></script>
-    <script src="utils/agent-model-viewer.js"></script>
+    
+    <!-- Agent Model Viewer -->
+    <script src="utils/agent-model-viewer/AgentModelViewer.js"></script>
+    <script src="utils/agent-model-viewer/get_agent_token_details.js"></script>
+    <script src="utils/agent-model-viewer/EventHandler.js"></script>
+    <script src="utils/agent-model-viewer/UIManager.js"></script>
+    <script src="utils/agent-model-viewer/Utils.js"></script>
 </head>
 <body>
     <div class="container">
@@ -41,14 +48,15 @@
                     <span class="status-badge">Active</span>
                 </div>
             </div>
-            <div class="token-card">
-                <div class="card-header">
-                    <div class="icon">⚡</div>
-                    <h3>Available Tokens</h3>
+            <div class="using-model-card">
+                <div class="using-model-header">
+                    <h3>USING MODEL</h3>
                 </div>
-                <div class="card-content">
-                    <p class="token-count">5,000</p>
-                    <span class="availability">Ready for Purchase</span>
+                <div class="model-info">
+                    <p class="model-name">GPT-4</p>
+                    <div class="token-info">
+                        <span class="token-count">1.8M tokens</span>
+                    </div>
                 </div>
             </div>
         </div>
