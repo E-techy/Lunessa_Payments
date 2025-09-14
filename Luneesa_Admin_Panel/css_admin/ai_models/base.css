@@ -73,6 +73,22 @@
     }
 }
 
+/* Tab highlight animation for successful operations */
+@keyframes aiTabHighlight {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 8px rgba(124, 58, 237, 0.2);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+    }
+}
+
 /* Utility classes for AI models */
 .ai-hidden {
     display: none !important;

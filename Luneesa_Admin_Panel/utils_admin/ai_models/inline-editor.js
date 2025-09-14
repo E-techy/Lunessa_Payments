@@ -125,6 +125,11 @@ async function handleAiInlineSave() {
         
         showAiNotification('AI model updated successfully!', 'success');
         hideAiInlineEditForm();
+        
+        // Auto-switch to list tab after successful inline update
+        setTimeout(() => {
+            switchToAiModelsListTab();
+        }, 500); // Small delay to let user see success message
     } catch (error) {
         console.error('Error updating AI model:', error);
         showAiNotification('Failed to update AI model: ' + error.message, 'error');

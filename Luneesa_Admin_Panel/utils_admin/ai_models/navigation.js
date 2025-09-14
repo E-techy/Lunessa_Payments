@@ -185,6 +185,30 @@ function switchToCreateTabForEdit(modelId) {
     editAiModel(modelId);
 }
 
+// Main function to programmatically switch to AI Models List tab
+function switchToAiModelsListTab() {
+    console.log('Switching to AI Models List tab...');
+    
+    // Find and click the AI Models list sub-tab button
+    const listSubTabBtn = document.getElementById('ai-models-list-sub-tab-btn');
+    if (listSubTabBtn) {
+        // Trigger the click event to switch tabs
+        listSubTabBtn.click();
+        
+        // Add visual feedback with a brief highlight
+        listSubTabBtn.style.animation = 'aiTabHighlight 0.6s ease-in-out';
+        setTimeout(() => {
+            listSubTabBtn.style.animation = '';
+        }, 600);
+        
+        console.log('Successfully switched to AI Models List tab');
+    } else {
+        console.error('AI Models list sub-tab button not found');
+        // Fallback: directly call showAiModelsListTab
+        showAiModelsListTab();
+    }
+}
+
 // Clear create form
 function clearAiCreateForm() {
     const form = document.getElementById('aiModelForm');
@@ -246,6 +270,14 @@ document.addEventListener("DOMContentLoaded", function () {
     // Activate selected
     activeTab.classList.add("active");
     activeContent.classList.add("active");
+    
+    // If switching to list tab, refresh the table
+    if (activeTab === listTab) {
+        // Refresh AI models table to show updated data
+        if (typeof renderAiModelsTable === 'function') {
+            renderAiModelsTable();
+        }
+    }
   }
 
   listTab.addEventListener("click", () => switchTab(listTab, listContent));

@@ -87,10 +87,14 @@ async function createAiModel(formData) {
         currentAiEditingIndex = -1;
         updateAiCreateFormForNew();
         
-        // Switch back to list tab
-        showAiModelsListTab();
-        
+        // Show success notification
         showAiNotification('AI model created successfully', 'success');
+        
+        // Auto-switch to list tab after successful creation
+        setTimeout(() => {
+            switchToAiModelsListTab();
+        }, 500); // Small delay to let user see success message
+        
     } catch (error) {
         console.error('Error creating AI model:', error);
         showAiNotification('Failed to create AI model: ' + error.message, 'error');
@@ -110,10 +114,14 @@ async function updateAiModel(modelId, formData) {
         currentAiEditingIndex = -1;
         updateAiCreateFormForNew();
         
-        // Switch back to list tab
-        showAiModelsListTab();
-        
+        // Show success notification
         showAiNotification('AI model updated successfully', 'success');
+        
+        // Auto-switch to list tab after successful update
+        setTimeout(() => {
+            switchToAiModelsListTab();
+        }, 500); // Small delay to let user see success message
+        
     } catch (error) {
         console.error('Error updating AI model:', error);
         showAiNotification('Failed to update AI model: ' + error.message, 'error');

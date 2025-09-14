@@ -96,3 +96,9 @@
     align-items: center;
     justify-content: center;
 }
+.ai-delete-btn:hover{
+    background: #FEE2E2;
+    color: #DC2626;
+    transform: translateY(-1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
