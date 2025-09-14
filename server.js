@@ -48,6 +48,16 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(cookieParser());
 
+// Setting static folder structure for sending static files in the ui 
+app.use(express.static(__dirname+ "/Luneesa_Admin_Panel"));
+app.use("/css_admin", express.static(__dirname + "/Luneesa_Admin_Panel/css_admin"));
+app.use("/utils_admin", express.static(__dirname + "/Luneesa_Admin_Panel/utils_admin"));
+
+// Display Admin Page
+app.get("/lunessa_payment_admin", async (req, res) => {
+  res.sendFile(__dirname + "/Luneesa_Admin_Panel/paymets_admin.html");
+})
+
 // Sending static files to the clients
 app.use(express.static(__dirname + "/Lunessa_Buy_Tokens_Page"));
 
@@ -215,6 +225,9 @@ app.post("/confirm_payment", authenticateUser, async (req, res) => {
 
 // listening on the port url
 app.listen(PORT, () => {
+  console.log(
+    `Server is listenting on port http://localhost:${PORT}/lunessa_payment_admin`
+  );
   console.log(
     `Server is listenting on port http://localhost:${PORT}/buy_agent_tokens`
   );

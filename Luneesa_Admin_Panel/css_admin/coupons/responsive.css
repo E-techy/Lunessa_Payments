@@ -1,0 +1,27 @@
+/* Coupons Management - Responsive Design */
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .coupon-form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .coupon-action-buttons {
+        flex-direction: column;
+    }
+    
+    .coupons-layout.editing {
+        grid-template-columns: 1fr;
+    }
+    
+    .coupon-inline-edit-form {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1000;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+}

@@ -1,0 +1,55 @@
+/* Responsive Design */
+@media (max-width: 768px) {
+    .viewer-header {
+        padding: 20px;
+    }
+    
+    .viewer-content {
+        padding: 20px;
+    }
+    
+    .agent-item {
+        padding: 16px;
+    }
+    
+    .agent-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .model-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .right-section {
+        text-align: left;
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .left-section {
+        width: 100%;
+    }
+    
+    .toggle-section {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .metadata-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .metadata-label {
+        min-width: auto;
+    }
+    
+    .metadata-value {
+        margin-left: 0;
+    }
+}

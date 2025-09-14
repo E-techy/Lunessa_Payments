@@ -1,0 +1,93 @@
+/* Status Indicators and Toggles */
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #10B981;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+.status-text {
+    text-transform: capitalize;
+    font-weight: 500;
+}
+
+/* Status Toggle Styles */
+.status-toggle {
+    position: relative;
+    width: 50px;
+    height: 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-toggle:hover {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.status-active {
+    background-color: #10B981;
+}
+
+.status-inactive {
+    background-color: #EF4444;
+}
+
+/* Status Badges */
+.using-badge {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 1px 3px rgba(16, 185, 129, 0.3);
+}
+
+/* Loading and Error States */
+.status-badge.loading {
+    background: #F59E0B;
+    color: white;
+    animation: pulse-loading 1.5s ease-in-out infinite;
+}
+
+.status-badge.error {
+    background: #DC2626;
+    color: white;
+}
+
+@keyframes pulse-loading {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
