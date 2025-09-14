@@ -226,6 +226,9 @@ app.post("/confirm_payment", authenticateUser, async (req, res) => {
 // listening on the port url
 app.listen(PORT, () => {
   console.log(
+    `Server is listenting on port http://localhost:${PORT}/lunessa_payment_admin`
+  );
+  console.log(
     `Server is listenting on port http://localhost:${PORT}/buy_agent_tokens`
   );
   console.log(
