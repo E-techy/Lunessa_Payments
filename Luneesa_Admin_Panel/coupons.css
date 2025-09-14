@@ -1,12 +1,12 @@
 /* Coupons Management Main CSS - Import all components */
 
 /* Import all coupon CSS modules */
-@import url('./css/coupons/tabs.css');
-@import url('./css/coupons/layout.css');
-@import url('./css/coupons/table.css');
-@import url('./css/coupons/forms.css');
-@import url('./css/coupons/buttons.css');
-@import url('./css/coupons/components.css');
-@import url('./css/coupons/edit-forms.css');
-@import url('./css/coupons/responsive.css');
-@import url('./css/coupons/animations.css');
+@import url('./css_admin/coupons/tabs.css');
+@import url('./css_admin/coupons/layout.css');
+@import url('./css_admin/coupons/table.css');
+@import url('./css_admin/coupons/forms.css');
+@import url('./css_admin/coupons/buttons.css');
+@import url('./css_admin/coupons/components.css');
+@import url('./css_admin/coupons/edit-forms.css');
+@import url('./css_admin/coupons/responsive.css');
+@import url('./css_admin/coupons/animations.css');
