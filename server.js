@@ -22,10 +22,6 @@ const adminGetUserCouponsHandler = require("./utils/routes_handler/admin_get_use
 
 
 
-
-
-
-
 require("dotenv").config();
 
 const JWT_SECRET_KEY= process.env.JWT_SECRET_KEY;
