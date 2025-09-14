@@ -1,13 +1,17 @@
 // utils/routes_handler/admin_base_discount.js
-const  addBaseDiscountSlab  = require("../admin/add_base_discount_slab");
-const  updateBaseDiscountSlab  = require("../admin/update_base_discount_slab");
+const addBaseDiscountSlab = require("../admin/add_base_discount_slab");
+const updateBaseDiscountSlab = require("../admin/update_base_discount_slab");
+const deleteBaseDiscountSlab = require("../admin/delete_base_discount_slab");
 
 /**
  * Handle admin Base Discount Slab operations
  *
  * Expects:
- * - req.query.action = "add" | "update"
- * - req.body = { data: { levels: [...], status? } }
+ * - req.query.action = "add" | "update" | "delete"
+ * - For add/update:
+ *    req.body = { data: { levels: [...], status? } }
+ * - For delete:
+ *    req.body = { index: <number> }
  * - adminRole passed from authenticateAdmin middleware
  *
  * @param {Object} req - Express request object
@@ -17,20 +21,28 @@ const  updateBaseDiscountSlab  = require("../admin/update_base_discount_slab");
 async function handleAdminBaseDiscount(req, res, adminRole) {
   try {
     const action = req.query.action;
-    const { data, status } = req.body;
 
     if (!action) {
-      return res.status(400).json({ success: false, error: "Missing query parameter: action" });
+      return res
+        .status(400)
+        .json({ success: false, error: "Missing query parameter: action" });
     }
 
     let result;
 
     if (action === "add") {
+      const { data } = req.body;
       result = await addBaseDiscountSlab({ adminRole, data });
     } else if (action === "update") {
+      const { data, status } = req.body;
       result = await updateBaseDiscountSlab({ adminRole, data, status });
+    } else if (action === "delete") {
+      const { index } = req.body;
+      result = await deleteBaseDiscountSlab({ adminRole, index });
     } else {
-      return res.status(400).json({ success: false, error: `Invalid action: ${action}` });
+      return res
+        .status(400)
+        .json({ success: false, error: `Invalid action: ${action}` });
     }
 
     if (!result.success) {
@@ -40,8 +52,10 @@ async function handleAdminBaseDiscount(req, res, adminRole) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("❌ Error in handleAdminBaseDiscount:", error);
-    return res.status(500).json({ success: false, error: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal server error" });
   }
 }
 
-module.exports =  handleAdminBaseDiscount ;
+module.exports = handleAdminBaseDiscount;
