@@ -1,17 +1,17 @@
-// Data management and sample data
+// Data management and sample data - All amounts converted to USD (using 1 USD = 85 INR)
 let offersData = [
     {
         id: "66b21bcb236165a59abd1",
         offerId: "580f95d-637f-4a9a-a870-32d870058012",
         title: "New Sale Offer",
-        description: "Flat 10% off on orders above ₹1000",
+        description: "Flat 10% off on orders above $12", // ~₹1000
         offerCode: "200THV",
         discountType: "percentage",
         discountValue: 10,
-        maxDiscountAmount: 200,
+        maxDiscountAmount: 2.4, // ~₹200
         offerType: "festival",
         applicableTo: "all",
-        minPurchaseAmount: 1000,
+        minPurchaseAmount: 12, // ~₹1000
         applicableProducts: "all",
         usageLimit: 100,
         usageLimitPerUser: 10,
@@ -26,14 +26,14 @@ let offersData = [
         id: "66b21bcb236165a59abd2",
         offerId: "diwali2025-special-offer",
         title: "Diwali Dhamak Offer",
-        description: "Flat ₹1000 cashback on orders above ₹5000",
+        description: "Flat $12 cashback on orders above $59", // ~₹1000 cashback on ₹5000
         offerCode: "DIWALI2025",
         discountType: "flat",
-        discountValue: 1000,
+        discountValue: 12, // ~₹1000
         maxDiscountAmount: null,
         offerType: "festival",
         applicableTo: "all",
-        minPurchaseAmount: 5000,
+        minPurchaseAmount: 59, // ~₹5000
         applicableProducts: "all",
         usageLimit: 500,
         usageLimitPerUser: 1,
@@ -52,10 +52,10 @@ let offersData = [
         offerCode: "EID40",
         discountType: "percentage",
         discountValue: 40,
-        maxDiscountAmount: 800,
+        maxDiscountAmount: 9.4, // ~₹800
         offerType: "festival",
         applicableTo: "all",
-        minPurchaseAmount: 2000,
+        minPurchaseAmount: 24, // ~₹2000
         applicableProducts: "fashion",
         usageLimit: 200,
         usageLimitPerUser: 2,
@@ -70,14 +70,14 @@ let offersData = [
         id: "66b21bcb236165a59abd4",
         offerId: "sunday-mega-deal",
         title: "Sunday Offer",
-        description: "Mega Sunday Sale - Flat ₹30000 off on electronics above ₹1,00,000",
+        description: "Mega Sunday Sale - Flat $353 off on electronics above $1,177", // ~₹30000 off on ₹1,00,000
         offerCode: "SUNDAY30K",
         discountType: "flat",
-        discountValue: 30000,
+        discountValue: 353, // ~₹30000
         maxDiscountAmount: null,
         offerType: "flash",
         applicableTo: "premium-users",
-        minPurchaseAmount: 100000,
+        minPurchaseAmount: 1177, // ~₹100000
         applicableProducts: "electronics",
         usageLimit: 50,
         usageLimitPerUser: 1,

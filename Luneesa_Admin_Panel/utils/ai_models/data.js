@@ -1,4 +1,4 @@
-// AI Models Mock Data
+// AI Models Mock Data - All prices converted to USD
 const aiModelsData = {
     "success": true,
     "data": [

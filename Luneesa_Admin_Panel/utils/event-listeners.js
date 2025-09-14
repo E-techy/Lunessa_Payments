@@ -14,10 +14,22 @@ function initializeEventListeners() {
     // Offers section listeners  
     setupOffersListeners();
     
+    // Coupons section listeners
+    setupCouponsListeners();
+    
     // Input validation listeners
     setupInputValidationListeners();
     
     console.log('All event listeners initialized successfully');
+}
+
+/**
+ * Setup coupons section listeners
+ */
+function setupCouponsListeners() {
+    // Note: Coupons functionality is handled by the CouponsManager class
+    // This function is kept for consistency and future extensions
+    console.log('Coupons listeners setup completed - handled by CouponsManager class');
 }
 
 /**

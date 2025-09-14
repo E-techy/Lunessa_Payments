@@ -1,0 +1,55 @@
+/* Coupons Management - Layout Styles */
+
+/* Coupons Layout */
+.coupons-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+/* Hide coupons list when editing - similar to offers and ai_models */
+.coupons-layout.editing .coupons-list {
+    display: none;
+}
+
+.coupons-layout.editing .coupon-create-panel-full {
+    display: none;
+}
+
+/* Coupons List */
+.coupons-list {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(24, 24, 27, 0.1);
+    overflow: hidden;
+}
+
+.coupons-header {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    color: white;
+    padding: 16px 20px;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Create Panel */
+.coupon-create-panel-full {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(24, 24, 27, 0.1);
+    overflow: hidden;
+}
+
+.coupon-create-header {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: white;
+    padding: 16px 20px;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

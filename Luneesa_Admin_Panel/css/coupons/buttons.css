@@ -1,0 +1,141 @@
+/* Coupons Management - Buttons Styles */
+
+/* Coupon Buttons */
+.coupon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #F4F4F5;
+    color: #71717A;
+    gap: 8px;
+}
+
+.coupon-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.coupon-btn-primary {
+    font-size: 12px;
+}
+
+.coupon-btn-primary:hover {
+    background: #EDE9FE;
+    color: #7C3AED;
+    transform: translateY(-1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.coupon-btn-danger {
+    font-size: 12px;
+}
+
+.coupon-btn-danger:hover {
+    background: #FEE2E2;
+    color: #DC2626;
+    transform: translateY(-1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.coupon-btn-secondary {
+    background: #6B7280;
+    color: white;
+}
+
+.coupon-btn-secondary:hover {
+    background: #4B5563;
+}
+
+/* Action Buttons */
+.coupon-action-buttons {
+    padding: 16px 24px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.coupon-success,
+.coupon-success-create {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.coupon-success:hover,
+.coupon-success-create:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.coupon-primary,
+.coupon-primary-create {
+    background: #6B7280;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.coupon-primary:hover,
+.coupon-primary-create:hover {
+    background: #4B5563;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+
+.coupon-primary-export {
+    background: #8B5CF6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.coupon-primary-export:hover {
+    background: #7C3AED;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.coupon-primary-edit-header-cancel {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.coupon-primary-edit-header-cancel:hover {
+    background: rgba(255, 255, 255, 0.3);
+}

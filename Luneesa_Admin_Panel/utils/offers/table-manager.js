@@ -28,7 +28,7 @@ function updateOffersTableWithData(data) {
         
         const discountDisplay = offer.discountType === 'percentage' ? 
             `${offer.discountValue}%` : 
-            `₹${offer.discountValue.toLocaleString()}`;
+            formatCurrency(offer.discountValue);
         
         const createdDate = new Date(offer.createdAt).toLocaleDateString('en-IN', {
             day: 'numeric',

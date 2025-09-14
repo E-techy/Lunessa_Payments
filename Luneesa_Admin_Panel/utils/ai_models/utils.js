@@ -1,5 +1,24 @@
 // AI Models Utility Functions
 
+// Format currency as USD
+function formatCurrency(amount) {
+    if (amount === null || amount === undefined) return 'N/A';
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 6
+    }).format(amount);
+}
+
+// Parse currency input (remove $ and convert to number)
+function parseCurrency(value) {
+    if (typeof value === 'string') {
+        return parseFloat(value.replace(/[$,]/g, '')) || 0;
+    }
+    return parseFloat(value) || 0;
+}
+
 // Format price for display
 function formatAiPrice(price) {
     if (price < 0.001) {

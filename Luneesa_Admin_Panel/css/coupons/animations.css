@@ -1,0 +1,30 @@
+/* Coupons Management - Animations */
+
+/* Animations */
+@keyframes couponFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes couponSlideIn {
+    from { transform: translateX(20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.coupon-tab-content.active {
+    animation: couponFadeIn 0.3s ease;
+}
+
+.coupon-inline-edit-form {
+    animation: couponSlideIn 0.3s ease;
+}

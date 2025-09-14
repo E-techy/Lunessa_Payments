@@ -1,0 +1,67 @@
+/* Coupons Management - Forms Styles */
+
+.coupon-form-container {
+    padding: 24px;
+}
+
+.coupon-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.coupon-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.coupon-form-group label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+}
+
+.coupon-form-group input,
+.coupon-form-group select,
+.coupon-form-group textarea {
+    padding: 10px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: white;
+}
+
+.coupon-form-group input:focus,
+.coupon-form-group select:focus,
+.coupon-form-group textarea:focus {
+    outline: none;
+    border-color: #10B981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.coupon-form-group input:disabled {
+    background-color: #F3F4F6;
+    color: #6B7280;
+    cursor: not-allowed;
+}
+
+/* Validation Styles */
+.coupon-form-group input.invalid,
+.coupon-form-group select.invalid {
+    border-color: #EF4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.coupon-form-group .error-message {
+    color: #EF4444;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* Search and Filter */
+.coupon-search-box input {
+    background: white;
+}

@@ -52,4 +52,26 @@ function showTab(tabName) {
             }
         }, 10);
     }
+    
+    // Special handling for coupons tab
+    if (tabName === 'coupons') {
+        setTimeout(() => {
+            const couponListTab = document.getElementById('coupons-list-sub-tab-btn');
+            const couponCreateTab = document.getElementById('coupons-create-sub-tab-btn');
+            const couponListContent = document.getElementById('couponsListContent');
+            const couponCreateContent = document.getElementById('couponsCreateContent');
+            
+            if (couponListTab && couponCreateTab && couponListContent && couponCreateContent) {
+                couponListTab.classList.add('active');
+                couponCreateTab.classList.remove('active');
+                couponListContent.classList.add('active');
+                couponCreateContent.classList.remove('active');
+            }
+            
+            // Initialize coupons manager if not already done
+            if (!window.couponsManager && document.getElementById('coupons-content')) {
+                window.couponsManager = new CouponsManager();
+            }
+        }, 10);
+    }
 }
