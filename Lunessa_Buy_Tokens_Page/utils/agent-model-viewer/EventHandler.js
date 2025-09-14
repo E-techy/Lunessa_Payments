@@ -20,42 +20,69 @@ class EventHandler {
         if (!this.viewer.agentsData || !this.viewer.agentsData.agents || this.viewer.agentsData.agents.length === 0) return;
         
         const currentAgent = this.viewer.agentsData.agents[0];
-        const model = currentAgent.tokenBalances.find(m => m.modelName === modelName);
+        const targetModel = currentAgent.tokenBalances.find(m => m.modelName === modelName);
         
-        if (model) {
-            // Toggle the status
-            model.status = model.status === 'active' ? 'inactive' : 'active';
+        if (!targetModel) return;
+        
+        const now = new Date().toISOString();
+        
+        // If toggling to active, first deactivate all other models
+        if (targetModel.status === 'inactive') {
+            // Deactivate all other models
+            currentAgent.tokenBalances.forEach(model => {
+                if (model.modelName !== modelName && model.status === 'active') {
+                    model.status = 'inactive';
+                    model.updatedAt = now;
+                }
+            });
             
-            // Update the updatedAt timestamp
-            model.updatedAt = new Date().toISOString();
+            // Activate the target model
+            targetModel.status = 'active';
+            targetModel.updatedAt = now;
             
-            // Update usingModel logic - use the first active model or null if none
-            const activeModel = currentAgent.tokenBalances.find(m => m.status === 'active');
-            if (activeModel) {
+            // Update usingModel to the newly activated model
+            currentAgent.usingModel = {
+                modelName: targetModel.modelName,
+                availableTokens: targetModel.availableTokens,
+                status: 'active'
+            };
+        } else {
+            // If deactivating the current active model
+            targetModel.status = 'inactive';
+            targetModel.updatedAt = now;
+            
+            // Check if there are any other active models
+            const remainingActiveModel = currentAgent.tokenBalances.find(m => 
+                m.modelName !== modelName && m.status === 'active'
+            );
+            
+            if (remainingActiveModel) {
+                // Use the remaining active model
                 currentAgent.usingModel = {
-                    modelName: activeModel.modelName,
-                    availableTokens: activeModel.availableTokens,
-                    status: activeModel.status
+                    modelName: remainingActiveModel.modelName,
+                    availableTokens: remainingActiveModel.availableTokens,
+                    status: 'active'
                 };
             } else {
+                // No active models left
                 currentAgent.usingModel = null;
             }
-            
-            // Mark as having unsaved changes
-            this.viewer.hasUnsavedChanges = true;
-            
-            // DON'T update info-cards immediately - wait for save
-            // this.updateInfoCards(); // Commented out
-            
-            // Only update the expanded view to show the toggle change
-            if (this.viewer.isExpanded) {
-                this.viewer.uiManager.renderAgents();
-            }
-            
-            // Optional: Trigger a callback or event for external handling
-            if (typeof this.viewer.onModelStatusChange === 'function') {
-                this.viewer.onModelStatusChange(modelName, model.status);
-            }
+        }
+        
+        // Mark as having unsaved changes
+        this.viewer.hasUnsavedChanges = true;
+        
+        // Update the UI to reflect changes
+        if (this.viewer.isExpanded) {
+            this.viewer.uiManager.renderAgents();
+        }
+        
+        // Update info cards to show the current state (but not persisted until save)
+        this.viewer.uiManager.updateInfoCards();
+        
+        // Optional: Trigger a callback or event for external handling
+        if (typeof this.viewer.onModelStatusChange === 'function') {
+            this.viewer.onModelStatusChange(modelName, targetModel.status);
         }
     }
 

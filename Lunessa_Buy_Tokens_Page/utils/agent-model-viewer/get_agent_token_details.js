@@ -96,9 +96,23 @@ class DataManager {
             if (!currentAgent) {
                 throw new Error('No agent data to save');
             }
+
+            // Find the currently active model
+            const activeModel = currentAgent.tokenBalances.find(model => model.status === 'active');
             
-            // API call to save changes to server
-            const response = await fetch('/update_agent_tokens', {
+            if (!activeModel) {
+                throw new Error('No active model found to save');
+            }
+
+            // Prepare the request data for the modify_agent_usingModel endpoint
+            const requestData = {
+                agentId: currentAgent.agentId,
+                modelName: activeModel.modelName,
+                status: 'active' // We're always setting the active model
+            };
+            
+            // API call to save changes to server using the modify_agent_usingModel endpoint
+            const response = await fetch('/modify_agent_usingModel', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,11 +120,7 @@ class DataManager {
                     ...(Utils.getAuthToken() && { 'Authorization': `Bearer ${Utils.getAuthToken()}` })
                 },
                 credentials: 'include',
-                body: JSON.stringify({
-                    agentId: currentAgent.agentId,
-                    tokenBalances: currentAgent.tokenBalances,
-                    usingModel: currentAgent.usingModel
-                })
+                body: JSON.stringify(requestData)
             });
             
             if (!response.ok) {
@@ -120,6 +130,14 @@ class DataManager {
             const result = await response.json();
             
             if (result.success) {
+                // Update the viewer data with the server response
+                if (result.data) {
+                    // Update the current agent with the server response
+                    const updatedAgent = result.data;
+                    currentAgent.usingModel = updatedAgent.usingModel;
+                    currentAgent.tokenBalances = updatedAgent.tokenBalances;
+                }
+                
                 // Update original data to current data
                 this.viewer.originalData = JSON.parse(JSON.stringify(this.viewer.agentsData));
                 this.viewer.hasUnsavedChanges = false;
@@ -127,13 +145,13 @@ class DataManager {
                 // Update info-cards with the latest data
                 this.viewer.uiManager.updateInfoCards();
                 
-                // Update UI to hide save button
+                // Update UI to hide save button and refresh agents display
                 if (this.viewer.isExpanded) {
                     this.viewer.uiManager.renderAgents();
                 }
                 
                 // Show success message
-                Utils.showNotification('Changes saved successfully!', 'success', 3000);
+                Utils.showNotification('Model status updated successfully!', 'success', 3000);
                 
                 // Optional: Trigger callback for external handling
                 if (typeof this.viewer.onSaveChanges === 'function') {
@@ -146,6 +164,9 @@ class DataManager {
         } catch (error) {
             console.error('Error saving changes:', error);
             Utils.showNotification(`Error saving changes: ${error.message}`);
+            
+            // Reset the save button state
+            this.resetSaveButtonState();
         }
     }
     
@@ -155,6 +176,17 @@ class DataManager {
             saveButton.textContent = 'Saving...';
             saveButton.disabled = true;
             saveButton.style.opacity = '0.6';
+            saveButton.style.cursor = 'not-allowed';
+        }
+    }
+
+    resetSaveButtonState() {
+        const saveButton = document.querySelector('.save-changes-btn');
+        if (saveButton) {
+            saveButton.textContent = 'Save Changes';
+            saveButton.disabled = false;
+            saveButton.style.opacity = '1';
+            saveButton.style.cursor = 'pointer';
         }
     }
 
