@@ -90,7 +90,7 @@ function hideAiInlineEditForm() {
 }
 
 // Handle inline save (exactly like offers saveInlineEdit)
-function handleAiInlineSave() {
+async function handleAiInlineSave() {
     const form = document.getElementById('aiInlineModelForm');
     if (!form.checkValidity()) {
         form.reportValidity();
@@ -103,32 +103,38 @@ function handleAiInlineSave() {
         return;
     }
     
-    const modelIndex = currentAiModels.findIndex(m => m.id === modelId);
-    if (modelIndex === -1) {
-        showAiNotification('Error: Model not found', 'error');
-        return;
+    // Disable save button while processing
+    const saveBtn = document.getElementById('ai-models-inline-save-btn');
+    if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
     }
     
-    // Update the model data
-    currentAiModels[modelIndex] = {
-        ...currentAiModels[modelIndex],
-        modelName: document.getElementById('aiInlineModelName').value,
-        provider: document.getElementById('aiInlineProvider').value,
-        pricePerToken: parseFloat(document.getElementById('aiInlinePricePerToken').value),
-        currency: document.getElementById('aiInlineCurrency').value,
-        availableTill: new Date(document.getElementById('aiInlineAvailableTill').value).toISOString(),
-        updatedAt: new Date().toISOString()
-    };
-    
-    // Update filtered array
-    const filteredIndex = filteredAiModels.findIndex(m => m.id === modelId);
-    if (filteredIndex !== -1) {
-        filteredAiModels[filteredIndex] = { ...currentAiModels[modelIndex] };
+    try {
+        // Prepare form data
+        const formData = {
+            modelName: document.getElementById('aiInlineModelName').value,
+            provider: document.getElementById('aiInlineProvider').value,
+            pricePerToken: parseFloat(document.getElementById('aiInlinePricePerToken').value),
+            currency: document.getElementById('aiInlineCurrency').value,
+            availableTill: new Date(document.getElementById('aiInlineAvailableTill').value).toISOString()
+        };
+        
+        // Update on server
+        await updateAiModelOnServer(modelId, formData);
+        
+        showAiNotification('AI model updated successfully!', 'success');
+        hideAiInlineEditForm();
+    } catch (error) {
+        console.error('Error updating AI model:', error);
+        showAiNotification('Failed to update AI model: ' + error.message, 'error');
+    } finally {
+        // Re-enable save button
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Update Model';
+        }
     }
-    
-    showAiNotification('AI model updated successfully!', 'success');
-    renderAiModelsTable();
-    hideAiInlineEditForm();
 }
 
 // Edit AI Model in create tab (fallback method)

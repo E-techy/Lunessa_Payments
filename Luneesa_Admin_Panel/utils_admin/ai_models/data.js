@@ -1,88 +1,177 @@
-// AI Models Mock Data - All prices converted to USD
-const aiModelsData = {
-    "success": true,
-    "data": [
-        {
-            "id": "68c071012ffa0dff3b93b2b2",
-            "modelName": "gpt-5",
-            "provider": "OpenAI",
-            "pricePerToken": 0.005,
-            "currency": "USD",
-            "availableTill": "2033-12-31T00:00:00.000Z",
-            "createdAt": "2025-09-11T08:30:00.000Z",
-            "updatedAt": "2025-09-11T08:30:00.000Z"
-        },
-        {
-            "id": "68c0718cd45326426710bf07",
-            "modelName": "gpt-4",
-            "provider": "OpenAI",
-            "pricePerToken": 0.0003,
-            "currency": "USD",
-            "availableTill": "2032-12-31T00:00:00.000Z",
-            "createdAt": "2025-09-11T08:30:00.000Z",
-            "updatedAt": "2025-09-11T08:30:00.000Z"
-        },
-        {
-            "id": "68c071ab5bc8e5c8deaafe9b",
-            "modelName": "claude 3.5",
-            "provider": "Anthropic",
-            "pricePerToken": 0.02,
-            "currency": "USD",
-            "availableTill": "2032-12-31T00:00:00.000Z",
-            "createdAt": "2025-09-11T08:30:00.000Z",
-            "updatedAt": "2025-09-11T08:30:00.000Z"
-        },
-        {
-            "id": "68c071b8d058f75f9bcacdf9",
-            "modelName": "claude 4",
-            "provider": "Anthropic",
-            "pricePerToken": 0.1,
-            "currency": "USD",
-            "availableTill": "2032-12-31T00:00:00.000Z",
-            "createdAt": "2025-09-11T08:30:00.000Z",
-            "updatedAt": "2025-09-11T08:30:00.000Z"
-        },
-        {
-            "id": "68c071e57b9753a538fc2b8c",
-            "modelName": "gemini 2.5 pro",
-            "provider": "Google",
-            "pricePerToken": 0.000001,
-            "currency": "USD",
-            "availableTill": "2032-12-31T00:00:00.000Z",
-            "createdAt": "2025-09-11T08:30:00.000Z",
-            "updatedAt": "2025-09-11T08:30:00.000Z"
-        },
-        {
-            "id": "68c071f81bd5111ea12a5f21",
-            "modelName": "gemini 2.5 pro deep think",
-            "provider": "Google",
-            "pricePerToken": 0.3,
-            "currency": "USD",
-            "availableTill": "2032-12-31T00:00:00.000Z",
-            "createdAt": "2025-09-11T08:30:00.000Z",
-            "updatedAt": "2025-09-11T08:30:00.000Z"
-        },
-        {
-            "id": "68c0724a5a828150497bf0a0",
-            "modelName": "gemini 3",
-            "provider": "Google",
-            "pricePerToken": 0.6,
-            "currency": "USD",
-            "availableTill": "2032-12-31T00:00:00.000Z",
-            "createdAt": "2025-09-11T08:30:00.000Z",
-            "updatedAt": "2025-09-11T08:30:00.000Z"
-        }
-    ]
-};
+// AI Models Data Management - Server Integration
 
 // State management for AI models
-let currentAiModels = [...aiModelsData.data];
-let filteredAiModels = [...aiModelsData.data];
+let currentAiModels = [];
+let filteredAiModels = [];
 let editingAiModelId = null;
 let isAiEditMode = false;
 let currentAiEditingIndex = -1;
 
-// Generate a new ID for creating models
+// Initialize data loading from server
+async function initAiModelsData() {
+    console.log('Loading AI models from server...');
+    try {
+        await loadAiModelsFromServer();
+        console.log('AI models loaded successfully:', currentAiModels.length, 'models');
+    } catch (error) {
+        console.error('Failed to load AI models:', error);
+        showAiNotification('Failed to load AI models from server', 'error');
+    }
+}
+
+// Load AI models from server
+async function loadAiModelsFromServer() {
+    try {
+        const response = await fetch("/AI_models_pricing_data", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}), // empty = fetch all models
+        });
+
+        const result = await response.json();
+
+        if (result.success && Array.isArray(result.data)) {
+            // Process server data to match our expected format
+            currentAiModels = result.data.map(model => ({
+                ...model,
+                // Ensure dates are properly formatted
+                availableTill: model.availableTill || new Date().toISOString(),
+                createdAt: model.createdAt || new Date().toISOString(),
+                updatedAt: model.updatedAt || new Date().toISOString()
+            }));
+            
+            // Initialize filtered array
+            filteredAiModels = [...currentAiModels];
+            
+            // Render table if it exists
+            if (typeof renderAiModelsTable === 'function') {
+                renderAiModelsTable();
+            }
+            
+            console.log("✅ AI Models loaded from server:", currentAiModels);
+            return currentAiModels;
+        } else {
+            throw new Error(result.message || 'Invalid server response');
+        }
+    } catch (error) {
+        console.error("❌ Failed to load AI models:", error);
+        throw error;
+    }
+}
+
+// Refresh data from server
+async function refreshAiModelsData() {
+    try {
+        await loadAiModelsFromServer();
+        
+        // Apply current filters if any
+        if (typeof getAiFilterState === 'function') {
+            const filterState = getAiFilterState();
+            if (typeof applyAiFilters === 'function') {
+                applyAiFilters(filterState.searchTerm, filterState.selectedProvider);
+            }
+        }
+        
+        showAiNotification('Data refreshed successfully', 'success');
+    } catch (error) {
+        showAiNotification('Failed to refresh data', 'error');
+    }
+}
+
+// Save model to server (create new model)
+async function saveAiModelToServer(modelData) {
+    try {
+        const response = await fetch("/AI_models_pricing_data", {
+            method: "POST", // or PUT based on your API
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                action: 'create',
+                data: modelData
+            }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            console.log("✅ AI Model created on server:", result.data);
+            // Refresh data to get updated list
+            await refreshAiModelsData();
+            return result.data;
+        } else {
+            throw new Error(result.message || 'Failed to create model');
+        }
+    } catch (error) {
+        console.error("❌ Failed to create AI model:", error);
+        throw error;
+    }
+}
+
+// Update model on server
+async function updateAiModelOnServer(modelId, modelData) {
+    try {
+        const response = await fetch("/AI_models_pricing_data", {
+            method: "PUT", // or POST based on your API
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                action: 'update',
+                id: modelId,
+                data: modelData
+            }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            console.log("✅ AI Model updated on server:", result.data);
+            // Refresh data to get updated list
+            await refreshAiModelsData();
+            return result.data;
+        } else {
+            throw new Error(result.message || 'Failed to update model');
+        }
+    } catch (error) {
+        console.error("❌ Failed to update AI model:", error);
+        throw error;
+    }
+}
+
+// Delete model from server
+async function deleteAiModelFromServer(modelId) {
+    try {
+        const response = await fetch("/AI_models_pricing_data", {
+            method: "DELETE", // or POST based on your API
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                action: 'delete',
+                id: modelId
+            }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            console.log("✅ AI Model deleted from server:", modelId);
+            // Refresh data to get updated list
+            await refreshAiModelsData();
+            return true;
+        } else {
+            throw new Error(result.message || 'Failed to delete model');
+        }
+    } catch (error) {
+        console.error("❌ Failed to delete AI model:", error);
+        throw error;
+    }
+}
+
+// Generate a new ID for creating models (fallback if server doesn't provide one)
 function generateAiModelId() {
     return Array.from({length: 24}, () => Math.floor(Math.random() * 16).toString(16)).join('');
 }
@@ -91,3 +180,5 @@ function generateAiModelId() {
 function getCurrentTimestamp() {
     return new Date().toISOString();
 }
+
+// Note: Data initialization is handled by app.js - no auto-initialization here

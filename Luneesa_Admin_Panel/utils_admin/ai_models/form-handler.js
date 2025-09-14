@@ -32,7 +32,7 @@ function initAiModelsFormHandlers() {
 }
 
 // Handle model save (create or update)
-function handleAiModelSave() {
+async function handleAiModelSave() {
     const formData = getAiCreateFormData();
     const errors = validateAiModelForm(formData);
     
@@ -46,76 +46,78 @@ function handleAiModelSave() {
         return;
     }
     
-    if (isAiEditMode && editingAiModelId) {
-        // Update existing model
-        updateAiModel(editingAiModelId, formData);
-    } else {
-        // Create new model
-        createAiModel(formData);
+    // Disable form while saving
+    const saveBtn = document.getElementById('ai-models-save-model-btn');
+    if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    }
+    
+    try {
+        if (isAiEditMode && editingAiModelId) {
+            // Update existing model
+            await updateAiModel(editingAiModelId, formData);
+        } else {
+            // Create new model
+            await createAiModel(formData);
+        }
+    } finally {
+        // Re-enable form
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            if (isAiEditMode) {
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Update Model';
+            } else {
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Model';
+            }
+        }
     }
 }
 
 // Create new AI model
-function createAiModel(formData) {
-    const newModel = {
-        id: generateAiModelId(),
-        ...formData,
-        createdAt: getCurrentTimestamp(),
-        updatedAt: getCurrentTimestamp()
-    };
-    
-    // Add to data arrays
-    currentAiModels.unshift(newModel);
-    filteredAiModels.unshift(newModel);
-    
-    // Clear form and reset state
-    clearAiCreateForm();
-    isAiEditMode = false;
-    editingAiModelId = null;
-    currentAiEditingIndex = -1;
-    updateAiCreateFormForNew();
-    
-    // Switch back to list tab
-    showAiModelsListTab();
-    
-    // Refresh table
-    renderAiModelsTable();
-    
-    showAiNotification('AI model created successfully', 'success');
+async function createAiModel(formData) {
+    try {
+        // Save to server
+        await saveAiModelToServer(formData);
+        
+        // Clear form and reset state
+        clearAiCreateForm();
+        isAiEditMode = false;
+        editingAiModelId = null;
+        currentAiEditingIndex = -1;
+        updateAiCreateFormForNew();
+        
+        // Switch back to list tab
+        showAiModelsListTab();
+        
+        showAiNotification('AI model created successfully', 'success');
+    } catch (error) {
+        console.error('Error creating AI model:', error);
+        showAiNotification('Failed to create AI model: ' + error.message, 'error');
+    }
 }
 
 // Update existing AI model
-function updateAiModel(modelId, formData) {
-    const modelIndex = currentAiModels.findIndex(m => m.id === modelId);
-    if (modelIndex === -1) return;
-    
-    // Update model
-    currentAiModels[modelIndex] = {
-        ...currentAiModels[modelIndex],
-        ...formData,
-        updatedAt: getCurrentTimestamp()
-    };
-    
-    // Update filtered array
-    const filteredIndex = filteredAiModels.findIndex(m => m.id === modelId);
-    if (filteredIndex !== -1) {
-        filteredAiModels[filteredIndex] = { ...currentAiModels[modelIndex] };
+async function updateAiModel(modelId, formData) {
+    try {
+        // Update on server
+        await updateAiModelOnServer(modelId, formData);
+        
+        // Clear form and reset state
+        clearAiCreateForm();
+        isAiEditMode = false;
+        editingAiModelId = null;
+        currentAiEditingIndex = -1;
+        updateAiCreateFormForNew();
+        
+        // Switch back to list tab
+        showAiModelsListTab();
+        
+        showAiNotification('AI model updated successfully', 'success');
+    } catch (error) {
+        console.error('Error updating AI model:', error);
+        showAiNotification('Failed to update AI model: ' + error.message, 'error');
     }
-    
-    // Clear form and reset state
-    clearAiCreateForm();
-    isAiEditMode = false;
-    editingAiModelId = null;
-    currentAiEditingIndex = -1;
-    updateAiCreateFormForNew();
-    
-    // Switch back to list tab
-    showAiModelsListTab();
-    
-    // Refresh table
-    renderAiModelsTable();
-    
-    showAiNotification('AI model updated successfully', 'success');
 }
 
 // Handle form clear

@@ -1,7 +1,7 @@
 // AI Models Main Application
 
 // Initialize AI Models functionality
-function initAiModels() {
+async function initAiModels() {
     console.log('Initializing AI Models...');
     
     try {
@@ -13,17 +13,23 @@ function initAiModels() {
         initAiModelsSearchFilter();
         initAiModelsExport();
         
+        // Initialize data from server
+        await initAiModelsData();
+        
         console.log('AI Models initialized successfully');
     } catch (error) {
         console.error('Error initializing AI Models:', error);
+        showAiNotification('Failed to initialize AI Models', 'error');
     }
 }
 
 // Initialize AI Models when DOM is loaded
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAiModels);
+    document.addEventListener('DOMContentLoaded', () => {
+        initAiModels().catch(console.error);
+    });
 } else {
-    initAiModels();
+    initAiModels().catch(console.error);
 }
 
 // Global AI Models event handlers (if needed for dynamic content)

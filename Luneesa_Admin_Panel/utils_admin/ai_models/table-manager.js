@@ -87,43 +87,41 @@ function attachAiRowEventListeners() {
 }
 
 // Handle model deletion
-function handleAiModelDelete(modelId) {
+async function handleAiModelDelete(modelId) {
     const model = currentAiModels.find(m => m.id === modelId);
     if (!model) return;
     
     const confirmDelete = confirm(`Are you sure you want to delete "${model.modelName}"?\n\nThis action cannot be undone.`);
     if (!confirmDelete) return;
     
-    deleteAiModel(modelId);
+    await deleteAiModel(modelId);
 }
 
 // Delete AI model
-function deleteAiModel(modelId) {
-    // Remove from current models
-    const modelIndex = currentAiModels.findIndex(m => m.id === modelId);
-    if (modelIndex !== -1) {
-        currentAiModels.splice(modelIndex, 1);
+async function deleteAiModel(modelId) {
+    try {
+        // Delete from server
+        await deleteAiModelFromServer(modelId);
+        
+        // If editing this model, clear the form
+        if (editingAiModelId === modelId) {
+            clearAiCreateForm();
+            isAiEditMode = false;
+            editingAiModelId = null;
+            currentAiEditingIndex = -1;
+            updateAiCreateFormForNew();
+        }
+        
+        // Hide inline edit form if this model is being edited
+        if (window.currentAiEditingId === modelId) {
+            hideAiInlineEditForm();
+        }
+        
+        showAiNotification('AI model deleted successfully', 'success');
+    } catch (error) {
+        console.error('Error deleting AI model:', error);
+        showAiNotification('Failed to delete AI model: ' + error.message, 'error');
     }
-    
-    // Remove from filtered models
-    const filteredIndex = filteredAiModels.findIndex(m => m.id === modelId);
-    if (filteredIndex !== -1) {
-        filteredAiModels.splice(filteredIndex, 1);
-    }
-    
-    // If editing this model, clear the form
-    if (editingAiModelId === modelId) {
-        clearAiCreateForm();
-        isAiEditMode = false;
-        editingAiModelId = null;
-        currentAiEditingIndex = -1;
-        updateAiCreateFormForNew();
-    }
-    
-    // Refresh table
-    renderAiModelsTable();
-    
-    showAiNotification('AI model deleted successfully', 'success');
 }
 
 // HTML escape function

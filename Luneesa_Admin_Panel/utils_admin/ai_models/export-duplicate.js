@@ -6,6 +6,33 @@ function initAiModelsExport() {
     if (exportBtn) {
         exportBtn.addEventListener('click', handleAiExport);
     }
+    
+    // Add refresh button listener
+    const refreshBtn = document.getElementById('ai-models-refresh-btn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', handleAiRefresh);
+    }
+}
+
+// Handle refresh functionality
+async function handleAiRefresh() {
+    const refreshBtn = document.getElementById('ai-models-refresh-btn');
+    
+    // Show loading state
+    if (refreshBtn) {
+        refreshBtn.disabled = true;
+        refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    }
+    
+    try {
+        await refreshAiModelsData();
+    } finally {
+        // Reset button state
+        if (refreshBtn) {
+            refreshBtn.disabled = false;
+            refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+        }
+    }
 }
 
 // Handle export functionality

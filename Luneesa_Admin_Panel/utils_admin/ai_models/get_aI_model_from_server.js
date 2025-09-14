@@ -1,23 +1,4 @@
-document.addEventListener("DOMContentLoaded", async () => {
-try {
-    // Fetch all AI models pricing data
-    const response = await fetch("/AI_models_pricing_data", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify({}), // empty = fetch all models
-    });
+// This file is no longer needed - functionality moved to data.js
+// The server integration is now handled in utils_admin/ai_models/data.js
 
-    const result = await response.json();
-
-    if (result.success) {
-    console.log("✅ AI Models Pricing Data:", result.data);
-    } else {
-    console.error("❌ Error:", result.message);
-    }
-} catch (error) {
-    console.error("❌ Request failed:", error);
-}
-});
-
+console.log('Server integration moved to data.js - this file can be removed');
