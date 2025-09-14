@@ -150,21 +150,9 @@ app.post("/verify_coupons", authenticateUser, async (req, res) => {
 
 
 // route for the admin to give coupons to different users 
-app.post("/admin/allot_coupons", authenticateAdmin, async (req, res) => {
-  const { users, couponData } = req.body;
+app.post("/admin/allot_coupons", authenticateAdmin, allotCouponsHandler);
 
-  const result = await allotCouponsHandler({
-    adminRole: req.adminRole,
-    users,
-    couponData,
-  });
 
-  if (!result.success) {
-    return res.status(400).json(result);
-  }
-
-  return res.status(200).json(result);
-});
 
 // route for the admin to get the coupons alloted to user using their username
 app.post("/admin/get_user_coupons", authenticateAdmin, adminGetUserCouponsHandler);
@@ -222,7 +210,6 @@ app.post("/confirm_payment", authenticateUser, async (req, res) => {
 
 // route for the admin to allot tokens to the customer service agent using their username and agentId
 app.post("/admin/allot_tokens_to_agents", authenticateAdmin, handleAdminAllotTokens);
-
 
 
 
