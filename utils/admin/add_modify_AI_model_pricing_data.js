@@ -97,8 +97,7 @@ async function addModifyAIModelPricingData({ adminRole, action, modelsData }) {
         };
 
         const created = await prisma.AIModel.create({ data: cleanModel });
-        const { createdAt, updatedAt, ...safe } = created;
-        results.push(safe);
+        results.push(created);
       }
     }
 
@@ -119,9 +118,7 @@ async function addModifyAIModelPricingData({ adminRole, action, modelsData }) {
             availableTill: new Date(model.availableTill),
           },
         });
-
-        const { createdAt, updatedAt, ...safe } = updated;
-        results.push(safe);
+        results.push(updated);
       }
     }
 
@@ -132,8 +129,7 @@ async function addModifyAIModelPricingData({ adminRole, action, modelsData }) {
         }
 
         const deleted = await prisma.AIModel.delete({ where: { modelName } });
-        const { createdAt, updatedAt, ...safe } = deleted;
-        results.push(safe);
+        results.push(deleted);
       }
     }
 
