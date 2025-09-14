@@ -144,45 +144,64 @@ async function saveChanges() {
     try {
         const pendingChanges = getPendingChanges();
         const savePromises = [];
+        const processedAgents = new Set(); // Track which agents we've processed
         
-        // Create API calls for each pending change
+        // Group changes by agent
         Object.keys(pendingChanges).forEach(agentId => {
-            Object.keys(pendingChanges[agentId]).forEach(modelName => {
-                const newStatus = pendingChanges[agentId][modelName];
+            if (processedAgents.has(agentId)) return;
+            processedAgents.add(agentId);
+            
+            const agent = findAgentById(agentId);
+            if (!agent) return;
+            
+            // Find which model should be active after all changes
+            const activeModel = agent.tokenBalances.find(model => model.status === 'active');
+            const usingModelName = activeModel ? activeModel.modelName : null;
+            
+            console.log(`Agent ${agentId} - Active model after changes:`, usingModelName);
+            
+            // Send comprehensive update to server
+            const savePromise = fetch('/modify_agent_usingModel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': getAuthToken() ? `Bearer ${getAuthToken()}` : undefined
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    agentId: agentId,
+                    // Send the active model as the one to use
+                    modelName: usingModelName,
+                    status: 'active',
+                    // Include all model statuses for context
+                    allModelStatuses: agent.tokenBalances.map(model => ({
+                        modelName: model.modelName,
+                        status: model.status
+                    })),
+                    // Explicitly set which model should be the "using model"
+                    setAsUsingModel: true
+                })
+            }).then(async response => {
+                const result = await response.json();
                 
-                const savePromise = fetch('/modify_agent_usingModel', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // Include auth token from cookies or localStorage
-                        'Authorization': getAuthToken() ? `Bearer ${getAuthToken()}` : undefined
-                    },
-                    credentials: 'include', // Include cookies for authentication
-                    body: JSON.stringify({
-                        agentId: agentId,
-                        modelName: modelName,
-                        status: newStatus
-                    })
-                }).then(async response => {
-                    const result = await response.json();
-                    
-                    if (!response.ok || !result.success) {
-                        throw new Error(result.error || `Failed to update ${modelName} for agent ${agentId}`);
-                    }
-                    
-                    return { agentId, modelName, status: newStatus, result };
-                });
+                if (!response.ok || !result.success) {
+                    throw new Error(result.error || `Failed to update agent ${agentId}`);
+                }
                 
-                savePromises.push(savePromise);
+                return { agentId, usingModelName, result };
             });
+            
+            savePromises.push(savePromise);
         });
         
         // Wait for all API calls to complete
         const results = await Promise.all(savePromises);
         
-        // Update timestamps for successfully changed models
-        results.forEach(({ agentId, modelName }) => {
-            updateModelTimestamp(agentId, modelName);
+        // Update timestamps for all changed models
+        Object.keys(pendingChanges).forEach(agentId => {
+            Object.keys(pendingChanges[agentId]).forEach(modelName => {
+                updateModelTimestamp(agentId, modelName);
+            });
         });
         
         // Clear pending changes
@@ -196,6 +215,11 @@ async function saveChanges() {
         getAllExpandedRows().forEach(agentId => {
             populateAgentDetails(agentId);
         });
+        
+        // Refresh the main table to ensure using model is correctly displayed
+        setTimeout(() => {
+            renderAgentsTable();
+        }, 500);
         
         // Remove save button after success
         setTimeout(() => {

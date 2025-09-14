@@ -55,6 +55,21 @@
     border: 1px solid #ef4444;
 }
 
+/* New styles for agent details using model display */
+.using-model-active {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #065f46;
+    border: 1px solid #10b981;
+    display: inline-block;
+}
+
+.using-model-inactive {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #991b1b;
+    border: 1px solid #ef4444;
+    display: inline-block;
+}
+
 .using-badge {
     background: linear-gradient(135deg, #10B981, #059669);
     color: white;

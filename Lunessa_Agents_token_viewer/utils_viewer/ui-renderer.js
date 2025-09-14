@@ -45,6 +45,8 @@ function createAgentDetailsHTML(agent) {
     const createdAt = formatDate(agent.createdAt);
     const defaultModel = agent.defaultModel || 'None';
     const usingModelName = agent.usingModel ? agent.usingModel.modelName : 'None';
+    const usingModelStatus = agent.usingModel ? 'Active' : 'No Active Model';
+    const usingModelClass = agent.usingModel ? 'using-model-active' : 'using-model-inactive';
 
     const modelsHtml = agent.tokenBalances.map((model, index) => 
         createModelItemHTML(model, agent.agentId, index)
@@ -58,8 +60,9 @@ function createAgentDetailsHTML(agent) {
         <div class="agent-metadata" style="background: #fff; padding: 16px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #e5e7eb;">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                 <div class="metadata-item">
-                    <span style="font-weight: 600; color: #374151;">Using Model:</span><br>
-                    <span style="color: #10b981; font-weight: 500;">${usingModelName}</span>
+                    <span style="font-weight: 600; color: #374151;">Currently Using:</span><br>
+                    <span class="${usingModelClass}" style="font-weight: 600; padding: 4px 8px; border-radius: 4px; font-size: 0.9em;">${usingModelName}</span>
+                    <br><small style="color: #6b7280; font-size: 0.8em;">${usingModelStatus}</small>
                 </div>
                 <div class="metadata-item">
                     <span style="font-weight: 600; color: #374151;">Default Model:</span><br>

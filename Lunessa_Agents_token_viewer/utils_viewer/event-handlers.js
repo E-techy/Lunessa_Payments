@@ -3,8 +3,26 @@
 function toggleModelStatus(agentId, modelName, currentStatus) {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
     
-    // Update the data
+    // If activating a model, first deactivate all other models for this agent
+    if (newStatus === 'active') {
+        const agent = findAgentById(agentId);
+        if (agent) {
+            // Deactivate all models first
+            agent.tokenBalances.forEach(model => {
+                if (model.modelName !== modelName && model.status === 'active') {
+                    model.status = 'inactive';
+                    addPendingChange(agentId, model.modelName, 'inactive');
+                    updateModelTimestamp(agentId, model.modelName);
+                }
+            });
+        }
+    }
+    
+    // Update the target model status
     if (updateModelStatus(agentId, modelName, newStatus)) {
+        // Update timestamp
+        updateModelTimestamp(agentId, modelName);
+        
         // Track the change
         addPendingChange(agentId, modelName, newStatus);
         
