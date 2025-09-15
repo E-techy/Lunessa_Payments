@@ -1,4 +1,4 @@
-// User Coupons Search Functionality
+// User Coupons Search Functionality - Updated with Actions
 class UserCouponsSearch {
     constructor() {
         this.currentUserData = null;
@@ -88,7 +88,7 @@ class UserCouponsSearch {
         if (!userData.availableCoupons || userData.availableCoupons.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="7" class="coupon-empty-state">
+                    <td colspan="8" class="coupon-empty-state">
                         <i class="fas fa-ticket-alt"></i>
                         <p>No coupons found for user: ${userData.username}</p>
                     </td>
@@ -125,10 +125,18 @@ class UserCouponsSearch {
                     <td>${statusBadge}</td>
                     <td>${this.formatDateTime(coupon.createdAt)}</td>
                     <td>${this.formatDateTime(coupon.updatedAt)}</td>
+                    <td>
+                        <div class="coupon-action-table-buttons">
+                            <button class="coupon-btn coupon-btn-danger" title="Delete coupon">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
             `;
         }).join('');
     }
+
 
     showSearchResults() {
         const searchResults = document.getElementById('userCouponsSearchResults');
@@ -296,6 +304,32 @@ class UserCouponsSearch {
     hasSearchResults() {
         const searchResults = document.getElementById('userCouponsSearchResults');
         return searchResults && searchResults.style.display !== 'none';
+    }
+
+    // Refresh current search results
+    refreshSearchResults() {
+        if (this.currentUserData) {
+            this.searchUserCoupons();
+        }
+    }
+
+    // Get coupon by index
+    getCouponByIndex(index) {
+        if (!this.currentUserData || !this.currentUserData.availableCoupons) {
+            return null;
+        }
+        return this.currentUserData.availableCoupons[index];
+    }
+
+    // Update coupon data after edit (kept for potential future use, though no edit button)
+    updateCouponData(index, updatedCoupon) {
+        if (!this.currentUserData || !this.currentUserData.availableCoupons[index]) {
+            return false;
+        }
+
+        this.currentUserData.availableCoupons[index] = updatedCoupon;
+        this.renderUserCouponsTable(this.currentUserData);
+        return true;
     }
 }
 
