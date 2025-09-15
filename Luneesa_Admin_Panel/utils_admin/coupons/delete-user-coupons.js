@@ -115,7 +115,7 @@ class DeleteUserCoupons {
     }
 
     /**
-     * Delete a coupon from user(s)
+     * Delete a coupon from user(s) - FIXED: Single confirmation dialog
      * @param {number} couponIndex - Index of the coupon in the displayed list
      * @param {string|string[]} usernames - Optional: specific username(s) to delete from
      */
@@ -133,22 +133,22 @@ class DeleteUserCoupons {
                 const currentUsername = this.getCurrentUsername();
                 if (currentUsername) {
                     usernames = currentUsername;
-                } else {
-                    // This would delete from ALL users - show warning
-                    const confirmAll = confirm(
-                        `No specific user found. This will delete coupon "${couponCode}" from ALL users. Are you sure?`
-                    );
-                    if (!confirmAll) {
-                        return;
-                    }
                 }
+                // If still no usernames, it will delete from ALL users (handled below)
             }
 
-            // Show confirmation dialog
-            const confirmMessage = usernames 
-                ? `Are you sure you want to delete coupon "${couponCode}" from user(s): ${Array.isArray(usernames) ? usernames.join(', ') : usernames}?`
-                : `Are you sure you want to delete coupon "${couponCode}" from ALL users?`;
-                
+            // FIXED: Single confirmation dialog with appropriate message
+            let confirmMessage;
+            if (usernames) {
+                // Specific user(s)
+                const userList = Array.isArray(usernames) ? usernames.join(', ') : usernames;
+                confirmMessage = `Are you sure you want to delete coupon "${couponCode}" from user(s): ${userList}?`;
+            } else {
+                // All users
+                confirmMessage = `⚠️ WARNING: No specific user found.\n\nThis will delete coupon "${couponCode}" from ALL users.\n\nAre you sure you want to proceed?`;
+            }
+            
+            // Show single confirmation dialog
             if (!confirm(confirmMessage)) {
                 return;
             }
