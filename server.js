@@ -20,6 +20,8 @@ const adminGetUserCouponsHandler = require("./utils/routes_handler/admin_get_use
 const adminDeleteCouponsHandler = require("./utils/routes_handler/admin_delete_coupons");
 const handleAdminAllotTokens = require("./utils/routes_handler/admin_allot_tokens_to_agents");
 const adminFetchRazorpayOrdersHandler = require("./utils/routes_handler/admin_fetch_razorpay_orders");
+const adminViewBaseDiscount = require("./utils/routes_handler/admin_view_base_discount");
+
 
 
 
@@ -94,6 +96,11 @@ app.post("/base_discount", async (req, res) =>{
 
     res.json(baseDiscountData);
 });
+
+
+// route for the admin to view the base discount data
+app.post("/admin/view_base_discount", authenticateAdmin, adminViewBaseDiscount);
+
 
 
 // route for the admin to add or modify or delete the base discount slab
