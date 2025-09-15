@@ -127,7 +127,7 @@ class UserCouponsSearch {
                     <td>${this.formatDateTime(coupon.updatedAt)}</td>
                     <td>
                         <div class="coupon-action-table-buttons">
-                            <button class="coupon-btn coupon-btn-danger" title="Delete coupon">
+                            <button class="coupon-btn coupon-btn-danger" onclick="userCouponsSearch.deleteUserCoupon(${index})" title="Delete coupon">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -137,6 +137,59 @@ class UserCouponsSearch {
         }).join('');
     }
 
+    // Delete user coupon - Updated to use /admin/delete_coupons endpoint
+    async deleteUserCoupon(couponIndex) {
+        if (!this.currentUserData || !this.currentUserData.availableCoupons[couponIndex]) {
+            this.showMessage('Invalid coupon data', 'error');
+            return;
+        }
+
+        const coupon = this.currentUserData.availableCoupons[couponIndex];
+        const username = this.currentUserData.username;
+        
+        if (!confirm(`Are you sure you want to delete coupon "${coupon.couponCode}" for user ${username}?`)) {
+            return;
+        }
+
+        try {
+            // API call to delete user coupon using the correct endpoint
+            const response = await fetch('/admin/delete_coupons', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                credentials: 'include', // Include cookies for authentication
+                body: JSON.stringify({
+                    couponCode: coupon.couponCode,
+                    usernames: username // Target specific user
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // Remove from current data
+                this.currentUserData.availableCoupons.splice(couponIndex, 1);
+                
+                // Re-render table
+                this.renderUserCouponsTable(this.currentUserData);
+                
+                this.showMessage(
+                    result.message || `Coupon "${coupon.couponCode}" deleted successfully!`, 
+                    'success'
+                );
+            } else {
+                this.showMessage(
+                    result.error || 'Failed to delete coupon', 
+                    'error'
+                );
+            }
+        } catch (error) {
+            console.error('Error deleting user coupon:', error);
+            this.showMessage('Error occurred while deleting coupon. Please try again.', 'error');
+        }
+    }
 
     showSearchResults() {
         const searchResults = document.getElementById('userCouponsSearchResults');
@@ -356,3 +409,10 @@ document.addEventListener('click', function(e) {
         }, 100);
     }
 });
+
+// Global delete function
+function deleteUserCoupon(index) {
+    if (window.userCouponsSearch) {
+        window.userCouponsSearch.deleteUserCoupon(index);
+    }
+}
