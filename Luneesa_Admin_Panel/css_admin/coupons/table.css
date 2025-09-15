@@ -38,6 +38,47 @@
     border-bottom: none;
 }
 
+/* User Coupons Search Results Table */
+.user-coupons-table {
+    overflow-x: auto;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    background: white;
+}
+
+.user-coupons-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-coupons-table thead tr {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    color: white;
+}
+
+.user-coupons-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+}
+
+.user-coupons-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #E5E7EB;
+    font-size: 14px;
+    color: #374151;
+}
+
+.user-coupons-table tbody tr:hover {
+    background-color: #F0FDF4;
+}
+
+.user-coupons-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
 /* Action Buttons in Table */
 .coupon-action-buttons {
     display: flex;

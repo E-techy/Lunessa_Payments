@@ -5,65 +5,9 @@ class CouponsData {
         this.loadMockData();
     }
 
-    // Mock data for demonstration - All amounts converted to USD (using 1 USD = 85 INR)
+    // Initialize with empty data - remove mock data as requested
     loadMockData() {
-        this.coupons = [
-            {
-                id: 1,
-                couponCode: 'SAVE20',
-                used: false,
-                minOrderValue: 6, // ~500 INR
-                discountType: 'percentage',
-                discountValue: 20,
-                maxDiscountAmount: 1.2, // ~100 INR
-                createdAt: '2025-01-15T10:00:00Z',
-                updatedAt: '2025-01-15T10:00:00Z'
-            },
-            {
-                id: 2,
-                couponCode: 'FLAT100',
-                used: true,
-                minOrderValue: 12, // ~1000 INR
-                discountType: 'flat',
-                discountValue: 1.2, // ~100 INR
-                maxDiscountAmount: null,
-                createdAt: '2025-01-14T15:30:00Z',
-                updatedAt: '2025-01-16T12:00:00Z'
-            },
-            {
-                id: 3,
-                couponCode: 'WELCOME15',
-                used: false,
-                minOrderValue: 0,
-                discountType: 'percentage',
-                discountValue: 15,
-                maxDiscountAmount: 0.6, // ~50 INR
-                createdAt: '2025-01-10T09:15:00Z',
-                updatedAt: '2025-01-10T09:15:00Z'
-            },
-            {
-                id: 4,
-                couponCode: 'MEGA500',
-                used: false,
-                minOrderValue: 24, // ~2000 INR
-                discountType: 'flat',
-                discountValue: 6, // ~500 INR
-                maxDiscountAmount: null,
-                createdAt: '2025-01-12T14:20:00Z',
-                updatedAt: '2025-01-12T14:20:00Z'
-            },
-            {
-                id: 5,
-                couponCode: 'NEWYEAR25',
-                used: true,
-                minOrderValue: 9, // ~750 INR
-                discountType: 'percentage',
-                discountValue: 25,
-                maxDiscountAmount: 2.4, // ~200 INR
-                createdAt: '2025-01-01T00:00:00Z',
-                updatedAt: '2025-01-05T18:45:00Z'
-            }
-        ];
+        this.coupons = [];
     }
 
     // Data access methods

@@ -87,3 +87,53 @@
     align-items: center;
     gap: 8px;
 }
+
+/* Allotment Mode Toggle - Default Active State */
+.coupon-allotment-toggle-container {
+    background: #f0fdf4 !important;
+    border: 2px solid #10b981 !important;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1) !important;
+    animation: allotment-ready-pulse 2s ease-in-out;
+}
+
+.coupon-allotment-toggle-container label {
+    color: #065f46 !important;
+}
+
+.coupon-allotment-toggle-container input[type="checkbox"] {
+    transform: scale(1.2);
+    accent-color: #10b981;
+}
+
+/* Pulse animation for allotment mode activation */
+@keyframes allotment-ready-pulse {
+    0% {
+        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
+    }
+    50% {
+        box-shadow: 0 4px 8px rgba(16, 185, 129, 0.2);
+        transform: scale(1.01);
+    }
+    100% {
+        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
+        transform: scale(1);
+    }
+}
+
+/* When allotment mode is disabled */
+.coupon-allotment-toggle-container.disabled {
+    background: #f8fafc !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+    animation: none;
+}
+
+.coupon-allotment-toggle-container.disabled label {
+    color: #374151 !important;
+}
+
+/* Spinning animation for loading states */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
