@@ -23,6 +23,8 @@ const adminFetchRazorpayOrdersHandler = require("./utils/routes_handler/admin_fe
 const adminViewBaseDiscount = require("./utils/routes_handler/admin_view_base_discount");
 const handleGetYourOrders = require("./utils/routes_handler/get_your_orders");
 const raisePaymentDisputeHandler = require("./utils/routes_handler/raise_payment_dispute");
+const getYourDisputesHandler = require("./utils/routes_handler/get_your_disputes");
+
 
 
 
@@ -233,6 +235,10 @@ app.post("/get_your_orders", authenticateUser, handleGetYourOrders);
 
 // raise a dispute by the clients
 app.post("/raise_payment_dispute", authenticateUser, raisePaymentDisputeHandler);
+
+
+// get you dispute status
+app.post("/get_your_disputes", authenticateUser, getYourDisputesHandler);
 
 
 
