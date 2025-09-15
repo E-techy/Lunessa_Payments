@@ -22,6 +22,8 @@ const handleAdminAllotTokens = require("./utils/routes_handler/admin_allot_token
 const adminFetchRazorpayOrdersHandler = require("./utils/routes_handler/admin_fetch_razorpay_orders");
 const adminViewBaseDiscount = require("./utils/routes_handler/admin_view_base_discount");
 const handleGetYourOrders = require("./utils/routes_handler/get_your_orders");
+const raisePaymentDisputeHandler = require("./utils/routes_handler/raise_payment_dispute");
+
 
 
 
@@ -227,6 +229,11 @@ app.post("/admin/fetch_razorpay_orders", authenticateAdmin, adminFetchRazorpayOr
 
 // get you past orders 
 app.post("/get_your_orders", authenticateUser, handleGetYourOrders);
+
+
+// raise a dispute by the clients
+app.post("/raise_payment_dispute", authenticateUser, raisePaymentDisputeHandler);
+
 
 
 // listening on the port url
