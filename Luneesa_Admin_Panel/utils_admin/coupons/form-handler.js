@@ -484,7 +484,7 @@ class CouponsFormHandler {
             </div>` : ''}
 
             <div style="text-align: right;">
-                <button onclick="document.getElementById('allotment-results-modal').remove()" 
+                <button onclick="window.couponsManager.formHandler.closeAllotmentResultsModal()" 
                         style="background: #6366f1; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer;">
                     <i class="fas fa-check"></i> Close
                 </button>
@@ -496,6 +496,60 @@ class CouponsFormHandler {
 
         // Also show a brief success message
         this.onSuccess(`Coupon allotment completed! ${results.successCount} successful${results.errorCount > 0 ? `, ${results.errorCount} failed` : ''}`);
+    }
+
+    closeAllotmentResultsModal() {
+        // Remove the modal
+        const modal = document.getElementById('allotment-results-modal');
+        if (modal) {
+            modal.remove();
+        }
+
+        // Auto-navigate to the Coupons list tab
+        if (window.couponsManager && window.couponsManager.navigation) {
+            window.couponsManager.navigation.showCouponsListTab();
+        } else {
+            // Fallback: directly manipulate DOM
+            this.activateCouponsListTab();
+        }
+    }
+
+    activateCouponsListTab() {
+        // Update sub-tab buttons
+        const listTab = document.getElementById('coupons-list-sub-tab-btn');
+        const createTab = document.getElementById('coupons-create-sub-tab-btn');
+        
+        if (listTab) {
+            // Remove active from all coupon sub-tabs
+            document.querySelectorAll('.coupon-sub-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active to list tab
+            listTab.classList.add('active');
+            
+            // Programmatically click the list tab if it has a click handler
+            listTab.click();
+        }
+
+        // Update tab content
+        const listContent = document.getElementById('couponsListContent');
+        const createContent = document.getElementById('couponsCreateContent');
+        
+        if (listContent && createContent) {
+            // Remove active from all coupon tab contents
+            document.querySelectorAll('.coupon-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show list content
+            listContent.classList.add('active');
+        }
+
+        // Cancel any active inline editing
+        if (window.couponsManager && window.couponsManager.inlineEditor) {
+            window.couponsManager.inlineEditor.cancelInlineEdit();
+        }
     }
 
     validateCouponData(couponData, excludeId = null) {
