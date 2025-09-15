@@ -1,6 +1,5 @@
 // utils/routes_handler/raise_payment_dispute.js
 
-const express = require("express");
 const raisePaymentDispute = require("../raise_payment_dispute");
 
 /**
