@@ -282,6 +282,7 @@ type Dispute {
   orderId        String                               // Order against which dispute is raised
   disputeComment String                               // User’s complaint/comment
   resolved       Boolean   @default(false)           // Whether dispute is resolved
+  resolvedComment String                             // Admins resolution comment
   createdAt      DateTime  @default(now())           // When dispute was raised
   updatedAt      DateTime  @default(now())           // Last update (status/comment changes)
 }

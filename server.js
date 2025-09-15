@@ -24,7 +24,7 @@ const adminViewBaseDiscount = require("./utils/routes_handler/admin_view_base_di
 const handleGetYourOrders = require("./utils/routes_handler/get_your_orders");
 const raisePaymentDisputeHandler = require("./utils/routes_handler/raise_payment_dispute");
 const getYourDisputesHandler = require("./utils/routes_handler/get_your_disputes");
-
+const adminFetchDisputesHandler = require("./utils/routes_handler/admin_fetch_disputes");
 
 
 
@@ -239,6 +239,14 @@ app.post("/raise_payment_dispute", authenticateUser, raisePaymentDisputeHandler)
 
 // get you dispute status
 app.post("/get_your_disputes", authenticateUser, getYourDisputesHandler);
+
+
+// admin fetch user disputes 
+app.post("/admin/fetch_disputes", authenticateAdmin, adminFetchDisputesHandler);
+
+
+// admin modify disputes or delete disputes
+app.post("/admin/modify_disputes", authenticateAdmin)
 
 
 
