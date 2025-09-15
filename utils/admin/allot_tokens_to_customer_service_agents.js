@@ -61,7 +61,7 @@ async function allotTokensToAgent({ adminRole, agentId, modelName, tokensToAdd }
     }
 
     // 3. Find agent
-    const agent = await prisma.customerServiceAgents.findUnique({
+    const agent = await prisma.CustomerServiceAgents.findUnique({
       where: { agentId },
     });
 
@@ -128,7 +128,7 @@ async function allotTokensToAgent({ adminRole, agentId, modelName, tokensToAdd }
     }
 
     // 6. Persist updates
-    const updatedAgent = await prisma.customerServiceAgents.update({
+    const updatedAgent = await prisma.CustomerServiceAgents.update({
       where: { agentId },
       data: {
         tokenBalances,
