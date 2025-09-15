@@ -125,10 +125,22 @@ class CouponsFormHandler {
                         placeholder="Enter usernames separated by commas or new lines&#10;Example:&#10;john_doe, jane_smith&#10;user123&#10;testuser"
                         style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: monospace; font-size: 13px; resize: vertical;"
                     ></textarea>
-                    <small style="color: #6b7280; display: block; margin-top: 4px;">
-                        <i class="fas fa-info-circle"></i>
-                        Separate usernames with commas or new lines. Spaces will be trimmed automatically.
-                    </small>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-top: 8px;">
+                        <button 
+                            id="verifyUsernamesBtn" 
+                            type="button" 
+                            style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;"
+                            onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)';" 
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
+                        >
+                            <i class="fas fa-check-circle"></i>
+                            Verify Usernames
+                        </button>
+                        <small style="color: #6b7280; flex: 1;">
+                            <i class="fas fa-info-circle"></i>
+                            Separate usernames with commas or new lines. Spaces will be trimmed automatically.
+                        </small>
+                    </div>
                 </div>
 
                 <div class="coupon-form-row" style="margin-top: 16px; padding: 12px; background: #fefce8; border: 1px solid #fbbf24; border-radius: 6px;">
