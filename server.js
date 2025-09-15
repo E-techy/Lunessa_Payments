@@ -25,6 +25,7 @@ const handleGetYourOrders = require("./utils/routes_handler/get_your_orders");
 const raisePaymentDisputeHandler = require("./utils/routes_handler/raise_payment_dispute");
 const getYourDisputesHandler = require("./utils/routes_handler/get_your_disputes");
 const adminFetchDisputesHandler = require("./utils/routes_handler/admin_fetch_disputes");
+const adminModifyDisputesHandler = require("./utils/routes_handler/admin_modify_disputes");
 
 
 
@@ -246,7 +247,7 @@ app.post("/admin/fetch_disputes", authenticateAdmin, adminFetchDisputesHandler);
 
 
 // admin modify disputes or delete disputes
-app.post("/admin/modify_disputes", authenticateAdmin)
+app.post("/admin/modify_disputes", authenticateAdmin, adminModifyDisputesHandler);
 
 
 
