@@ -80,11 +80,16 @@ class CouponsManager {
     }
 
     // Public methods that can be called from HTML onclick handlers
-    saveCoupon() {
-        const result = this.formHandler.saveCoupon();
-        if (result) {
-            this.tableManager.refreshTable();
-            this.searchFilter.filterCoupons(); // Reapply current filters
+    async saveCoupon() {
+        try {
+            const result = await this.formHandler.saveCoupon();
+            if (result) {
+                this.tableManager.refreshTable();
+                this.searchFilter.filterCoupons(); // Reapply current filters
+            }
+        } catch (error) {
+            console.error('Error saving coupon:', error);
+            this.onError(`Failed to save coupon: ${error.message}`);
         }
     }
 

@@ -51,6 +51,31 @@ class CouponsNavigation {
         if (window.couponsManager && window.couponsManager.formHandler) {
             window.couponsManager.formHandler.clearCreateForm();
         }
+
+        // Auto-enable allotment mode when create tab is opened
+        this.autoEnableAllotmentMode();
+    }
+
+    autoEnableAllotmentMode() {
+        // Wait for the form handler to be ready and DOM to be updated
+        setTimeout(() => {
+            const allotmentToggle = document.getElementById('coupon-allotment-toggle');
+            if (allotmentToggle && !allotmentToggle.checked) {
+                // Programmatically check the toggle
+                allotmentToggle.checked = true;
+                
+                // Trigger the change event to activate allotment mode
+                const changeEvent = new Event('change', { bubbles: true });
+                allotmentToggle.dispatchEvent(changeEvent);
+                
+                // Also directly call the toggle function if available
+                if (window.couponsManager && 
+                    window.couponsManager.formHandler && 
+                    typeof window.couponsManager.formHandler.toggleAllotmentMode === 'function') {
+                    window.couponsManager.formHandler.toggleAllotmentMode(true);
+                }
+            }
+        }, 100); // Small delay to ensure DOM is ready
     }
 
     getCurrentActiveTab() {
