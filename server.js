@@ -21,6 +21,8 @@ const adminDeleteCouponsHandler = require("./utils/routes_handler/admin_delete_c
 const handleAdminAllotTokens = require("./utils/routes_handler/admin_allot_tokens_to_agents");
 const adminFetchRazorpayOrdersHandler = require("./utils/routes_handler/admin_fetch_razorpay_orders");
 const adminViewBaseDiscount = require("./utils/routes_handler/admin_view_base_discount");
+const handleGetYourOrders = require("./utils/routes_handler/get_your_orders");
+
 
 
 
@@ -221,6 +223,10 @@ app.post("/admin/allot_tokens_to_agents", authenticateAdmin, handleAdminAllotTok
 
 // route for the admin to fetch the razorpay orders using different criteria like allOrders, using specific orderId and many more
 app.post("/admin/fetch_razorpay_orders", authenticateAdmin, adminFetchRazorpayOrdersHandler);
+
+
+// get you past orders 
+app.post("/get_your_orders", authenticateUser, handleGetYourOrders);
 
 
 // listening on the port url
