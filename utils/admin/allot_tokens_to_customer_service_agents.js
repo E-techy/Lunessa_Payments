@@ -16,15 +16,20 @@ const prisma = new PrismaClient();
  * @param {number} params.tokensToAdd - Number of tokens to add (can be positive or negative).
  *
  * 🔹 Behavior:
- * - Validates `adminRole`.
- * - Validates `tokensToAdd` (must be integer, not zero).
- * - Finds the agent using `agentId`.
- * - Updates `tokenBalances[modelName]`:
- *    • If entry exists → update tokens.  
- *    • If not → add a new entry.  
- * - Updates `usingModel` tokens if the active model matches `modelName`.
- * - Ensures token counts never go below zero.
- * - Updates `lastModified` timestamp.
+ * 1. Validates `adminRole`.
+ * 2. Validates `tokensToAdd` (must be integer, not zero).
+ * 3. Ensures the `modelName` exists in `AIModel` and is not expired (`availableTill >= now`).
+ * 4. Finds the agent using `agentId`.
+ * 5. Updates balances:
+ *    - Always check and update `usingModel` first.
+ *      • If `usingModel.modelName` matches, update tokens.
+ *      • If balance < 0 → reject.
+ *      • Status is `active` only if using model and tokens > 0.
+ *    - Then update `tokenBalances`:
+ *      • If entry exists, update tokens.
+ *      • If not, create a new entry (status = `active` only if matches `usingModel`, else `inactive`).
+ *      • Cannot deduct from non-existing entry.
+ * 6. Updates `lastModified`.
  *
  * 🔹 Output:
  * @returns {Promise<{success: boolean, data?: Object, error?: string}>}
@@ -60,7 +65,20 @@ async function allotTokensToAgent({ adminRole, agentId, modelName, tokensToAdd }
       };
     }
 
-    // 3. Find agent
+    // 3. Validate modelName against AIModel
+    const aiModel = await prisma.AIModel.findUnique({
+      where: { modelName },
+    });
+
+    if (!aiModel) {
+      return { success: false, error: `Invalid modelName: ${modelName} does not exist.` };
+    }
+
+    if (new Date(aiModel.availableTill) < new Date()) {
+      return { success: false, error: `Model ${modelName} is expired and cannot receive tokens.` };
+    }
+
+    // 4. Find agent
     const agent = await prisma.CustomerServiceAgents.findUnique({
       where: { agentId },
     });
@@ -72,52 +90,13 @@ async function allotTokensToAgent({ adminRole, agentId, modelName, tokensToAdd }
     let tokenBalances = agent.tokenBalances || [];
     let usingModel = agent.usingModel || null;
 
-    // 4. Update tokenBalances entry for modelName
-    let updated = false;
-    tokenBalances = tokenBalances.map((tb) => {
-      if (tb.modelName === modelName) {
-        const newTokenCount = tb.availableTokens + tokensToAdd;
-        if (newTokenCount < 0) {
-          throw new Error(
-            "Insufficient tokens: cannot deduct more tokens than available."
-          );
-        }
-        updated = true;
-        return {
-          ...tb,
-          availableTokens: newTokenCount,
-          updatedAt: new Date(),
-          status: newTokenCount > 0 ? "active" : "inactive",
-        };
-      }
-      return tb;
-    });
-
-    if (!updated) {
-      // If entry not found, create a new one
-      if (tokensToAdd < 0) {
-        return {
-          success: false,
-          error: "Cannot deduct tokens: model entry not found.",
-        };
-      }
-      tokenBalances.push({
-        modelName,
-        availableTokens: tokensToAdd,
-        status: tokensToAdd > 0 ? "active" : "inactive",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-    }
-
-    // 5. Update usingModel if same model
+    // 5. Update usingModel first if it matches
     if (usingModel && usingModel.modelName === modelName) {
       const newTokenCount = usingModel.availableTokens + tokensToAdd;
       if (newTokenCount < 0) {
         return {
           success: false,
-          error:
-            "Insufficient tokens in usingModel: cannot deduct more tokens than available.",
+          error: "Insufficient tokens in usingModel: cannot deduct more tokens than available.",
         };
       }
       usingModel = {
@@ -127,7 +106,52 @@ async function allotTokensToAgent({ adminRole, agentId, modelName, tokensToAdd }
       };
     }
 
-    // 6. Persist updates
+    // 6. Update tokenBalances
+    let updated = false;
+    tokenBalances = tokenBalances.map((tb) => {
+      if (tb.modelName === modelName) {
+        const newTokenCount = tb.availableTokens + tokensToAdd;
+        if (newTokenCount < 0) {
+          throw new Error("Insufficient tokens: cannot deduct more tokens than available.");
+        }
+        updated = true;
+        return {
+          ...tb,
+          availableTokens: newTokenCount,
+          updatedAt: new Date(),
+          status:
+            usingModel && usingModel.modelName === modelName
+              ? newTokenCount > 0
+                ? "active"
+                : "inactive"
+              : "inactive",
+        };
+      }
+      return tb;
+    });
+
+    if (!updated) {
+      if (tokensToAdd < 0) {
+        return {
+          success: false,
+          error: "Cannot deduct tokens: model entry not found.",
+        };
+      }
+      tokenBalances.push({
+        modelName,
+        availableTokens: tokensToAdd,
+        status:
+          usingModel && usingModel.modelName === modelName
+            ? tokensToAdd > 0
+              ? "active"
+              : "inactive"
+            : "inactive",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    }
+
+    // 7. Persist updates
     const updatedAgent = await prisma.CustomerServiceAgents.update({
       where: { agentId },
       data: {
