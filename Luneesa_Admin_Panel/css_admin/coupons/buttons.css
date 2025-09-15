@@ -142,7 +142,7 @@
 
 /* User Search Specific Buttons */
 .coupon-primary-search {
-    background: linear-gradient(135deg, #6366F1, #4F46E5);
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
     color: white;
     border: none;
     border-radius: 6px;
@@ -155,13 +155,13 @@
 }
 
 .coupon-primary-search:hover {
-    background: linear-gradient(135deg, #4F46E5, #4338CA);
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
 .coupon-primary-search:disabled {
-    background: #9CA3AF;
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
     cursor: not-allowed;
     transform: none;
     box-shadow: none;

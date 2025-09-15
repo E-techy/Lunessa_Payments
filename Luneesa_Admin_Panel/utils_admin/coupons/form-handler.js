@@ -129,7 +129,7 @@ class CouponsFormHandler {
                         <button 
                             id="verifyUsernamesBtn" 
                             type="button" 
-                            style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;"
+                            style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;"
                             onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)';" 
                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
                         >
