@@ -143,26 +143,6 @@ type AgentModification {
 
 
 
-model UserOrders {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  username  String   @unique
-  orders    Order[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-} 
-
-type Order {
-  orderId      String
-  amount       Float
-  paymentInfo  Json
-  receipt      String
-  fulfillment  Boolean @default(false)
-  status       String?  @default("draft") // "draft" | "pending" | "failed" | "paid"
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
-}
-
-
 /// Offer model to store promotional campaigns, discounts, and coupon codes
 model Offer {
   id                String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -264,6 +244,48 @@ model AIModel {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+
+// stores information related to the user payments
+model UserOrders {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+} 
+
+// store the details of the user orders
+type Order {
+  orderId      String
+  amount       Float
+  paymentInfo  Json
+  receipt      String
+  fulfillment  Boolean @default(false)
+  status       String?  @default("draft") // "draft" | "pending" | "failed" | "paid"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+}
+
+// stores the disputes created by the user
+model Disputes {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  username  String     @unique                      // Each user has one disputes document
+  disputes  Dispute[]                              // Array of disputes for that user
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+// the dispute structure used by the admin to solve the disputes
+type Dispute {
+  disputeId      String                      // Unique ID for each dispute
+  orderId        String                               // Order against which dispute is raised
+  disputeComment String                               // User’s complaint/comment
+  resolved       Boolean   @default(false)           // Whether dispute is resolved
+  createdAt      DateTime  @default(now())           // When dispute was raised
+  updatedAt      DateTime  @default(now())           // Last update (status/comment changes)
+}
+
  
 
 
