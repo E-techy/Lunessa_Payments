@@ -1,6 +1,6 @@
 // utils/routes_handler/admin_modify_disputes.js
 
-const modifyDispute = require("../../admin/modify_disputes");
+const modifyDispute = require("../admin/modify_disputes");
 
 /**
  * Middleware / Route handler to allow admins to modify or delete user disputes.

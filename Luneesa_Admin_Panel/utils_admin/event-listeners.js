@@ -247,9 +247,9 @@ function setupDynamicTableListeners() {
                 const btn = e.target.closest('.delete-btn');
                 const row = btn.closest('tr');
                 const rowIndex = row.getAttribute('data-row');
-                if (rowIndex !== null) {
-                    deleteRow(parseInt(rowIndex));
-                }
+                // if (rowIndex !== null) {
+                //     deleteRow(parseInt(rowIndex));
+                // }
             }
         });
     }

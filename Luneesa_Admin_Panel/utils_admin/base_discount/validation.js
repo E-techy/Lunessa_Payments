@@ -94,22 +94,96 @@ function convertRowToReadonly(row) {
 }
 
 /**
- * Perform the save operation with loading states
+ * Perform the save operation with real API calls
  */
-function performSaveOperation() {
+async function performSaveOperation() {
     const saveBtn = document.querySelector('.save-btn');
     const originalText = saveBtn.textContent;
     
     saveBtn.textContent = 'Saving...';
     saveBtn.disabled = true;
     
-    setTimeout(() => {
-        saveBtn.textContent = 'Saved!';
-        showNotification('All changes saved successfully!', 'success');
+    try {
+        // Collect all discount levels from the table
+        const discountLevels = collectDiscountLevelsFromTable();
         
+        if (discountLevels.length === 0) {
+            showNotification('No discount levels to save', 'warning');
+            return;
+        }
+
+        // Try to update first, if it fails, create new
+        let result;
+        try {
+            result = await window.baseDiscountAPI.updateBaseDiscountSlab({
+                levels: discountLevels
+            });
+        } catch (error) {
+            // If update fails (e.g., no existing slab), try to add/create
+            console.log('Update failed, trying to create new:', error.message);
+            result = await window.baseDiscountAPI.addBaseDiscountSlab({
+                levels: discountLevels
+            });
+        }
+        
+        if (result.success) {
+            saveBtn.textContent = 'Saved!';
+            showNotification(`Successfully saved ${discountLevels.length} discount levels!`, 'success');
+            
+            // Refresh the table with updated data
+            setTimeout(() => {
+                fetchBaseDiscount();
+            }, 1000);
+        } else {
+            throw new Error(result.error || 'Failed to save');
+        }
+        
+    } catch (error) {
+        console.error('❌ Save operation failed:', error);
+        saveBtn.textContent = 'Save Failed';
+        showNotification(`Failed to save: ${error.message}`, 'error');
+    } finally {
         setTimeout(() => {
             saveBtn.textContent = originalText;
             saveBtn.disabled = false;
-        }, 1000);
-    }, APP_CONFIG.SAVE_DELAY);
+        }, 2000);
+    }
+}
+
+/**
+ * Collect discount levels data from the table
+ */
+function collectDiscountLevelsFromTable() {
+    const tableBody = document.getElementById('discountTableBody');
+    const rows = tableBody.querySelectorAll('tr');
+    const discountLevels = [];
+    
+    rows.forEach((row, index) => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length < 4) return; // Skip invalid rows
+        
+        const minValue = cells[0].querySelector('input, span');
+        const maxValue = cells[1].querySelector('input, span');
+        const discountType = cells[2].querySelector('select, span');
+        const discountValue = cells[3].querySelector('input, span');
+        
+        if (minValue && maxValue && discountType && discountValue) {
+            const minVal = parseFloat(minValue.value || minValue.textContent);
+            const maxVal = parseFloat(maxValue.value || maxValue.textContent);
+            const discountVal = parseFloat(discountValue.value || discountValue.textContent.replace('%', ''));
+            const typeVal = discountType.value || discountType.textContent;
+            
+            // Only add valid rows
+            if (!isNaN(minVal) && !isNaN(maxVal) && !isNaN(discountVal)) {
+                discountLevels.push({
+                    minOrderValue: minVal,
+                    maxOrderValue: maxVal,
+                    discountType: typeVal,
+                    discountValue: discountVal
+                });
+            }
+        }
+    });
+    
+    return discountLevels;
 }

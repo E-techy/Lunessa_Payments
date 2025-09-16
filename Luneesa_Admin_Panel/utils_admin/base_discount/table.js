@@ -143,15 +143,15 @@ function addNewLevel() {
 /**
  * Delete a specific row from the table
  */
-function deleteRow(rowIndex) {
-    const row = document.querySelector(`tr[data-row="${rowIndex}"]`);
-    if (row) {
-        if (confirm('Are you sure you want to delete this level?')) {
-            row.remove();
-            showNotification('Level deleted successfully!', 'success');
-        }
-    }
-}
+// function deleteRow(rowIndex) {
+//     const row = document.querySelector(`tr[data-row="${rowIndex}"]`);
+//     if (row) {
+//         if (confirm('Are you sure you want to delete this level?')) {
+//             row.remove();
+//             showNotification('Level deleted successfully!', 'success');
+//         }
+//     }
+// }
 
 /**
  * Save all changes to the discount levels
