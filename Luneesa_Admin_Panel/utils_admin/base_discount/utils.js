@@ -87,10 +87,3 @@ function createSelectElement(className, options) {
     
     return select;
 }
-
-// Make functions globally accessible
-window.showNotification = showNotification;
-window.getCurrentFormattedDate = getCurrentFormattedDate;
-window.validateNumericInput = validateNumericInput;
-window.createInputElement = createInputElement;
-window.createSelectElement = createSelectElement;

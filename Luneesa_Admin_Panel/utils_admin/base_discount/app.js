@@ -4,67 +4,58 @@
  * Initialize the entire application
  */
 function initializeApp() {
-    console.log('🚀 Initializing Payment Admin System...');
-    
     // Initialize status management
-    if (typeof initializeStatus === 'function') {
-        initializeStatus();
-        console.log('✅ Status management initialized');
+    initializeStatus();
+    
+    // Load base discount data
+    if (typeof fetchBaseDiscount === 'function') {
+        fetchBaseDiscount();
     }
     
-    // Set up event listeners for base discount functionality
-    setupBaseDiscountEventListeners();
+    // Initialize current status from loaded data
+    initializeCurrentStatus();
     
-    console.log('✅ Payment Admin System initialized successfully');
+    console.log('Base Discount Admin System initialized successfully');
 }
 
 /**
- * Set up event listeners for base discount functionality
+ * Initialize current status based on loaded data
  */
-function setupBaseDiscountEventListeners() {
-    // Status toggle
-    const statusToggle = document.getElementById('base-discount-status-toggle');
-    if (statusToggle) {
-        statusToggle.addEventListener('click', toggleStatus);
-    }
-    
-    // Modify button
-    const modifyBtn = document.getElementById('base-discount-modify-btn');
-    if (modifyBtn) {
-        modifyBtn.addEventListener('click', toggleModifyMode);
-    }
-    
-    // Save status button
-    const saveStatusBtn = document.getElementById('base-discount-save-status-btn');
-    if (saveStatusBtn) {
-        saveStatusBtn.addEventListener('click', saveStatusChanges);
-    }
-    
-    // Add level button
-    const addLevelBtn = document.getElementById('base-discount-add-level-btn');
-    if (addLevelBtn) {
-        addLevelBtn.addEventListener('click', addNewLevel);
-    }
-    
-    // Save changes button
-    const saveChangesBtn = document.getElementById('base-discount-save-changes-btn');
-    if (saveChangesBtn) {
-        saveChangesBtn.addEventListener('click', saveChanges);
-    }
-    
-    // Delete button event delegation (for dynamically created buttons)
-    const tableBody = document.getElementById('discountTableBody');
-    if (tableBody) {
-        tableBody.addEventListener('click', function(event) {
-            if (event.target.closest('.delete-btn')) {
-                const button = event.target.closest('.delete-btn');
-                const rowIndex = button.getAttribute('data-row-index') || button.id.split('-').pop();
-                deleteRow(rowIndex);
+async function initializeCurrentStatus() {
+    try {
+        // Wait a bit for data to load
+        setTimeout(async () => {
+            const response = await fetch('/base_discount', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.data) {
+                const toggle = document.querySelector('.toggle-switch');
+                const status = data.data.status || 'active';
+                
+                // Update global currentStatus variable
+                if (typeof currentStatus !== 'undefined') {
+                    currentStatus = status;
+                }
+                
+                // Update toggle UI to match backend status
+                if (toggle) {
+                    if (status === 'active') {
+                        toggle.classList.add('active');
+                    } else {
+                        toggle.classList.remove('active');
+                    }
+                }
+                
+                console.log(`✅ Status initialized from backend: ${status}`);
             }
-        });
+        }, 1000);
+    } catch (error) {
+        console.warn('⚠️ Could not initialize status from backend:', error);
     }
-    
-    console.log('✅ Base discount event listeners set up');
 }
 
 // Initialize app when DOM is loaded

@@ -4,11 +4,11 @@
  * Toggle modify mode for editing table data
  */
 function toggleModifyMode() {
-    window.isModifyMode = !window.isModifyMode;
+    isModifyMode = !isModifyMode;
     const modifyBtn = document.querySelector('.modify-btn');
     const readonlyFields = document.querySelectorAll('.readonly-field-base-discount');
     
-    if (window.isModifyMode) {
+    if (isModifyMode) {
         enableModifyMode(modifyBtn, readonlyFields);
     } else {
         disableModifyMode(modifyBtn);
@@ -76,10 +76,10 @@ function createNumericInput(currentValue, cellIndex) {
     
     if (cellIndex === 0 || cellIndex === 1) {
         input.step = '1'; // Integer step for min/max values
-        input.placeholder = 'Enter value';
+        input.placeholder = '+123(456)7890';
     } else {
         input.step = '0.01'; // Decimal step for discount value
-        input.placeholder = 'Enter value';
+        input.placeholder = '+123(456)7890';
     }
     
     return input;
@@ -103,25 +103,25 @@ function createDiscountTypeSelect(currentValue) {
 function addNewLevel() {
     const tableBody = document.getElementById('discountTableBody');
     const newRow = document.createElement('tr');
-    newRow.setAttribute('data-row', window.rowCounter);
+    newRow.setAttribute('data-row', rowCounter);
     newRow.classList.add('new-row'); // Mark as new row for styling
     
     const currentDate = getCurrentFormattedDate();
     
     // Create editable fields by default for new rows
     newRow.innerHTML = `
-        <td><input type="tel" class="editable-input new-field" value="" placeholder="Min value" min="0" step="1" pattern="[0-9]*" inputmode="numeric" required></td>
-        <td><input type="tel" class="editable-input new-field" value="" placeholder="Max value" min="0" step="1" pattern="[0-9]*" inputmode="numeric" required></td>
+        <td><input type="tel" class="editable-input new-field" value="" placeholder="" min="0" step="1" pattern="[0-9]*" inputmode="numeric" required></td>
+        <td><input type="tel" class="editable-input new-field" value="" placeholder="" min="0" step="1" pattern="[0-9]*" inputmode="numeric" required></td>
         <td>
             <select class="discount-select new-field">
                 <option value="flat" selected>flat</option>
                 <option value="percentage">percentage</option>
             </select>
         </td>
-        <td><input type="tel" class="editable-input new-field" value="" placeholder="Discount value" min="0" step="0.01" pattern="[0-9]*" inputmode="numeric" required></td>
+        <td><input type="tel" class="editable-input new-field" value="" placeholder="" min="0" step="0.01" pattern="[0-9]*" inputmode="numeric" required></td>
         <td>${currentDate}</td>
         <td>
-            <button class="delete-btn controllable-btn" data-row-index="${window.rowCounter}" title="Delete this row"><i class="fas fa-trash"></i></button>
+            <button class="delete-btn controllable-btn" data-row-index="${rowCounter}" title="Delete this row"><i class="fas fa-trash"></i></button>
         </td>
     `;
     
@@ -134,7 +134,7 @@ function addNewLevel() {
         firstInput.select();
     }
     
-    window.rowCounter++;
+    rowCounter++;
     
     // Show notification
     showNotification('New level added! Fill in the details and click Save Changes to save all.', 'info');
@@ -143,15 +143,15 @@ function addNewLevel() {
 /**
  * Delete a specific row from the table
  */
-function deleteRow(rowIndex) {
-    const row = document.querySelector(`tr[data-row="${rowIndex}"]`);
-    if (row) {
-        if (confirm('Are you sure you want to delete this level?')) {
-            row.remove();
-            showNotification('Level deleted successfully!', 'success');
-        }
-    }
-}
+// function deleteRow(rowIndex) {
+//     const row = document.querySelector(`tr[data-row="${rowIndex}"]`);
+//     if (row) {
+//         if (confirm('Are you sure you want to delete this level?')) {
+//             row.remove();
+//             showNotification('Level deleted successfully!', 'success');
+//         }
+//     }
+// }
 
 /**
  * Save all changes to the discount levels
@@ -203,8 +203,8 @@ function saveChanges() {
             }
             
             discountLevels.push({
-                minOrderValue: minVal,
-                maxOrderValue: maxVal,
+                minValue: minVal,
+                maxValue: maxVal,
                 discountType: typeVal,
                 discountValue: discountVal,
                 created: cells[4].textContent
@@ -227,10 +227,10 @@ function saveChanges() {
     saveBtn.textContent = 'Saving...';
     saveBtn.disabled = true;
     
-    // Simulate API call - replace with actual API call
+    // Simulate API call
     setTimeout(() => {
         // Convert editable fields back to readonly if in modify mode
-        if (window.isModifyMode) {
+        if (isModifyMode) {
             toggleModifyMode();
         }
         
@@ -244,9 +244,3 @@ function saveChanges() {
         }, 1000);
     }, APP_CONFIG.SAVE_DELAY);
 }
-
-// Make functions globally accessible
-window.toggleModifyMode = toggleModifyMode;
-window.addNewLevel = addNewLevel;
-window.deleteRow = deleteRow;
-window.saveChanges = saveChanges;
