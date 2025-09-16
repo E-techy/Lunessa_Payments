@@ -17,8 +17,8 @@ function toggleStatus() {
     const newStatus = toggle.classList.contains('active') ? 'active' : 'inactive';
     
     // Check if status has changed from saved status
-    if (newStatus !== currentStatus) {
-        hasUnsavedStatusChange = true;
+    if (newStatus !== window.currentStatus) {
+        window.hasUnsavedStatusChange = true;
         saveStatusBtn.classList.remove('hidden');
         // Update button text based on current toggle state
         if (toggle.classList.contains('active')) {
@@ -27,7 +27,7 @@ function toggleStatus() {
             saveStatusBtn.textContent = 'Save Changes (Inactive)';
         }
     } else {
-        hasUnsavedStatusChange = false;
+        window.hasUnsavedStatusChange = false;
         saveStatusBtn.classList.add('hidden');
     }
     
@@ -35,14 +35,14 @@ function toggleStatus() {
         // Status is ON - show all content
         showContentElements(controllableButtons, table, addLevelSection, saveSection, content);
         
-        if (hasUnsavedStatusChange) {
+        if (window.hasUnsavedStatusChange) {
             showNotification('Status changed to Active. Click "Save Changes (Active)" to confirm.', 'info');
         }
     } else {
         // Status is OFF - hide all content
         hideContentElements(controllableButtons, table, addLevelSection, saveSection, content);
         
-        if (hasUnsavedStatusChange) {
+        if (window.hasUnsavedStatusChange) {
             showNotification('Status changed to Inactive. Click "Save Changes (Inactive)" to confirm.', 'warning');
         }
     }
@@ -56,17 +56,26 @@ function saveStatusChanges() {
     const saveStatusBtn = document.querySelector('.save-status-btn');
     
     // Update current status to match toggle state
-    currentStatus = toggle.classList.contains('active') ? 'active' : 'inactive';
-    hasUnsavedStatusChange = false;
+    window.currentStatus = toggle.classList.contains('active') ? 'active' : 'inactive';
+    window.hasUnsavedStatusChange = false;
     
     // Show loading state
     saveStatusBtn.textContent = 'Saving...';
     saveStatusBtn.disabled = true;
     
+    // TODO: Replace with actual API call to save status
+    // Example API call:
+    // await fetch('/admin/update_base_discount_status', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   credentials: 'include',
+    //   body: JSON.stringify({ status: window.currentStatus })
+    // });
+    
     // Simulate API call
     setTimeout(() => {
         saveStatusBtn.textContent = 'Saved!';
-        showNotification(`Status successfully saved as: ${currentStatus}`, 'success');
+        showNotification(`Status successfully saved as: ${window.currentStatus}`, 'success');
         
         setTimeout(() => {
             saveStatusBtn.classList.add('hidden');
@@ -117,7 +126,7 @@ function initializeStatus() {
     const saveStatusBtn = document.querySelector('.save-status-btn');
     
     // Initialize current status based on toggle state
-    currentStatus = toggle.classList.contains('active') ? 'active' : 'inactive';
+    window.currentStatus = toggle.classList.contains('active') ? 'active' : 'inactive';
     
     if (toggle.classList.contains('active')) {
         // Status is already ON by default, ensure all content is visible
@@ -146,3 +155,8 @@ function initializeStatus() {
     // Ensure save status button is initially hidden
     saveStatusBtn.classList.add('hidden');
 }
+
+// Make functions globally accessible
+window.toggleStatus = toggleStatus;
+window.saveStatusChanges = saveStatusChanges;
+window.initializeStatus = initializeStatus;
