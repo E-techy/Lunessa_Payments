@@ -70,6 +70,7 @@ async function handleAdminAllotTokens(req, res) {
 
     // 2️⃣ Single Mode
     if (agentId && modelName && Number.isInteger(tokensToAdd)) {
+      let result;
       const agent = await prisma.CustomerServiceAgents.findUnique({ where: { agentId} });
 
       if (!agent) {
@@ -80,14 +81,14 @@ async function handleAdminAllotTokens(req, res) {
 
       
       if (!agent || agent.username !== username) {
-          results.push({
+          result= {
             success: false,
             error: `Agent ownership mismatch for agentId ${agentId}.`,
             entry,
-          });
+          };
         }
         else {
-          const result = await allotTokensToAgent({ adminRole, agentId, modelName, tokensToAdd });
+         result = await allotTokensToAgent({ adminRole, agentId, modelName, tokensToAdd });
 
         }
 
