@@ -29,7 +29,7 @@ const prisma = new PrismaClient();
 async function handleAdminAllotTokens(req, res) {
   const { adminRole } = req;
   try {
-    const { usernames, agentId, modelName, tokensToAdd } = req.body;
+    const { usernames, username, agentId, modelName, tokensToAdd } = req.body;
 
     // 1️⃣ Bulk Mode
     if (Array.isArray(usernames) && usernames.length > 0) {
@@ -70,12 +70,15 @@ async function handleAdminAllotTokens(req, res) {
 
     // 2️⃣ Single Mode
     if (agentId && modelName && Number.isInteger(tokensToAdd)) {
-      const agent = await prisma.CustomerServiceAgents.findUnique({ where: { agentId } });
+      const agent = await prisma.CustomerServiceAgents.findUnique({ where: { agentId} });
 
       if (!agent) {
         return res.status(404).json({ success: false, error: `No agent found with agentId: ${agentId}` });
       }
+      console.log(username);
+      console.log(agent.username);
 
+      
       if (!agent || agent.username !== username) {
           results.push({
             success: false,
