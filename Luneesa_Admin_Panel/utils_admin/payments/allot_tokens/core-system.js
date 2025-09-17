@@ -5,7 +5,7 @@
 
 class TokenAllocationCore {
     constructor() {
-        
+        this.currentMode = 'single';       
         this.init();
     }
     
@@ -22,6 +22,15 @@ class TokenAllocationCore {
         document.getElementById('bulk-mode-tab')?.addEventListener('click', () => {
             this.switchMode('bulk');
         });
+        
+        // Bulk method switching
+        document.getElementById('manual-entry-tab')?.addEventListener('click', () => {
+            this.switchBulkMethod('manual');
+        });
+        
+        document.getElementById('json-import-tab')?.addEventListener('click', () => {
+            this.switchBulkMethod('json');
+        });
     }
     
     switchMode(mode) {
@@ -32,6 +41,12 @@ class TokenAllocationCore {
             tab.classList.remove('token-mode-active');
         });
         document.getElementById(`${mode}-mode-tab`).classList.add('token-mode-active');
+        
+        // Update content visibility
+        document.querySelectorAll('.token-mode-content').forEach(content => {
+            content.classList.remove('token-mode-content-active');
+        });
+        document.getElementById(`${mode}-mode-content`).classList.add('token-mode-content-active');
         
         // Clear results when switching modes
         if (this.resultsHandler) {

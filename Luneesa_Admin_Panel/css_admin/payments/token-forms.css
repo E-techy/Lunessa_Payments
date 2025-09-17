@@ -1,0 +1,207 @@
+/* Token Allocation System - Forms Styles */
+
+/* Form Container */
+.token-allocation-form {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #E5E7EB;
+    margin-bottom: 24px;
+}
+
+/* Form Rows and Groups */
+.token-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.token-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.token-form-group label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+}
+
+.token-form-group input,
+.token-form-group select,
+.token-form-group textarea {
+    padding: 10px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: white;
+}
+
+.token-form-group input:focus,
+.token-form-group select:focus,
+.token-form-group textarea:focus {
+    outline: none;
+    border-color: #F59E0B;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.token-form-group input:disabled {
+    background-color: #F3F4F6;
+    color: #6B7280;
+    cursor: not-allowed;
+}
+
+/* Validation Styles */
+.token-form-group input.invalid,
+.token-form-group select.invalid {
+    border-color: #EF4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.token-form-group .error-message {
+    color: #EF4444;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* Bulk User Entry Forms */
+.bulk-user-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.bulk-user-form .token-form-group {
+    margin-bottom: 0;
+}
+
+.bulk-user-form input,
+.bulk-user-form select {
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+/* Single form field for full width */
+.token-form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Special input types */
+.token-form-group input[type="number"] {
+    text-align: right;
+}
+
+.token-form-group select {
+    cursor: pointer;
+}
+
+/* Placeholder styling */
+.token-form-group input::placeholder,
+.token-form-group textarea::placeholder {
+    color: #9CA3AF;
+    font-style: italic;
+}
+
+/* Required field indicators */
+.token-form-group label[for]::after {
+    content: '';
+}
+
+.token-form-group label:has(+ [required])::after,
+.token-form-group label:has(+ select[required])::after {
+    content: ' *';
+    color: #EF4444;
+}
+
+/* Form sections */
+.form-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.form-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-section-title i {
+    color: #F59E0B;
+    font-size: 16px;
+}
+
+/* Help text */
+.form-help {
+    font-size: 13px;
+    color: #6B7280;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+/* Form validation summary */
+.form-validation-summary {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 20px;
+    color: #991B1B;
+}
+
+.form-validation-summary h5 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-validation-summary ul {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 13px;
+}
+
+.form-validation-summary li {
+    margin-bottom: 2px;
+}
+
+/* Responsive Forms */
+@media (max-width: 768px) {
+    .token-form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .bulk-user-form {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .token-allocation-form {
+        padding: 16px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .token-form-group input,
+    .token-form-group select,
+    .token-form-group textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 12px;
+    }
+}

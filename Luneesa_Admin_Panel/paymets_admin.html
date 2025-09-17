@@ -964,6 +964,65 @@
                                 <i class="fas fa-users"></i> Bulk Mode
                             </div>
                         </div>
+
+                        <!-- Single Mode Content -->
+                        <div class="token-mode-content token-mode-content-active" id="single-mode-content">
+                            <div class="token-mode-header">
+                                <i class="fas fa-user-plus"></i>
+                                <h4>Single User Token Allocation</h4>
+                                <p>Allocate tokens to a single user with specific agent and model</p>
+                            </div>
+                            
+                            <form id="singleTokenForm" class="token-allocation-form">
+                                <div class="token-form-row">
+                                    <div class="token-form-group">
+                                        <label>Username *</label>
+                                        <input type="text" id="singleUsername" placeholder="Enter username" required>
+                                    </div>
+                                    <div class="token-form-group">
+                                        <label>Agent ID *</label>
+                                        <input type="text" id="singleAgentId" placeholder="e.g., agent789" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="token-form-row">
+                                    <div class="token-form-group">
+                                        <label>Model Name *</label>
+                                        <input type="text" id="singleModelName" placeholder="e.g., gpt-4, claude-3-sonnet, gemini-pro" required>
+                                        <small class="token-hint">Enter the AI model name (e.g., gpt-4, gpt-3.5-turbo, claude-3-sonnet, gemini-pro)</small>
+                                    </div>
+                                    <div class="token-form-group">
+                                        <label>Tokens to Add/Deduct *</label>
+                                        <input type="number" id="singleTokensToAdd" placeholder="30 or -10" step="1" required>
+                                        <small class="token-hint">Use positive values to add tokens, negative to deduct</small>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <div class="token-action-buttons">
+                                <button type="button" class="token-success" id="single-allocate-btn">
+                                    <i class="fas fa-coins"></i> Allocate Tokens
+                                </button>
+                                <button type="button" class="token-secondary" id="single-clear-btn">
+                                    <i class="fas fa-times"></i> Clear Form
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Bulk Mode Content -->
+                        <div class="token-mode-content" id="bulk-mode-content">
+                        </div>
+                        
+                        <!-- Results Section -->
+                        <div class="token-results-section" id="tokenResultsSection" style="display: none;">
+                            <div class="results-header">
+                                <i class="fas fa-chart-line"></i>
+                                <h4>Allocation Results</h4>
+                            </div>
+                            <div class="results-content" id="tokenResultsContent">
+                                <!-- Results will be displayed here -->
+                            </div>
+                        </div>
                     </div>
                 </div>
 

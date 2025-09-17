@@ -1,0 +1,294 @@
+/* Token Allocation System - Buttons Styles */
+
+/* Base Button Styles */
+.token-btn-base {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 8px;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.token-btn-base:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Token Action Buttons Container */
+.token-action-buttons,
+.bulk-action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px 0;
+    margin-top: 20px;
+    border-top: 1px solid #F3F4F6;
+}
+
+/* Success Button (Primary Action) */
+.token-success {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.token-success:hover:not(:disabled) {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.token-success:active {
+    transform: translateY(0);
+}
+
+/* Primary Button */
+.token-primary {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.token-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #7C3AED, #6D28D9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+/* Secondary Button */
+.token-secondary {
+    background: #F3F4F6;
+    color: #374151;
+    border: 1px solid #D1D5DB;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.token-secondary:hover:not(:disabled) {
+    background: #E5E7EB;
+    border-color: #9CA3AF;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Warning Button */
+.token-warning {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.token-warning:hover:not(:disabled) {
+    background: linear-gradient(135deg, #D97706, #B45309);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Danger/Remove Button */
+.token-danger {
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.token-danger:hover:not(:disabled) {
+    background: linear-gradient(135deg, #DC2626, #B91C1C);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Small Button Variants */
+.token-btn-sm {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+/* Icon-only buttons */
+.token-btn-icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Loading state */
+.token-btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.token-btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: token-btn-spin 1s linear infinite;
+    color: white;
+}
+
+@keyframes token-btn-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Button groups */
+.token-btn-group {
+    display: flex;
+    gap: 0;
+}
+
+.token-btn-group > * {
+    border-radius: 0;
+    border-right-width: 0;
+}
+
+.token-btn-group > *:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.token-btn-group > *:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-right-width: 1px;
+}
+
+/* Disabled state */
+.token-success:disabled,
+.token-primary:disabled,
+.token-secondary:disabled,
+.token-warning:disabled,
+.token-danger:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Focus states for accessibility */
+.token-success:focus,
+.token-primary:focus,
+.token-secondary:focus,
+.token-warning:focus,
+.token-danger:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Button text styles */
+.token-btn-text {
+    background: transparent;
+    color: #6B7280;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.token-btn-text:hover:not(:disabled) {
+    background: #F3F4F6;
+    color: #374151;
+}
+
+/* Responsive button adjustments */
+@media (max-width: 768px) {
+    .token-action-buttons,
+    .bulk-action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .token-success,
+    .token-primary,
+    .token-secondary,
+    .token-warning,
+    .token-danger {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .token-success,
+    .token-primary,
+    .token-secondary,
+    .token-warning,
+    .token-danger {
+        padding: 12px 18px;
+        font-size: 16px;
+    }
+    
+    .token-btn-sm {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
