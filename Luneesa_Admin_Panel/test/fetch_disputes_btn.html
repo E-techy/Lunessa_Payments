@@ -1,0 +1,133 @@
+<!-- ✅ HTML button -->
+<button id="fetchDisputesBtn">Fetch Disputes</button>
+
+<!-- ✅ Optional inputs for testing -->
+<input type="text" id="usernameInput" placeholder="Username (optional)">
+<select id="resolvedInput">
+  <option value="">--Resolved Filter--</option>
+  <option value="true">Resolved</option>
+  <option value="false">Unresolved</option>
+</select>
+
+<pre id="disputesOutput"></pre>
+
+<script>
+  // 🔹 Async function to fetch disputes
+  async function fetchDisputes({ username = null, resolved = null } = {}) {
+    try {
+      // Construct body dynamically
+      const body = {};
+      if (username) body.username = username;
+      if (resolved !== null) body.resolved = resolved;
+
+      const response = await fetch("/admin/fetch_disputes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Assuming JWT is stored in localStorage (adjust if using cookies automatically)
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        body: JSON.stringify(body),
+        credentials: "include", // ensures cookies are sent if token is cookie-based
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to fetch disputes");
+      }
+
+      return data;
+    } catch (err) {
+      console.error("❌ Error fetching disputes:", err);
+      return { success: false, error: err.message };
+    }
+  }
+
+  // 🔹 Attach to button
+  document.getElementById("fetchDisputesBtn").addEventListener("click", async () => {
+    const username = document.getElementById("usernameInput").value.trim() || null;
+
+    // Convert resolved input to boolean or null
+    const resolvedInput = document.getElementById("resolvedInput").value;
+    const resolved = resolvedInput === "" ? null : resolvedInput === "true";
+
+    const result = await fetchDisputes({ username, resolved });
+
+    // Show result
+    document.getElementById("disputesOutput").textContent = JSON.stringify(result, null, 2);
+  });
+</script>
+
+
+<!-- // Case A: Fetch all disputes (no username/resolved provided) -->
+
+<!-- data = {
+  "success": true,
+  "data": [
+    {
+      "id": "6745aef3a8a…",
+      "username": "john_doe",
+      "disputes": [
+        {
+          "disputeId": "uuid-123",
+          "orderId": "ORD123",
+          "disputeComment": "Payment not confirmed",
+          "resolved": false,
+          "resolvedComment": "",
+          "createdAt": "2025-09-18T10:45:00Z",
+          "updatedAt": "2025-09-18T10:45:00Z"
+        },
+        {
+          "disputeId": "uuid-456",
+          "orderId": "ORD124",
+          "disputeComment": "Refund delayed",
+          "resolved": true,
+          "resolvedComment": "Refund processed",
+          "createdAt": "2025-09-12T09:30:00Z",
+          "updatedAt": "2025-09-13T12:00:00Z"
+        }
+      ],
+      "createdAt": "2025-09-10T08:00:00Z",
+      "updatedAt": "2025-09-18T11:00:00Z"
+    },
+    {
+      "id": "6745af01b23…",
+      "username": "alice123",
+      "disputes": [],
+      "createdAt": "2025-09-05T08:00:00Z",
+      "updatedAt": "2025-09-07T09:00:00Z"
+    }
+  ]
+} -->
+
+
+ <!-- Case B: Fetch disputes for a specific username (no resolved filter) -->
+
+ <!-- data = {
+  "success": true,
+  "data": {
+    "username": "john_doe",
+    "disputes": [
+      {
+        "disputeId": "uuid-123",
+        "orderId": "ORD123",
+        "disputeComment": "Payment not confirmed",
+        "resolved": false,
+        "resolvedComment": "",
+        "createdAt": "2025-09-18T10:45:00Z",
+        "updatedAt": "2025-09-18T10:45:00Z"
+      },
+      {
+        "disputeId": "uuid-456",
+        "orderId": "ORD124",
+        "disputeComment": "Refund delayed",
+        "resolved": true,
+        "resolvedComment": "Refund processed",
+        "createdAt": "2025-09-12T09:30:00Z",
+        "updatedAt": "2025-09-13T12:00:00Z"
+      }
+    ],
+    "createdAt": "2025-09-10T08:00:00Z",
+    "updatedAt": "2025-09-18T11:00:00Z"
+  }
+} -->

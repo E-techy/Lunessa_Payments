@@ -85,7 +85,7 @@ app.get("/buy_agent_tokens", authenticateUser, buyAgentTokensHandler);
 
 
 
-// Sending the user agent details with their available tokens , all agent detials if username not specified
+// Sending the user agent details with their available tokens , all agent details if username not specified
 app.post("/view_agent_tokens", authenticateUser, viewAgentTokensHandler);
 
 // Admin view agents
