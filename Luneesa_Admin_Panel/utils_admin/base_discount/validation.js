@@ -1,23 +1,24 @@
-// Data validation and saving functionality
+// VALIDATION.JS - Data validation and saving functionality only
 
 /**
- * Validate table data and save changes
+ * Validate table data and save all changes
  */
-function saveChanges() {
-    if (isModifyMode) {
+async function saveChanges() {
+    // First, exit modify mode if active
+    if (isModifyMode && typeof toggleModifyMode === 'function') {
         toggleModifyMode();
     }
     
-    // Process any new rows - convert them to readonly format
+    // Process any new rows - validate and convert them to readonly format
     const newRows = document.querySelectorAll('.new-row');
     let isValid = true;
     let validationErrors = [];
     
-    newRows.forEach(row => {
+    newRows.forEach((row, index) => {
         const validationResult = validateRow(row);
         if (!validationResult.isValid) {
             isValid = false;
-            validationErrors.push(...validationResult.errors);
+            validationErrors.push(`Row ${index + 1}: ${validationResult.errors.join(', ')}`);
         }
         
         if (validationResult.isValid) {
@@ -27,15 +28,17 @@ function saveChanges() {
     });
     
     if (!isValid) {
-        showNotification(
-            `Please fix the following errors:\n${validationErrors.join('\n')}`,
-            'error'
-        );
+        if (typeof showNotification === 'function') {
+            showNotification(
+                `Please fix validation errors:\n${validationErrors.join('\n')}`,
+                'error'
+            );
+        }
         return;
     }
     
-    // Simulate save operation
-    performSaveOperation();
+    // Perform save operation with API call
+    await performSaveOperation();
 }
 
 /**
@@ -46,33 +49,65 @@ function validateRow(row) {
     let isValid = true;
     let errors = [];
     
-    // Validate numeric inputs
-    inputs.forEach(input => {
-        if (input.tagName === 'INPUT' && input.type === 'number') {
-            if (!validateNumericInput(input)) {
-                isValid = false;
-                input.classList.add('error');
-                errors.push(`${input.placeholder} must be a valid positive number`);
-            } else {
-                input.classList.remove('error');
-            }
-        }
-    });
+    if (inputs.length < 4) {
+        return { isValid: false, errors: ['Incomplete row data'] };
+    }
     
-    // ✅ Only check min/max if at least 2 inputs exist
-    if (inputs.length >= 2) {
-        const minValue = parseFloat(inputs[0].value);
-        const maxValue = parseFloat(inputs[1].value);
-
-        if (!isNaN(minValue) && !isNaN(maxValue) && minValue >= maxValue) {
+    const minInput = inputs[0];
+    const maxInput = inputs[1];
+    const typeSelect = inputs[2];
+    const discountInput = inputs[3];
+    
+    // Validate min value
+    if (!validateNumericInput(minInput)) {
+        isValid = false;
+        minInput.classList.add('error');
+        errors.push('Min value must be a valid positive number');
+    } else {
+        minInput.classList.remove('error');
+    }
+    
+    // Validate max value
+    if (!validateNumericInput(maxInput)) {
+        isValid = false;
+        maxInput.classList.add('error');
+        errors.push('Max value must be a valid positive number');
+    } else {
+        maxInput.classList.remove('error');
+    }
+    
+    // Validate discount value
+    if (!validateNumericInput(discountInput)) {
+        isValid = false;
+        discountInput.classList.add('error');
+        errors.push('Discount value must be a valid positive number');
+    } else {
+        discountInput.classList.remove('error');
+        
+        // Special validation for percentage
+        const discountType = typeSelect.value;
+        const discountValue = parseFloat(discountInput.value);
+        
+        if (discountType === 'percentage' && discountValue > 100) {
             isValid = false;
-            inputs[0].classList.add('error');
-            inputs[1].classList.add('error');
-            errors.push('Min Value must be less than Max Value');
+            discountInput.classList.add('error');
+            errors.push('Percentage discount cannot exceed 100%');
         }
     }
     
-    // If fewer than 2 inputs, skip min/max validation (row might not need it)
+    // Validate min/max relationship
+    if (minInput.value && maxInput.value) {
+        const minValue = parseFloat(minInput.value);
+        const maxValue = parseFloat(maxInput.value);
+        
+        if (!isNaN(minValue) && !isNaN(maxValue) && minValue >= maxValue) {
+            isValid = false;
+            minInput.classList.add('error');
+            maxInput.classList.add('error');
+            errors.push('Min value must be less than max value');
+        }
+    }
+    
     return { isValid, errors };
 }
 
@@ -87,7 +122,16 @@ function convertRowToReadonly(row) {
         const value = input.value;
         const span = document.createElement('span');
         span.className = 'readonly-field-base-discount';
-        span.textContent = value;
+        
+        // Add % sign for percentage discount values
+        if (parentTd.cellIndex === 3) {
+            const typeSelect = row.querySelector('.discount-select');
+            const discountType = typeSelect ? typeSelect.value : 'flat';
+            span.textContent = discountType === 'percentage' ? value + '%' : value;
+        } else {
+            span.textContent = value;
+        }
+        
         parentTd.innerHTML = '';
         parentTd.appendChild(span);
     });
@@ -97,7 +141,12 @@ function convertRowToReadonly(row) {
  * Perform the save operation with real API calls
  */
 async function performSaveOperation() {
-    const saveBtn = document.querySelector('.save-btn');
+    const saveBtn = document.querySelector('.save-btn, #base-discount-save-changes-btn');
+    if (!saveBtn) {
+        console.error('❌ Save button not found');
+        return;
+    }
+    
     const originalText = saveBtn.textContent;
     
     saveBtn.textContent = 'Saving...';
@@ -108,8 +157,15 @@ async function performSaveOperation() {
         const discountLevels = collectDiscountLevelsFromTable();
         
         if (discountLevels.length === 0) {
-            showNotification('No discount levels to save', 'warning');
+            if (typeof showNotification === 'function') {
+                showNotification('No discount levels to save', 'warning');
+            }
             return;
+        }
+
+        // Check if API is available
+        if (!window.baseDiscountAPI) {
+            throw new Error('Base discount API not available');
         }
 
         // Try to update first, if it fails, create new
@@ -128,11 +184,15 @@ async function performSaveOperation() {
         
         if (result.success) {
             saveBtn.textContent = 'Saved!';
-            showNotification(`Successfully saved ${discountLevels.length} discount levels!`, 'success');
+            if (typeof showNotification === 'function') {
+                showNotification(`Successfully saved ${discountLevels.length} discount levels!`, 'success');
+            }
             
             // Refresh the table with updated data
             setTimeout(() => {
-                fetchBaseDiscount();
+                if (typeof fetchBaseDiscount === 'function') {
+                    fetchBaseDiscount();
+                }
             }, 1000);
         } else {
             throw new Error(result.error || 'Failed to save');
@@ -141,7 +201,9 @@ async function performSaveOperation() {
     } catch (error) {
         console.error('❌ Save operation failed:', error);
         saveBtn.textContent = 'Save Failed';
-        showNotification(`Failed to save: ${error.message}`, 'error');
+        if (typeof showNotification === 'function') {
+            showNotification(`Failed to save: ${error.message}`, 'error');
+        }
     } finally {
         setTimeout(() => {
             saveBtn.textContent = originalText;
@@ -155,6 +217,11 @@ async function performSaveOperation() {
  */
 function collectDiscountLevelsFromTable() {
     const tableBody = document.getElementById('discountTableBody');
+    if (!tableBody) {
+        console.error('❌ Table body not found');
+        return [];
+    }
+    
     const rows = tableBody.querySelectorAll('tr');
     const discountLevels = [];
     
@@ -186,4 +253,32 @@ function collectDiscountLevelsFromTable() {
     });
     
     return discountLevels;
+}
+
+/**
+ * Validate if all levels have unique, non-overlapping ranges
+ */
+function validateRangeOverlaps(levels) {
+    const errors = [];
+    
+    for (let i = 0; i < levels.length; i++) {
+        for (let j = i + 1; j < levels.length; j++) {
+            const level1 = levels[i];
+            const level2 = levels[j];
+            
+            // Check if ranges overlap
+            if (level1.minOrderValue < level2.maxOrderValue && level2.minOrderValue < level1.maxOrderValue) {
+                errors.push(`Level ${i + 1} and Level ${j + 1} have overlapping ranges`);
+            }
+        }
+    }
+    
+    return errors;
+}
+
+// Export functions to global scope
+if (typeof window !== 'undefined') {
+    window.saveChanges = saveChanges;
+    window.validateRow = validateRow;
+    window.collectDiscountLevelsFromTable = collectDiscountLevelsFromTable;
 }

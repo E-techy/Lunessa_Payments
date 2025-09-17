@@ -74,4 +74,14 @@ function showTab(tabName) {
             }
         }, 10);
     }
+    
+    // Special handling for payments tab
+    if (tabName === 'payments') {
+        setTimeout(() => {
+            // Initialize payment portal controller if not already done
+            if (!window.paymentPortalController) {
+                initializePaymentPortal();
+            }
+        }, 10);
+    }
 }

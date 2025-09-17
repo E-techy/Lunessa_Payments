@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/offers.css">
     <link rel="stylesheet" href="/ai_models.css">
     <link rel="stylesheet" href="/coupons.css">
+    <link rel="stylesheet" href="/payments.css">
     <!-- Add Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="/utils_admin/tab_switching.js"></script>
@@ -61,6 +62,9 @@
     <script src="/utils_admin/coupons/search-filter.js"></script>
     <script src="/utils_admin/coupons/table-manager.js"></script>
     <script src="/utils_admin/coupons/utils.js"></script>
+    
+    <!-- payments -->
+    <script src="/utils_admin/payments/navigation.js"></script>
 </head>
 <body>
     <div class="container">
@@ -930,8 +934,47 @@
             
             <!-- Payments Tab Content -->
             <div class="tab-content" id="payments-content">
-                <h2>Payments Management</h2>
-                <p>Payments functionality will be implemented here.</p>
+                <!-- Navigation bar for Payment Portal -->
+                <div class="payment-portal-navbar" id="paymentPortalNavigation">
+                    <div class="portal-nav-item nav-selected" id="token-allocation-nav-btn">
+                        <i class="fas fa-coins"></i> Allot Tokens
+                    </div>
+                    <div class="portal-nav-item" id="razorpay-management-nav-btn">
+                        <i class="fas fa-credit-card"></i> Razorpay Orders
+                    </div>
+                </div>
+
+                <!-- Token Allocation Section View -->
+                <div class="portal-section-view view-active" id="token-allocation-view">
+                    <div class="portal-main-wrapper">
+                        <div class="portal-title-section">
+                            <i class="fas fa-coins"></i>
+                            <h3>Token Allocation System</h3>
+                        </div>
+                        <div class="portal-temp-content">
+                            <i class="fas fa-coins"></i>
+                            <h4>Token Allocation Management</h4>
+                            <p>This section will contain functionality to allocate tokens to users.<br>
+                               You can implement the token allocation features here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Razorpay Management Section View -->
+                <div class="portal-section-view" id="razorpay-management-view">
+                    <div class="portal-main-wrapper">
+                        <div class="portal-title-section">
+                            <i class="fas fa-credit-card"></i>
+                            <h3>Razorpay Management System</h3>
+                        </div>
+                        <div class="portal-temp-content">
+                            <i class="fas fa-credit-card"></i>
+                            <h4>Order Processing & Management</h4>
+                            <p>This section will contain functionality to manage Razorpay orders.<br>
+                               You can implement the order processing features here.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

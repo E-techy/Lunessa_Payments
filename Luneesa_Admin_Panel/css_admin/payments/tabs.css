@@ -1,0 +1,119 @@
+/* Payment Portal - Navigation Styles */
+
+/* Navigation Bar for Payment Portal */
+.payment-portal-navbar {
+    display: flex;
+    background: white;
+    border-radius: 8px;
+    padding: 6px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(24, 24, 27, 0.08);
+    max-width: 500px;
+}
+
+.portal-nav-item {
+    flex: 1;
+    padding: 10px 16px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.portal-nav-item.nav-selected {
+    background: #8B5CF6;
+    color: white;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+}
+
+.portal-nav-item:not(.nav-selected):hover {
+    background: #F3F4F6;
+    color: #374151;
+}
+
+.portal-nav-item i {
+    font-size: 14px;
+}
+
+/* Portal Section Content */
+.portal-section-view {
+    display: none;
+    animation: slideInUp 0.3s ease;
+}
+
+.portal-section-view.view-active {
+    display: block;
+}
+
+/* Slide up animation */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Main content wrappers */
+.portal-main-wrapper {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(24, 24, 27, 0.08);
+    min-height: 400px;
+}
+
+.portal-title-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #F3F4F6;
+}
+
+.portal-title-section i {
+    color: #8B5CF6;
+    margin-right: 12px;
+    font-size: 20px;
+}
+
+.portal-title-section h3 {
+    margin: 0;
+    color: #374151;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* Temporary content styling */
+.portal-temp-content {
+    text-align: center;
+    color: #6B7280;
+    padding: 60px 20px;
+}
+
+.portal-temp-content i {
+    font-size: 48px;
+    color: #D1D5DB;
+    margin-bottom: 16px;
+}
+
+.portal-temp-content h4 {
+    margin: 0 0 8px 0;
+    color: #374151;
+    font-size: 18px;
+}
+
+.portal-temp-content p {
+    margin: 0;
+    font-size: 14px;
+}
