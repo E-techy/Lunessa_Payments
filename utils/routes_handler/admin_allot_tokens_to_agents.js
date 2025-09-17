@@ -83,8 +83,7 @@ async function handleAdminAllotTokens(req, res) {
       if (!agent || agent.username !== username) {
           result= {
             success: false,
-            error: `Agent ownership mismatch for agentId ${agentId}.`,
-            entry,
+            error: `Agent ownership mismatch for agentId ${agentId}.`
           };
         }
         else {
