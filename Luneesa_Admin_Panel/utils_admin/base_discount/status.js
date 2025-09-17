@@ -1,7 +1,7 @@
-// Updated status.js - Status management functionality with backend synchronization
+// STATUS.JS - Status management functionality only
 
 /**
- * ✅ UPDATED: Toggle with backend sync awareness
+ * Toggle status between active/inactive
  */
 function toggleStatus() {
     const toggle = document.querySelector('.toggle-switch');
@@ -57,7 +57,7 @@ function toggleStatus() {
 }
 
 /**
- * ✅ UPDATED: Save status with proper error handling and sync
+ * Save status changes to backend
  */
 async function saveStatusChanges() {
     const toggle = document.querySelector('.toggle-switch');
@@ -84,7 +84,7 @@ async function saveStatusChanges() {
         const result = await window.baseDiscountAPI.updateStatus(newStatus);
         
         if (result.success) {
-            // ✅ Update global status to match what was saved
+            // Update global status to match what was saved
             window.currentStatus = newStatus;
             window.hasUnsavedStatusChange = false;
             
@@ -99,7 +99,7 @@ async function saveStatusChanges() {
                 saveStatusBtn.disabled = false;
                 saveStatusBtn.textContent = 'Save Changes';
                 
-                // ✅ Refresh data to confirm backend state
+                // Refresh data to confirm backend state
                 if (typeof fetchBaseDiscount === 'function') {
                     fetchBaseDiscount();
                 }
@@ -116,7 +116,7 @@ async function saveStatusChanges() {
             showNotification(`Failed to update status: ${error.message}`, 'error');
         }
         
-        // ✅ Revert toggle to match current backend state
+        // Revert toggle to match current backend state
         const currentBackendStatus = window.currentStatus || 'active';
         if (currentBackendStatus === 'active') {
             toggle.classList.add('active');
@@ -179,7 +179,7 @@ function hideContentElements(controllableButtons, table, addLevelSection, saveSe
 }
 
 /**
- * ✅ UPDATED: Initialize status with backend sync capability
+ * Initialize status management system
  */
 function initializeStatus() {
     const toggle = document.querySelector('.toggle-switch');
@@ -224,7 +224,7 @@ function initializeStatus() {
 }
 
 /**
- * ✅ NEW: Sync toggle with backend status (called from fetchBaseDiscount)
+ * Sync toggle with backend status (called from fetchBaseDiscount)
  */
 function syncToggleWithBackendStatus(backendStatus) {
     const toggle = document.querySelector('.toggle-switch');
@@ -265,7 +265,7 @@ function syncToggleWithBackendStatus(backendStatus) {
     console.log(`✅ Toggle synced: ${window.currentStatus} (Toggle active: ${toggle.classList.contains('active')})`);
 }
 
-// Export functions for use in other files
+// Export functions to global scope
 if (typeof window !== 'undefined') {
     window.toggleStatus = toggleStatus;
     window.saveStatusChanges = saveStatusChanges;
