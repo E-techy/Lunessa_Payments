@@ -1,0 +1,170 @@
+<!-- ✅ Button -->
+<button id="fetchOrdersBtn">Fetch Razorpay Orders</button>
+
+<!-- ✅ Inputs -->
+<input type="text" id="orderIdInput" placeholder="Order ID (optional)">
+<input type="text" id="usernameInput" placeholder="Username (optional)">
+<select id="paymentMethodInput">
+  <option value="">--Payment Method--</option>
+  <option value="upi">UPI</option>
+  <option value="card">Card</option>
+  <option value="netbanking">Netbanking</option>
+</select>
+<input type="number" id="fromInput" placeholder="From timestamp (sec)">
+<input type="number" id="toInput" placeholder="To timestamp (sec)">
+<input type="number" id="countInput" placeholder="Count (default 10)">
+<input type="number" id="skipInput" placeholder="Skip (default 0)">
+
+<pre id="ordersOutput"></pre>
+
+<script>
+  async function fetchRazorpayOrders() {
+    try {
+      // Collect values
+      const orderId = document.getElementById("orderIdInput").value.trim() || null;
+      const username = document.getElementById("usernameInput").value.trim() || null;
+      const paymentMethod = document.getElementById("paymentMethodInput").value || null;
+      const from = document.getElementById("fromInput").value || null;
+      const to = document.getElementById("toInput").value || null;
+      const count = document.getElementById("countInput").value || null;
+      const skip = document.getElementById("skipInput").value || null;
+
+      // Build request body
+      const body = {};
+      if (orderId) body.orderId = orderId;
+      else body.allOrders = true; // if no orderId, must fetch multiple
+
+      if (username) body.username = username;
+      if (paymentMethod) body.paymentMethod = paymentMethod;
+      if (from) body.from = Number(from);
+      if (to) body.to = Number(to);
+      if (count) body.count = Number(count);
+      if (skip) body.skip = Number(skip);
+
+      const response = await fetch("/admin/fetch_razorpay_orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+      document.getElementById("ordersOutput").textContent = JSON.stringify(data, null, 2);
+    } catch (err) {
+      console.error("❌ Error fetching Razorpay orders:", err);
+      document.getElementById("ordersOutput").textContent = "Error: " + err.message;
+    }
+  }
+
+  document.getElementById("fetchOrdersBtn").addEventListener("click", fetchRazorpayOrders);
+</script>
+
+<!-- 
+1️⃣ Input Formats for /admin/fetch_razorpay_orders
+
+The route accepts flexible filters.
+
+(A) Fetch a Specific Order by orderId
+{
+  "orderId": "order_12345"
+}
+
+(B) Fetch All Orders (default 10)
+{
+  "allOrders": true
+}
+
+(C) Fetch All Orders with Pagination
+{
+  "allOrders": true,
+  "count": 20,
+  "skip": 40
+}
+
+(D) Fetch All Orders Within Date Range
+{
+  "allOrders": true,
+  "from": 1694000000,
+  "to": 1695000000
+}
+
+(E) Fetch All Orders by Username
+{
+  "allOrders": true,
+  "username": "arjun_agent01"
+}
+
+(F) Fetch All Orders by Payment Method
+{
+  "allOrders": true,
+  "paymentMethod": "upi"
+}
+
+(G) Combined Filters
+{
+  "allOrders": true,
+  "username": "arjun_agent01",
+  "paymentMethod": "card",
+  "from": 1694000000,
+  "to": 1695000000,
+  "count": 5,
+  "skip": 0
+}
+
+2️⃣ Output Formats
+(A) Success → Single Order
+{
+  "success": true,
+  "data": {
+    "id": "order_12345",
+    "entity": "order",
+    "amount": 50000,
+    "currency": "INR",
+    "status": "paid",
+    "receipt": "rcpt_1",
+    "notes": {
+      "userDetails": "{\"username\":\"arjun_agent01\"}"
+    },
+    "created_at": 1694500000
+  }
+}
+
+(B) Success → Multiple Orders
+{
+  "success": true,
+  "data": [
+    {
+      "id": "order_12345",
+      "amount": 50000,
+      "status": "paid",
+      "notes": { "userDetails": "{\"username\":\"arjun_agent01\"}" },
+      "created_at": 1694500000
+    },
+    {
+      "id": "order_67890",
+      "amount": 100000,
+      "status": "created",
+      "notes": { "userDetails": "{\"username\":\"raj_agent02\"}" },
+      "created_at": 1694600000
+    }
+  ]
+}
+
+(C) Error Responses
+
+No params passed:
+
+{ "success": false, "error": "Must provide either `orderId` or set `allOrders=true`" }
+
+
+Invalid role:
+
+{ "success": false, "error": "Unauthorized: Only superAdmin or payments role can fetch Razorpay orders" }
+
+
+Order not found:
+
+{ "success": false, "error": "Order not found: order_99999" } -->
