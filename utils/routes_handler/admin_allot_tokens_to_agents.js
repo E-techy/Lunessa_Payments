@@ -76,7 +76,18 @@ async function handleAdminAllotTokens(req, res) {
         return res.status(404).json({ success: false, error: `No agent found with agentId: ${agentId}` });
       }
 
-      const result = await allotTokensToAgent({ adminRole, agentId, modelName, tokensToAdd });
+      if (!agent || agent.username !== username) {
+          results.push({
+            success: false,
+            error: `Agent ownership mismatch for agentId ${agentId}.`,
+            entry,
+          });
+        }
+        else {
+          const result = await allotTokensToAgent({ adminRole, agentId, modelName, tokensToAdd });
+
+        }
+
       return res.status(result.success ? 200 : 400).json(result);
     }
 
