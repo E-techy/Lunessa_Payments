@@ -247,7 +247,7 @@ app.post("/admin/fetch_disputes", authenticateAdmin, adminFetchDisputesHandler);
 
 
 // admin modify disputes or delete disputes
-app.post("/admin/modify_disputes", authenticateAdmin, adminModifyDisputesHandler);
+app.post("/admin/modify_disputes", authenticateAdmin, adminModifyDisputesHandler)
 
 
 
