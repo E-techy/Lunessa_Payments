@@ -5,12 +5,16 @@
 
 class TokenAllocationCore {
     constructor() {
-        this.currentMode = 'single';       
+        this.currentMode = 'single';
+        this.bulkUserCount = 1;
+        this.bulkUsers = []; 
+        
         this.init();
     }
     
     init() {
         this.bindModeEvents();
+        this.initializeBulkMode(); 
     }
     
     bindModeEvents() {
@@ -53,7 +57,47 @@ class TokenAllocationCore {
             this.resultsHandler.hideResults();
         }
     }
+    
+    switchBulkMethod(method) {
+        // Update method tab styles
+        document.querySelectorAll('.bulk-method-tab').forEach(tab => {
+            tab.classList.remove('bulk-method-active');
+        });
+        document.getElementById(`${method === 'manual' ? 'manual-entry' : 'json-import'}-tab`).classList.add('bulk-method-active');
+        
+        // Update content visibility
+        document.querySelectorAll('.bulk-entry-content').forEach(content => {
+            content.classList.remove('bulk-entry-active');
+        });
+        document.getElementById(`${method === 'manual' ? 'manual-entry' : 'json-import'}-content`).classList.add('bulk-entry-active');
+    }
+    
+    initializeBulkMode() {
+        // Add initial bulk user entry
+        if (typeof TokenBulkHandler !== 'undefined') {
+            this.bulkHandler = new TokenBulkHandler();
+            this.bulkHandler.addBulkUser();
+        }
+    }
+    
+    getCurrentMode() {
+        return this.currentMode;
+    }
+    
+    getBulkUserCount() {
+        return this.bulkUserCount;
+    }
+    
+    incrementBulkUserCount() {
+        this.bulkUserCount++;
+        return this.bulkUserCount;
+    }
+    
+    resetBulkUserCount() {
+        this.bulkUserCount = 0;
+    }
 }
+
 // Initialize core system
 let tokenAllocationCore;
 document.addEventListener('DOMContentLoaded', () => {
