@@ -1,0 +1,119 @@
+/* Token Allocation System - Main Layout & Components */
+
+/* Mode Selection Tabs */
+.token-allocation-modes {
+    display: flex;
+    background: white;
+    border-radius: 8px;
+    padding: 6px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(24, 24, 27, 0.08);
+    max-width: 400px;
+}
+
+.token-mode-tab {
+    flex: 1;
+    padding: 10px 16px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.token-mode-tab.token-mode-active {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+}
+
+.token-mode-tab:not(.token-mode-active):hover {
+    background: #F3F4F6;
+    color: #374151;
+}
+
+.token-mode-tab i {
+    font-size: 14px;
+}
+
+/* Mode Content */
+.token-mode-content {
+    display: none;
+    animation: slideInUp 0.3s ease;
+}
+
+.token-mode-content.token-mode-content-active {
+    display: block;
+}
+
+.token-mode-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #F3F4F6;
+}
+
+.token-mode-header i {
+    color: #F59E0B;
+    font-size: 20px;
+    margin-right: 12px;
+}
+
+.token-mode-header h4 {
+    margin: 8px 0 4px 0;
+    color: #374151;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.token-mode-header p {
+    margin: 0;
+    color: #6B7280;
+    font-size: 14px;
+}
+
+/* Bulk Entry Methods */
+.bulk-entry-methods {
+    margin-bottom: 24px;
+}
+
+.bulk-method-tabs {
+    display: flex;
+    background: #F8FAFC;
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 20px;
+    max-width: 350px;
+}
+
+.bulk-method-tab {
+    flex: 1;
+    padding: 8px 16px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.bulk-method-tab.bulk-method-active {
+    background: white;
+    color: #374151;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.bulk-method-tab:not(.bulk-method-active):hover {
+    color: #374151;
+}
+

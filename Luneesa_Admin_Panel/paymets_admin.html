@@ -65,6 +65,9 @@
     
     <!-- payments -->
     <script src="/utils_admin/payments/navigation.js"></script>
+    
+    <!-- token allocation -->
+    <script src="/utils_admin/payments/allot_tokens/core-system.js"></script>
 </head>
 <body>
     <div class="container">
@@ -951,11 +954,15 @@
                             <i class="fas fa-coins"></i>
                             <h3>Token Allocation System</h3>
                         </div>
-                        <div class="portal-temp-content">
-                            <i class="fas fa-coins"></i>
-                            <h4>Token Allocation Management</h4>
-                            <p>This section will contain functionality to allocate tokens to users.<br>
-                               You can implement the token allocation features here.</p>
+                        
+                        <!-- Mode Selection Tabs -->
+                        <div class="token-allocation-modes" id="tokenAllocationModes">
+                            <div class="token-mode-tab token-mode-active" id="single-mode-tab">
+                                <i class="fas fa-user"></i> Single Mode
+                            </div>
+                            <div class="token-mode-tab" id="bulk-mode-tab">
+                                <i class="fas fa-users"></i> Bulk Mode
+                            </div>
                         </div>
                     </div>
                 </div>
