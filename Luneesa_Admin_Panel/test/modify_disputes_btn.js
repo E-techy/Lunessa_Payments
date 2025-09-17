@@ -180,3 +180,103 @@ document.getElementById("modifyDisputeBtn").addEventListener("click", async () =
 // } else {
 //   showToast("❌ Error: " + result.error);
 // }
+
+
+// 1️⃣ Input Format – Modify a Single Dispute (all = false)
+// {
+//   "username": "john_doe",
+//   "disputeId": "uuid-123",
+//   "resolved": true,
+//   "resolvedComment": "Refund approved by admin",
+//   "all": false
+// }
+
+// Expected Output
+// {
+//   "success": true,
+//   "message": "Dispute updated successfully",
+//   "data": {
+//     "username": "john_doe",
+//     "disputes": [
+//       {
+//         "disputeId": "uuid-123",
+//         "orderId": "ORD123",
+//         "disputeComment": "Payment not confirmed",
+//         "resolved": true,
+//         "resolvedComment": "Refund approved by admin",
+//         "createdAt": "2025-09-18T10:45:00Z",
+//         "updatedAt": "2025-09-18T12:30:00Z"
+//       },
+//       {
+//         "disputeId": "uuid-456",
+//         "orderId": "ORD124",
+//         "disputeComment": "Refund delayed",
+//         "resolved": true,
+//         "resolvedComment": "Refund processed",
+//         "createdAt": "2025-09-12T09:30:00Z",
+//         "updatedAt": "2025-09-13T12:00:00Z"
+//       }
+//     ]
+//   }
+// }
+
+
+// ✅ Only the matching disputeId is updated.
+// ✅ Rest remain unchanged.
+
+// 2️⃣ Input Format – Modify All Disputes of a User (all = true)
+// {
+//   "username": "john_doe",
+//   "resolved": true,
+//   "resolvedComment": "All disputes marked resolved by admin",
+//   "all": true
+// }
+
+// Expected Output
+// {
+//   "success": true,
+//   "message": "All disputes updated successfully",
+//   "data": {
+//     "username": "john_doe",
+//     "disputes": [
+//       {
+//         "disputeId": "uuid-123",
+//         "orderId": "ORD123",
+//         "disputeComment": "Payment not confirmed",
+//         "resolved": true,
+//         "resolvedComment": "All disputes marked resolved by admin",
+//         "createdAt": "2025-09-18T10:45:00Z",
+//         "updatedAt": "2025-09-18T12:30:00Z"
+//       },
+//       {
+//         "disputeId": "uuid-456",
+//         "orderId": "ORD124",
+//         "disputeComment": "Refund delayed",
+//         "resolved": true,
+//         "resolvedComment": "All disputes marked resolved by admin",
+//         "createdAt": "2025-09-12T09:30:00Z",
+//         "updatedAt": "2025-09-18T12:30:00Z"
+//       }
+//     ]
+//   }
+// }
+
+
+// ✅ Every dispute in the username’s disputes[] gets updated.
+// ✅ resolved and resolvedComment applied to all.
+
+// 3️⃣ Failure / Error Responses
+
+// Missing required fields:
+
+// { "success": false, "error": "username, resolved are required fields" }
+
+
+// all = false but disputeId missing:
+
+// { "success": false, "error": "disputeId is required when all = false" }
+
+
+// User not found:
+
+// { "success": false, "error": "No disputes found for username: john_doe" }
