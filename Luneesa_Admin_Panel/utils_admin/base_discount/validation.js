@@ -27,15 +27,15 @@ async function saveChanges() {
         }
     });
     
-    // if (!isValid) {
-    //     if (typeof showNotification === 'function') {
-    //         showNotification(
-    //             `Please fix validation errors:\n${validationErrors.join('\n')}`,
-    //             'error'
-    //         );
-    //     }
-    //     return;
-    // }
+    if (!isValid) {
+        if (typeof showNotification === 'function') {
+            showNotification(
+                `Please fix validation errors:\n${validationErrors.join('\n')}`,
+                'error'
+            );
+        }
+        return;
+    }
     
     // Perform save operation with API call
     await performSaveOperation();
