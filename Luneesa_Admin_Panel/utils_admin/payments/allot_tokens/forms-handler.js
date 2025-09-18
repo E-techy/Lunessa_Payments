@@ -1,21 +1,17 @@
 /**
- * Token Allocation System - Form Validation Handler
- * Handles form validation, autocomplete, and field interactions
+ * Token Allocation System - Forms Handler
+ * Handles form validation, data collection, and user interactions
  */
 
 class TokenFormsHandler {
     constructor() {
-        this.commonModels = [
-            'gpt-4',
-            'gpt-3.5-turbo',
-            'gpt-4-turbo',
-            'claude-3-sonnet',
-            'claude-3-haiku',
-            'claude-3-opus',
-            'gemini-pro',
-            'gemini-1.5-pro',
-            'text-davinci-003',
-            'text-embedding-ada-002'
+        this.modelOptions = [
+            { value: 'gpt-4', label: 'GPT-4' },
+            { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
+            { value: 'claude-3-sonnet', label: 'Claude 3 Sonnet' },
+            { value: 'claude-3-haiku', label: 'Claude 3 Haiku' },
+            { value: 'gemini-pro', label: 'Gemini Pro' },
+            { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' }
         ];
         
         this.init();
@@ -42,7 +38,10 @@ class TokenFormsHandler {
     }
     
     setupFormValidation() {
+        // Real-time validation for single form
         this.setupSingleFormValidation();
+        
+        // Setup bulk form validation
         this.setupBulkFormValidation();
     }
     
@@ -60,13 +59,22 @@ class TokenFormsHandler {
         Object.keys(fields).forEach(fieldId => {
             const field = document.getElementById(fieldId);
             if (field) {
-                field.addEventListener('blur', () => this.validateField(fieldId, fields[fieldId]));
-                field.addEventListener('input', () => this.clearFieldError(fieldId));
+                field.addEventListener('blur', () => {
+                    if (typeof tokenValidator !== 'undefined') {
+                        tokenValidator.validateField(fieldId, fields[fieldId]);
+                    }
+                });
+                field.addEventListener('input', () => {
+                    if (typeof tokenValidator !== 'undefined') {
+                        tokenValidator.clearFieldError(fieldId);
+                    }
+                });
             }
         });
     }
     
     setupBulkFormValidation() {
+        // Dynamic validation for bulk user entries will be handled when entries are created
         this.observeBulkEntries();
     }
     
@@ -101,119 +109,13 @@ class TokenFormsHandler {
         });
     }
     
-    validateField(fieldId, rules) {
-        const field = document.getElementById(fieldId);
-        if (!field) return true;
-        
-        const value = field.value.trim();
-        let isValid = true;
-        let errorMessage = '';
-        
-        // Required validation
-        if (rules.required && !value) {
-            isValid = false;
-            errorMessage = 'This field is required';
-        }
-        
-        // Length validation
-        if (isValid && rules.minLength && value.length < rules.minLength) {
-            isValid = false;
-            errorMessage = `Minimum length is ${rules.minLength} characters`;
-        }
-        
-        if (isValid && rules.maxLength && value.length > rules.maxLength) {
-            isValid = false;
-            errorMessage = `Maximum length is ${rules.maxLength} characters`;
-        }
-        
-        // Pattern validation
-        if (isValid && rules.pattern && !rules.pattern.test(value)) {
-            isValid = false;
-            errorMessage = 'Invalid format';
-        }
-        
-        // Number validation
-        if (isValid && rules.type === 'number') {
-            const numValue = parseInt(value);
-            if (isNaN(numValue)) {
-                isValid = false;
-                errorMessage = 'Must be a valid number';
-            } else {
-                if (rules.min !== undefined && numValue < rules.min) {
-                    isValid = false;
-                    errorMessage = `Minimum value is ${rules.min}`;
-                }
-                if (rules.max !== undefined && numValue > rules.max) {
-                    isValid = false;
-                    errorMessage = `Maximum value is ${rules.max}`;
-                }
-                if (rules.notZero && numValue === 0) {
-                    isValid = false;
-                    errorMessage = 'Value cannot be zero';
-                }
-            }
-        }
-
-        this.showFieldValidation(field, isValid, errorMessage);
-        return isValid;
-    }
-    
     validateBulkField(field) {
-        const fieldType = this.getBulkFieldType(field.id);
-        let rules = {};
-        
-        switch (fieldType) {
-            case 'username':
-                rules = { required: true, minLength: 3, maxLength: 50 };
-                break;
-            case 'agentid':
-                rules = { required: true, minLength: 20, maxLength: 20 };
-                break;
-            case 'modelname':
-                rules = { required: true, minLength: 3, maxLength: 50 };
-                break;
-            case 'tokens':
-                rules = { required: true, type: 'number', notZero: true };
-                break;
+        if (typeof tokenValidator === 'undefined') {
+            return true; // Skip validation if validator not loaded yet
         }
-        
-        return this.validateField(field.id, rules);
-    }
-    
-    getBulkFieldType(fieldId) {
-        if (fieldId.includes('username')) return 'username';
-        if (fieldId.includes('agentid')) return 'agentid';
-        if (fieldId.includes('modelname')) return 'modelname';
-        if (fieldId.includes('tokens')) return 'tokens';
-        return 'unknown';
-    }
-    
-    showFieldValidation(field, isValid, errorMessage) {
-        // Remove existing error styling and messages
-        field.classList.remove('invalid');
-        const existingError = field.parentNode.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
-        }
-        
-        if (!isValid) {
-            field.classList.add('invalid');
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.textContent = errorMessage;
-            field.parentNode.appendChild(errorDiv);
-        }
-    }
-    
-    clearFieldError(fieldId) {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.classList.remove('invalid');
-            const errorMessage = field.parentNode.querySelector('.error-message');
-            if (errorMessage) {
-                errorMessage.remove();
-            }
-        }
+        const fieldType = tokenValidator.getBulkFieldType(field.id);
+        const rules = tokenValidator.getBulkFieldRules(fieldType);
+        return tokenValidator.validateField(field.id, rules);
     }
     
     clearBulkFieldError(field) {
@@ -236,7 +138,9 @@ class TokenFormsHandler {
         if (field.type === 'text' && field.value.length > 2) {
             this.debounce(() => {
                 if (field.id.includes('Username') || field.id.includes('username')) {
-                    this.validateUsernameFormat(field);
+                    if (typeof tokenValidator !== 'undefined') {
+                        tokenValidator.validateUsernameFormat(field);
+                    }
                 }
             }, 500)();
         }
@@ -249,7 +153,9 @@ class TokenFormsHandler {
         if (field.tagName === 'SELECT' || field.type === 'number') {
             setTimeout(() => {
                 if (field.id.startsWith('single')) {
-                    this.validateField(field.id, this.getSingleFieldRules(field.id));
+                    if (typeof tokenValidator !== 'undefined') {
+                        tokenValidator.validateField(field.id, tokenValidator.getSingleFieldRules(field.id));
+                    }
                 } else {
                     this.validateBulkField(field);
                 }
@@ -275,28 +181,6 @@ class TokenFormsHandler {
         }
     }
     
-    validateUsernameFormat(field) {
-        const username = field.value.trim();
-        const isValid = /^[a-zA-Z0-9_.-]+$/.test(username);
-        
-        if (!isValid && username.length > 0) {
-            this.showFieldValidation(field, false, 'Username can only contain letters, numbers, dots, hyphens, and underscores');
-        } else {
-            this.showFieldValidation(field, true, '');
-        }
-    }
-    
-    getSingleFieldRules(fieldId) {
-        const rules = {
-            singleUsername: { required: true, minLength: 3, maxLength: 50 },
-            singleAgentId: { required: true, minLength: 20, maxLength: 20 },
-            singleModelName: { required: true, minLength: 3, maxLength: 50 },
-            singleTokensToAdd: { required: true, type: 'number', notZero: true }
-        };
-        
-        return rules[fieldId] || {};
-    }
-    
     debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -311,12 +195,16 @@ class TokenFormsHandler {
     
     // Public methods for external validation
     validateAllSingleFields() {
+        if (typeof tokenValidator === 'undefined') {
+            return true; // Skip validation if validator not loaded yet
+        }
+        
         const fields = ['singleUsername', 'singleAgentId', 'singleModelName', 'singleTokensToAdd'];
         let allValid = true;
         
         fields.forEach(fieldId => {
-            const rules = this.getSingleFieldRules(fieldId);
-            const isValid = this.validateField(fieldId, rules);
+            const rules = tokenValidator.getSingleFieldRules(fieldId);
+            const isValid = tokenValidator.validateField(fieldId, rules);
             if (!isValid) allValid = false;
         });
         
@@ -324,18 +212,10 @@ class TokenFormsHandler {
     }
     
     validateAllBulkFields() {
-        const bulkEntries = document.querySelectorAll('.bulk-user-entry');
-        let allValid = true;
-        
-        bulkEntries.forEach(entry => {
-            const inputs = entry.querySelectorAll('input, select');
-            inputs.forEach(input => {
-                const isValid = this.validateBulkField(input);
-                if (!isValid) allValid = false;
-            });
-        });
-        
-        return allValid;
+        if (typeof tokenBulkManager === 'undefined') {
+            return true; // Skip validation if bulk manager not loaded yet
+        }
+        return tokenBulkManager.validateAllBulkEntries();
     }
     
     clearAllValidations() {
@@ -349,20 +229,29 @@ class TokenFormsHandler {
         });
         
         // Clear bulk form validations
-        const bulkInputs = document.querySelectorAll('.bulk-user-entry input, .bulk-user-entry select');
-        bulkInputs.forEach(input => {
-            input.classList.remove('invalid');
-            input.style.color = '';
-            const errorMessage = input.parentNode.querySelector('.error-message');
-            if (errorMessage) errorMessage.remove();
-        });
+        if (typeof tokenBulkManager !== 'undefined') {
+            tokenBulkManager.clearBulkValidations();
+        }
     }
     
     setupModelNameAutocomplete(input) {
+        const commonModels = [
+            'gpt-4',
+            'gpt-3.5-turbo',
+            'gpt-4-turbo',
+            'claude-3-sonnet',
+            'claude-3-haiku',
+            'claude-3-opus',
+            'gemini-pro',
+            'gemini-1.5-pro',
+            'text-davinci-003',
+            'text-embedding-ada-002'
+        ];
+        
         input.addEventListener('input', (e) => {
             const value = e.target.value.toLowerCase();
             if (value.length > 0) {
-                const matches = this.commonModels.filter(model => 
+                const matches = commonModels.filter(model => 
                     model.toLowerCase().includes(value)
                 );
                 
@@ -384,7 +273,7 @@ class TokenFormsHandler {
         input.addEventListener('focus', (e) => {
             const value = e.target.value.toLowerCase();
             if (value.length > 0) {
-                const matches = this.commonModels.filter(model => 
+                const matches = commonModels.filter(model => 
                     model.toLowerCase().includes(value)
                 );
                 if (matches.length > 0) {
@@ -456,6 +345,59 @@ class TokenFormsHandler {
         const existingSuggestions = inputGroup.querySelector('.model-suggestions');
         if (existingSuggestions) {
             existingSuggestions.remove();
+        }
+    }
+    
+    resetForm(formType = 'single') {
+        if (formType === 'single') {
+            const form = document.getElementById('singleTokenForm');
+            if (form) {
+                form.reset();
+                this.clearSingleFormValidation();
+            }
+        } else if (formType === 'bulk') {
+            tokenBulkManager.clearAllBulkUsers();
+            tokenAllocation.addBulkUser();
+        } else if (formType === 'json') {
+            tokenJsonHandler.clearJsonData();
+        }
+    }
+    
+    clearSingleFormValidation() {
+        const singleInputs = document.querySelectorAll('#singleTokenForm input, #singleTokenForm select');
+        singleInputs.forEach(input => {
+            input.classList.remove('invalid');
+            input.style.color = '';
+            const errorMessage = input.parentNode.querySelector('.error-message');
+            if (errorMessage) errorMessage.remove();
+        });
+    }
+    
+    populateFormFromData(data, formType = 'single') {
+        if (formType === 'single' && data) {
+            document.getElementById('singleUsername').value = data.username || '';
+            document.getElementById('singleAgentId').value = data.agentId || '';
+            document.getElementById('singleModelName').value = data.modelName || '';
+            document.getElementById('singleTokensToAdd').value = data.tokensToAdd || '';
+        }
+    }
+    
+    getModelSuggestions(query) {
+        return this.modelOptions
+            .filter(option => 
+                option.value.toLowerCase().includes(query.toLowerCase()) ||
+                option.label.toLowerCase().includes(query.toLowerCase())
+            )
+            .map(option => option.value);
+    }
+    
+    addCustomModelOption(modelName, modelLabel = null) {
+        const exists = this.modelOptions.some(option => option.value === modelName);
+        if (!exists) {
+            this.modelOptions.push({
+                value: modelName,
+                label: modelLabel || modelName
+            });
         }
     }
 }

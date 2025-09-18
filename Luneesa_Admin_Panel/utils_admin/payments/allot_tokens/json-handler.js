@@ -1,6 +1,6 @@
 /**
- * Token Allocation System - JSON Import Handler
- * Handles JSON data import and validation for bulk operations
+ * Token Allocation System - JSON Handler
+ * Handles JSON import/export and validation functionality
  */
 
 class TokenJsonHandler {
@@ -10,30 +10,14 @@ class TokenJsonHandler {
     
     init() {
         this.bindJsonEvents();
-        this.setupJsonTextarea();
     }
     
     bindJsonEvents() {
-        // JSON import action buttons
-        document.getElementById('validate-json-btn')?.addEventListener('click', () => {
-            this.validateJsonData();
-        });
-        
-        document.getElementById('clear-json-btn')?.addEventListener('click', () => {
-            this.clearJsonData();
-        });
-    }
-    
-    setupJsonTextarea() {
         // JSON textarea formatting
         const jsonTextarea = document.getElementById('jsonImportData');
         if (jsonTextarea) {
             jsonTextarea.addEventListener('paste', (e) => {
                 setTimeout(() => this.formatJsonData(), 100);
-            });
-            
-            jsonTextarea.addEventListener('blur', (e) => {
-                this.formatJsonData();
             });
         }
     }
@@ -100,55 +84,89 @@ class TokenJsonHandler {
     
     showJsonValidation(message, type) {
         const resultDiv = document.getElementById('jsonValidationResult');
-        if (resultDiv) {
-            resultDiv.style.display = 'block';
-            resultDiv.className = `json-validation-result ${type}`;
-            resultDiv.innerHTML = message;
-        }
+        resultDiv.style.display = 'block';
+        resultDiv.className = `json-validation-result ${type}`;
+        resultDiv.innerHTML = message;
     }
     
     hideJsonValidation() {
         const resultDiv = document.getElementById('jsonValidationResult');
-        if (resultDiv) {
-            resultDiv.style.display = 'none';
+        resultDiv.style.display = 'none';
+    }
+    
+    generateSampleJson() {
+        const sampleData = [
+            {
+                "username": "john_doe",
+                "agentId": "USER123AGENT789ABC01",
+                "modelName": "gpt-4",
+                "tokensToAdd": 100
+            },
+            {
+                "username": "jane_smith",
+                "agentId": "USER456AGENT789DEF02",
+                "modelName": "claude-3-sonnet",
+                "tokensToAdd": -50
+            },
+            {
+                "username": "mike_johnson",
+                "agentId": "USER789AGENT789GHI03",
+                "modelName": "gemini-pro",
+                "tokensToAdd": 200
+            }
+        ];
+        
+        const textarea = document.getElementById('jsonImportData');
+        if (textarea) {
+            textarea.value = JSON.stringify(sampleData, null, 2);
+            this.validateJsonData();
         }
     }
     
-    clearJsonData() {
-        const jsonTextarea = document.getElementById('jsonImportData');
-        if (jsonTextarea) {
-            jsonTextarea.value = '';
+    exportToJson(data, filename = 'token-allocation-export') {
+        try {
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${filename}-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            return true;
+        } catch (error) {
+            console.error('JSON export error:', error);
+            return false;
         }
-        this.hideJsonValidation();
     }
     
-    getJsonSampleData() {
-        return `[
-  {
-    "username": "user1",
-    "agentId": "USER123AGENT789ABC",
-    "modelName": "gpt-4",
-    "tokensToAdd": 100
-  },
-  {
-    "username": "user2", 
-    "agentId": "USER456AGENT123DEF",
-    "modelName": "claude-3-sonnet",
-    "tokensToAdd": -50
-  }
-]`;
-    }
-    
-    insertSampleData() {
-        const jsonTextarea = document.getElementById('jsonImportData');
-        if (jsonTextarea) {
-            jsonTextarea.value = this.getJsonSampleData();
-            this.formatJsonData();
-        }
+    importFromJson(file) {
+        return new Promise((resolve, reject) => {
+            if (!file || file.type !== 'application/json') {
+                reject(new Error('Please select a valid JSON file'));
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    resolve(data);
+                } catch (error) {
+                    reject(new Error('Invalid JSON file format'));
+                }
+            };
+            reader.onerror = () => reject(new Error('Error reading file'));
+            reader.readAsText(file);
+        });
     }
 }
 
-// Initialize JSON handler when DOM is loaded
+// Initialize JSON handler
 let tokenJsonHandler;
 document.addEventListener('DOMContentLoaded', () => {
     tokenJsonHandler = new TokenJsonHandler();

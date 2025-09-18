@@ -90,10 +90,6 @@
     grid-column: 1 / -1;
 }
 
-/* Special input types */
-.token-form-group input[type="number"] {
-    text-align: right;
-}
 
 .token-form-group select {
     cursor: pointer;
