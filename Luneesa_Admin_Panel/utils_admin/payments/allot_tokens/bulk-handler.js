@@ -18,9 +18,13 @@ class TokenBulkHandler {
             this.clearAllBulkUsers();
         });
         
-        // document.getElementById('bulk-preview-btn')?.addEventListener('click', () => {
-        //     this.previewBulkChanges();
-        // });
+        document.getElementById('bulk-allocate-btn')?.addEventListener('click', () => {
+            this.handleBulkAllocation();
+        });
+        
+        document.getElementById('bulk-preview-btn')?.addEventListener('click', () => {
+            this.previewBulkChanges();
+        });
     }
     
     addBulkUser() {
@@ -103,4 +107,192 @@ class TokenBulkHandler {
             tokenResultsHandler.hideResults();
         }
     }
+    
+    async handleBulkAllocation() {
+        const bulkData = this.getBulkFormData();
+        
+        if (!this.validateBulkForm(bulkData)) {
+            return;
+        }
+        
+        // Additional validation using forms handler
+        if (typeof tokenFormsHandler !== 'undefined' && !tokenFormsHandler.validateAllBulkFields()) {
+            return;
+        }
+        
+        const button = document.getElementById('bulk-allocate-btn');
+        button.classList.add('token-btn-loading');
+        button.disabled = true;
+        
+        try {
+            let result;
+            
+            if (typeof tokenAPI !== 'undefined' && tokenAPI.mockMode) {
+                result = await tokenAPI.mockResponse('bulk', { usernames: bulkData });
+            } else if (typeof tokenAPI !== 'undefined') {
+                result = await tokenAPI.allocateBulkUsers(bulkData);
+            } else {
+                // Fallback to direct API call
+                const response = await fetch('/admin/allot_tokens_to_agents', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ usernames: bulkData })
+                });
+                result = await response.json();
+                result.success = response.ok;
+            }
+            
+            if (result.success && result.results) {
+                if (typeof tokenResultsHandler !== 'undefined') {
+                    tokenResultsHandler.showResults(result.results);
+                }
+                this.clearAllBulkUsers();
+            } else {
+                const errorMsg = 'Bulk allocation failed: ' + (result.message || 'Unknown error');
+                if (typeof tokenNotificationHandler !== 'undefined') {
+                    tokenNotificationHandler.showError(errorMsg);
+                } else {
+                    alert(errorMsg);
+                }
+            }
+        } catch (error) {
+            const errorMsg = 'Network error: ' + error.message;
+            if (typeof tokenNotificationHandler !== 'undefined') {
+                tokenNotificationHandler.showError(errorMsg);
+            } else {
+                alert(errorMsg);
+            }
+        } finally {
+            button.classList.remove('token-btn-loading');
+            button.disabled = false;
+        }
+    }
+    
+    async previewBulkChanges() {
+        const bulkData = this.getBulkFormData();
+        
+        if (!this.validateBulkForm(bulkData)) {
+            return;
+        }
+        
+        const button = document.getElementById('bulk-preview-btn');
+        button.classList.add('token-btn-loading');
+        button.disabled = true;
+        
+        try {
+            let result;
+            
+            if (typeof tokenAPI !== 'undefined' && tokenAPI.mockMode) {
+                result = await tokenAPI.mockResponse('preview', { usernames: bulkData });
+                const previewResults = result.preview.map(preview => ({
+                    username: preview.username,
+                    status: 'preview',
+                    message: `Will ${preview.tokensToChange > 0 ? 'add' : 'deduct'} ${Math.abs(preview.tokensToChange)} tokens for ${preview.modelName}`,
+                    tokensAllocated: preview.tokensToChange
+                }));
+                
+                if (typeof tokenResultsHandler !== 'undefined') {
+                    tokenResultsHandler.showResults(previewResults);
+                }
+            } else if (typeof tokenAPI !== 'undefined') {
+                result = await tokenAPI.previewBulkAllocation(bulkData);
+                if (result.success && result.preview) {
+                    const previewResults = result.preview.map(preview => ({
+                        username: preview.username,
+                        status: 'preview',
+                        message: `Will ${preview.tokensToChange > 0 ? 'add' : 'deduct'} ${Math.abs(preview.tokensToChange)} tokens for ${preview.modelName}`,
+                        tokensAllocated: preview.tokensToChange
+                    }));
+                    
+                    if (typeof tokenResultsHandler !== 'undefined') {
+                        tokenResultsHandler.showResults(previewResults);
+                    }
+                } else {
+                    const errorMsg = 'Preview failed: ' + (result.message || 'Unknown error');
+                    if (typeof tokenNotificationHandler !== 'undefined') {
+                        tokenNotificationHandler.showError(errorMsg);
+                    } else {
+                        alert(errorMsg);
+                    }
+                }
+            } else {
+                // Fallback to local preview
+                const previewResults = bulkData.map(user => ({
+                    username: user.username,
+                    status: 'preview',
+                    message: `Will ${user.tokensToAdd > 0 ? 'add' : 'deduct'} ${Math.abs(user.tokensToAdd)} tokens for ${user.modelName}`,
+                    tokensAllocated: user.tokensToAdd
+                }));
+                
+                if (typeof tokenResultsHandler !== 'undefined') {
+                    tokenResultsHandler.showResults(previewResults);
+                }
+            }
+        } catch (error) {
+            const errorMsg = 'Preview error: ' + error.message;
+            if (typeof tokenNotificationHandler !== 'undefined') {
+                tokenNotificationHandler.showError(errorMsg);
+            } else {
+                alert(errorMsg);
+            }
+        } finally {
+            button.classList.remove('token-btn-loading');
+            button.disabled = false;
+        }
+    }
+    
+    getBulkFormData() {
+        const activeMethod = document.querySelector('.bulk-entry-active')?.id;
+        
+        if (activeMethod === 'json-import-content') {
+            const jsonData = document.getElementById('jsonImportData').value.trim();
+            if (!jsonData) return [];
+            
+            try {
+                return JSON.parse(jsonData);
+            } catch (error) {
+                return [];
+            }
+        } else {
+            // Manual entry
+            const users = [];
+            document.querySelectorAll('.bulk-user-entry').forEach((entry) => {
+                const id = entry.id.split('-')[2];
+                const user = {
+                    username: document.getElementById(`bulk-username-${id}`)?.value?.trim(),
+                    agentId: document.getElementById(`bulk-agentid-${id}`)?.value?.trim(),
+                    modelName: document.getElementById(`bulk-modelname-${id}`)?.value,
+                    tokensToAdd: parseInt(document.getElementById(`bulk-tokens-${id}`)?.value) || 0
+                };
+                
+                if (user.username && user.agentId && user.modelName) {
+                    users.push(user);
+                }
+            });
+            
+            return users;
+        }
+    }
+    
+    validateBulkForm(data) {
+        if (!data || data.length === 0) {
+            const errorMsg = 'No valid user data found. Please add users or validate your JSON.';
+            if (typeof tokenNotificationHandler !== 'undefined') {
+                tokenNotificationHandler.showError(errorMsg);
+            } else {
+                alert(errorMsg);
+            }
+            return false;
+        }
+        
+        return true;
+    }
 }
+
+// Initialize bulk handler
+let tokenBulkHandler;
+document.addEventListener('DOMContentLoaded', () => {
+    tokenBulkHandler = new TokenBulkHandler();
+});

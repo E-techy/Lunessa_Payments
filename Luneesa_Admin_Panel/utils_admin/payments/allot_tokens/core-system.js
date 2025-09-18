@@ -7,14 +7,23 @@ class TokenAllocationCore {
     constructor() {
         this.currentMode = 'single';
         this.bulkUserCount = 1;
-        this.bulkUsers = []; 
+        this.bulkUsers = [];
+        this.apiEndpoint = '/admin/allot_tokens_to_agents';
         
         this.init();
     }
     
     init() {
         this.bindModeEvents();
-        this.initializeBulkMode(); 
+        this.initializeBulkMode();
+        
+        // Initialize other handlers
+        if (typeof TokenResultsHandler !== 'undefined') {
+            this.resultsHandler = new TokenResultsHandler();
+        }
+        if (typeof TokenNotificationHandler !== 'undefined') {
+            this.notificationHandler = new TokenNotificationHandler();
+        }
     }
     
     bindModeEvents() {
