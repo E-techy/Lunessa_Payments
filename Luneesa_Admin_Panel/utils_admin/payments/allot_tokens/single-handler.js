@@ -1,15 +1,19 @@
 /**
- * Token Allocation System - Single Handler Module
- * Handles single user token allocation
+ * Token Allocation System - Single Mode Handler
+ * Handles single user token allocation operations
  */
 
 class TokenSingleHandler {
     constructor() {
-        this.bindEvents();
+        this.init();
     }
     
-    bindEvents() {
-        // Single mode actions
+    init() {
+        this.bindSingleModeEvents();
+    }
+    
+    bindSingleModeEvents() {
+        // Single mode action buttons
         document.getElementById('single-allocate-btn')?.addEventListener('click', () => {
             this.handleSingleAllocation();
         });
@@ -36,59 +40,72 @@ class TokenSingleHandler {
         button.disabled = true;
         
         try {
-            let result;
+            const response = await fetch(tokenAllocation.apiEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenAllocation.getAuthToken()}`
+                },
+                credentials: 'include',
+                body: JSON.stringify(formData)
+            });
             
-            if (typeof tokenAPI !== 'undefined' && tokenAPI.mockMode) {
-                result = await tokenAPI.mockResponse('single', formData);
-            } else if (typeof tokenAPI !== 'undefined') {
-                result = await tokenAPI.allocateSingleUser(formData);
-            } else {
-                // Fallback to direct API call
-                const response = await fetch('/admin/allot_tokens_to_agents', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-                result = await response.json();
-                result.success = response.ok;
-            }
+            const result = await response.json();
+            console.log(result);
             
-            if (result.success) {
-                const results = [{
+            if (response.ok && result.success) {
+                const successResult = [{
                     username: formData.username,
+                    agentId: formData.agentId,
+                    modelName: formData.modelName,
                     status: 'success',
                     message: result.message || `Successfully allocated ${formData.tokensToAdd} tokens`,
                     tokensAllocated: formData.tokensToAdd
                 }];
                 
                 if (typeof tokenResultsHandler !== 'undefined') {
-                    tokenResultsHandler.showResults(results);
+                    tokenResultsHandler.showResults(successResult);
                 }
+                
                 this.clearSingleForm();
+                if (typeof tokenNotificationHandler !== 'undefined') {
+                    tokenNotificationHandler.showNotification('Token allocation successful!', 'success');
+                }
             } else {
-                const results = [{
+                const errorResult = [{
                     username: formData.username,
+                    agentId: formData.agentId,
+                    modelName: formData.modelName,
                     status: 'error',
-                    message: result.message || 'Allocation failed',
+                    message: result.error || 'Allocation failed',
                     tokensAllocated: 0
                 }];
                 
                 if (typeof tokenResultsHandler !== 'undefined') {
-                    tokenResultsHandler.showResults(results);
+                    tokenResultsHandler.showResults(errorResult);
+                }
+                
+                if (typeof tokenNotificationHandler !== 'undefined') {
+                    tokenNotificationHandler.showNotification('Token allocation failed: ' + (result.error || 'Unknown error'), 'error');
                 }
             }
         } catch (error) {
-            const results = [{
+            console.error('Token allocation error:', error);
+            const errorResult = [{
                 username: formData.username,
+                agentId: formData.agentId || 'N/A',
+                modelName: formData.modelName || 'N/A',
                 status: 'error',
-                message: 'Error: ' + error.message,
+                message: 'Network error: ' + error.message,
                 tokensAllocated: 0
             }];
             
             if (typeof tokenResultsHandler !== 'undefined') {
-                tokenResultsHandler.showResults(results);
+                tokenResultsHandler.showResults(errorResult);
+            }
+            
+            if (typeof tokenNotificationHandler !== 'undefined') {
+                tokenNotificationHandler.showNotification('Network error occurred. Please try again.', 'error');
             }
         } finally {
             button.classList.remove('token-btn-loading');
@@ -113,11 +130,24 @@ class TokenSingleHandler {
         if (!data.modelName) errors.push('Model Name is required');
         if (!data.tokensToAdd && data.tokensToAdd !== 0) errors.push('Tokens to Add/Deduct is required');
         
+        // Validate Agent ID length (20 characters)
+        if (data.agentId && data.agentId.length !== 20) {
+            errors.push('Agent ID must be exactly 20 characters long');
+        }
+        
+        // Validate tokens is a number and not zero
+        if (data.tokensToAdd !== undefined && data.tokensToAdd !== null) {
+            if (!Number.isInteger(data.tokensToAdd)) {
+                errors.push('Tokens to Add/Deduct must be a valid integer');
+            }
+            if (data.tokensToAdd === 0) {
+                errors.push('Tokens to Add/Deduct cannot be zero');
+            }
+        }
+        
         if (errors.length > 0) {
             if (typeof tokenNotificationHandler !== 'undefined') {
-                tokenNotificationHandler.showError('Please fix the following errors:\n\n' + errors.join('\n'));
-            } else {
-                alert('Please fix the following errors:\n\n' + errors.join('\n'));
+                tokenNotificationHandler.showNotification('Please fix the following errors:\n\n' + errors.join('\n'), 'error');
             }
             return false;
         }
@@ -139,7 +169,7 @@ class TokenSingleHandler {
     }
 }
 
-// Initialize single handler
+// Initialize single handler when DOM is loaded
 let tokenSingleHandler;
 document.addEventListener('DOMContentLoaded', () => {
     tokenSingleHandler = new TokenSingleHandler();

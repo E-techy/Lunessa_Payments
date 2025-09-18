@@ -1,17 +1,21 @@
 /**
- * Token Allocation System - Form Validation Module
- * Handles all form validation and user input processing
+ * Token Allocation System - Form Validation Handler
+ * Handles form validation, autocomplete, and field interactions
  */
 
-class TokenFormValidation {
+class TokenFormsHandler {
     constructor() {
-        this.modelOptions = [
-            { value: 'gpt-4', label: 'GPT-4' },
-            { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
-            { value: 'claude-3-sonnet', label: 'Claude 3 Sonnet' },
-            { value: 'claude-3-haiku', label: 'Claude 3 Haiku' },
-            { value: 'gemini-pro', label: 'Gemini Pro' },
-            { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' }
+        this.commonModels = [
+            'gpt-4',
+            'gpt-3.5-turbo',
+            'gpt-4-turbo',
+            'claude-3-sonnet',
+            'claude-3-haiku',
+            'claude-3-opus',
+            'gemini-pro',
+            'gemini-1.5-pro',
+            'text-davinci-003',
+            'text-embedding-ada-002'
         ];
         
         this.init();
@@ -35,19 +39,10 @@ class TokenFormValidation {
         if (singleModelName) {
             this.setupModelNameAutocomplete(singleModelName);
         }
-        
-        // Auto-generate agent ID based on username (optional helper)
-        const singleUsername = document.getElementById('singleUsername');
-        if (singleUsername) {
-            singleUsername.addEventListener('blur', () => this.suggestAgentId('single'));
-        }
     }
     
     setupFormValidation() {
-        // Real-time validation for single form
         this.setupSingleFormValidation();
-        
-        // Setup bulk form validation
         this.setupBulkFormValidation();
     }
     
@@ -57,9 +52,9 @@ class TokenFormValidation {
         
         const fields = {
             singleUsername: { required: true, minLength: 3, maxLength: 50 },
-            singleAgentId: { required: true, pattern: /^AGT-[a-zA-Z0-9]{16}$/ },
+            singleAgentId: { required: true, minLength: 20, maxLength: 20 },
             singleModelName: { required: true, minLength: 3, maxLength: 50 },
-            singleTokensToAdd: { required: true, type: 'number', min: -10000, max: 10000 }
+            singleTokensToAdd: { required: true, type: 'number', notZero: true }
         };
         
         Object.keys(fields).forEach(fieldId => {
@@ -72,7 +67,6 @@ class TokenFormValidation {
     }
     
     setupBulkFormValidation() {
-        // Dynamic validation for bulk user entries will be handled when entries are created
         this.observeBulkEntries();
     }
     
@@ -99,12 +93,6 @@ class TokenFormValidation {
         inputs.forEach(input => {
             input.addEventListener('blur', () => this.validateBulkField(input));
             input.addEventListener('input', () => this.clearBulkFieldError(input));
-            
-            // Auto-suggest agent ID for username fields
-            if (input.id.includes('username')) {
-                const userId = input.id.split('-')[2];
-                input.addEventListener('blur', () => this.suggestAgentId('bulk', userId));
-            }
             
             // Setup model name autocomplete for model name fields
             if (input.id.includes('modelname')) {
@@ -159,15 +147,13 @@ class TokenFormValidation {
                     isValid = false;
                     errorMessage = `Maximum value is ${rules.max}`;
                 }
+                if (rules.notZero && numValue === 0) {
+                    isValid = false;
+                    errorMessage = 'Value cannot be zero';
+                }
             }
         }
-        
-        // Special validation for agent ID
-        if (isValid && fieldId.includes('AgentId') && value && !value.startsWith('AGT-')) {
-            isValid = false;
-            errorMessage = 'Agent ID must start with "AGT-" followed by 16 characters';
-        }
-        
+
         this.showFieldValidation(field, isValid, errorMessage);
         return isValid;
     }
@@ -181,13 +167,13 @@ class TokenFormValidation {
                 rules = { required: true, minLength: 3, maxLength: 50 };
                 break;
             case 'agentid':
-                rules = { required: true, pattern: /^AGT-[a-zA-Z0-9]{16}$/ };
+                rules = { required: true, minLength: 20, maxLength: 20 };
                 break;
             case 'modelname':
                 rules = { required: true, minLength: 3, maxLength: 50 };
                 break;
             case 'tokens':
-                rules = { required: true, type: 'number', min: -10000, max: 10000 };
+                rules = { required: true, type: 'number', notZero: true };
                 break;
         }
         
@@ -235,38 +221,6 @@ class TokenFormValidation {
         const errorMessage = field.parentNode.querySelector('.error-message');
         if (errorMessage) {
             errorMessage.remove();
-        }
-    }
-    
-    suggestAgentId(mode, userId = null) {
-        let usernameField, agentIdField;
-        
-        if (mode === 'single') {
-            usernameField = document.getElementById('singleUsername');
-            agentIdField = document.getElementById('singleAgentId');
-        } else {
-            usernameField = document.getElementById(`bulk-username-${userId}`);
-            agentIdField = document.getElementById(`bulk-agentid-${userId}`);
-        }
-        
-        if (!usernameField || !agentIdField || agentIdField.value.trim()) {
-            return; // Don't override existing agent ID
-        }
-        
-        const username = usernameField.value.trim();
-        if (username) {
-            // Generate a suggested agent ID in AGT-XXXXXXXXXXXXXXXX format
-            const randomString = this.generateRandomString(16);
-            agentIdField.value = `AGT-${randomString}`;
-            agentIdField.style.fontStyle = 'italic';
-            agentIdField.style.color = '#6B7280';
-            
-            // Clear the styling when user focuses on the field
-            agentIdField.addEventListener('focus', function clearSuggestion() {
-                agentIdField.style.fontStyle = '';
-                agentIdField.style.color = '';
-                agentIdField.removeEventListener('focus', clearSuggestion);
-            });
         }
     }
     
@@ -335,9 +289,9 @@ class TokenFormValidation {
     getSingleFieldRules(fieldId) {
         const rules = {
             singleUsername: { required: true, minLength: 3, maxLength: 50 },
-            singleAgentId: { required: true, pattern: /^AGT-[a-zA-Z0-9]{16}$/ },
+            singleAgentId: { required: true, minLength: 20, maxLength: 20 },
             singleModelName: { required: true, minLength: 3, maxLength: 50 },
-            singleTokensToAdd: { required: true, type: 'number', min: -10000, max: 10000 }
+            singleTokensToAdd: { required: true, type: 'number', notZero: true }
         };
         
         return rules[fieldId] || {};
@@ -353,15 +307,6 @@ class TokenFormValidation {
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
-    }
-    
-    generateRandomString(length) {
-        const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return result;
     }
     
     // Public methods for external validation
@@ -414,23 +359,10 @@ class TokenFormValidation {
     }
     
     setupModelNameAutocomplete(input) {
-        const commonModels = [
-            'gpt-4',
-            'gpt-3.5-turbo',
-            'gpt-4-turbo',
-            'claude-3-sonnet',
-            'claude-3-haiku',
-            'claude-3-opus',
-            'gemini-pro',
-            'gemini-1.5-pro',
-            'text-davinci-003',
-            'text-embedding-ada-002'
-        ];
-        
         input.addEventListener('input', (e) => {
             const value = e.target.value.toLowerCase();
             if (value.length > 0) {
-                const matches = commonModels.filter(model => 
+                const matches = this.commonModels.filter(model => 
                     model.toLowerCase().includes(value)
                 );
                 
@@ -452,7 +384,7 @@ class TokenFormValidation {
         input.addEventListener('focus', (e) => {
             const value = e.target.value.toLowerCase();
             if (value.length > 0) {
-                const matches = commonModels.filter(model => 
+                const matches = this.commonModels.filter(model => 
                     model.toLowerCase().includes(value)
                 );
                 if (matches.length > 0) {
@@ -528,8 +460,8 @@ class TokenFormValidation {
     }
 }
 
-// Initialize form validation handler
+// Initialize forms handler when DOM is loaded
 let tokenFormsHandler;
 document.addEventListener('DOMContentLoaded', () => {
-    tokenFormsHandler = new TokenFormValidation();
+    tokenFormsHandler = new TokenFormsHandler();
 });

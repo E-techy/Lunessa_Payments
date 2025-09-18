@@ -1,363 +1,180 @@
 /**
- * Token Allocation System - Main Controller
- * Coordinates all modules and provides unified API
+ * Token Allocation System - Main Entry Point
+ * Loads all modules and initializes the system
  */
 
-class TokenAllocationSystem {
+// Module loading configuration
+const TOKEN_MODULES = {
+    'core-system': 'modules/core-system.js',
+    'single-handler': 'modules/single-handler.js',
+    'bulk-handler': 'modules/bulk-handler.js',
+    'json-handler': 'modules/json-handler.js',
+    'form-validation': 'modules/form-validation.js',
+    'results-handler': 'modules/results-handler.js',
+    'notification-handler': 'modules/notification-handler.js'
+};
+
+class TokenModuleLoader {
     constructor() {
-        this.modules = {};
-        this.initialized = false;
-        this.init();
+        this.loadedModules = new Set();
+        this.loadingPromises = new Map();
     }
     
-    init() {
-        // Wait for all modules to load
-        this.waitForModules().then(() => {
-            this.initializeModules();
-            this.bindMainEvents();
-            this.initialized = true;
-            console.log('Token Allocation System initialized successfully');
-        });
-    }
-    
-    async waitForModules() {
-        const requiredModules = [
-            'TokenAllocationCore',
-            'TokenSingleHandler', 
-            'TokenBulkHandler',
-            'TokenJsonHandler',
-            'TokenFormValidation',
-            'TokenResultsHandler',
-            'TokenNotificationHandler'
-        ];
+    async loadModule(moduleName) {
+        // Return existing promise if already loading
+        if (this.loadingPromises.has(moduleName)) {
+            return this.loadingPromises.get(moduleName);
+        }
         
-        return new Promise((resolve) => {
-            const checkModules = () => {
-                const allLoaded = requiredModules.every(moduleName => 
-                    typeof window[moduleName] !== 'undefined'
-                );
-                
-                if (allLoaded) {
-                    resolve();
-                } else {
-                    setTimeout(checkModules, 100);
-                }
-            };
-            checkModules();
+        // Return immediately if already loaded
+        if (this.loadedModules.has(moduleName)) {
+            return Promise.resolve();
+        }
+        
+        const moduleUrl = TOKEN_MODULES[moduleName];
+        if (!moduleUrl) {
+            throw new Error(`Unknown module: ${moduleName}`);
+        }
+        
+        const loadPromise = this.loadScript(moduleUrl).then(() => {
+            this.loadedModules.add(moduleName);
+            console.log(`✓ Loaded module: ${moduleName}`);
+        }).catch(error => {
+            console.error(`✗ Failed to load module ${moduleName}:`, error);
+            throw error;
+        });
+        
+        this.loadingPromises.set(moduleName, loadPromise);
+        return loadPromise;
+    }
+    
+    loadScript(url) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = url;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`Failed to load script: ${url}`));
+            // document.head.appendChild(script);
         });
     }
     
-    initializeModules() {
+    async loadAllModules() {
+        console.log('🚀 Loading Token Allocation System modules...');
+        
         try {
-            this.modules.core = new TokenAllocationCore();
-            this.modules.single = new TokenSingleHandler();
-            this.modules.bulk = new TokenBulkHandler();
-            this.modules.json = new TokenJsonHandler();
-            this.modules.validation = new TokenFormValidation();
-            this.modules.results = new TokenResultsHandler();
-            this.modules.notifications = new TokenNotificationHandler();
+            // Load modules in dependency order
+            const loadOrder = [
+                'notification-handler',  // No dependencies
+                'results-handler',       // Uses notification-handler
+                'form-validation',       // No dependencies
+                'json-handler',          // Uses notification-handler
+                'single-handler',        // Uses notification-handler, results-handler, form-validation
+                'bulk-handler',          // Uses notification-handler, results-handler, form-validation
+                'core-system'            // Uses all others
+            ];
             
-            console.log('All modules initialized:', Object.keys(this.modules));
+            for (const moduleName of loadOrder) {
+                await this.loadModule(moduleName);
+            }
+            
+            console.log('✅ All Token Allocation System modules loaded successfully');
+            
+            // Initialize system after all modules are loaded
+            this.initializeSystem();
+            
         } catch (error) {
-            console.error('Error initializing modules:', error);
-            alert('Failed to initialize token allocation system. Please refresh the page.');
+            console.error('❌ Failed to load Token Allocation System:', error);
+            this.showLoadingError(error);
         }
     }
     
-    bindMainEvents() {
-        // Global keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                switch (e.key) {
-                    case 's':
-                        e.preventDefault();
-                        this.quickSave();
-                        break;
-                    case 'r':
-                        e.preventDefault();
-                        this.refreshAll();
-                        break;
-                    case 'Escape':
-                        this.cancelAllOperations();
-                        break;
-                }
-            }
-        });
+    initializeSystem() {
+        // All modules should be initialized by their own DOMContentLoaded events
+        // This is just for any final setup
+        document.dispatchEvent(new CustomEvent('tokenSystemReady', {
+            detail: { loadedModules: Array.from(this.loadedModules) }
+        }));
         
-        // Global error handling
-        window.addEventListener('error', (e) => {
-            console.error('Global error:', e.error);
-            if (this.modules.notifications) {
-                this.modules.notifications.showError('An unexpected error occurred. Please try again.');
-            }
-        });
+        console.log('🎉 Token Allocation System ready!');
+    }
+    
+    showLoadingError(error) {
+        const errorContainer = document.createElement('div');
+        errorContainer.id = 'token-loading-error';
+        errorContainer.innerHTML = `
+            <div style="
+                background-color: #FEE2E2;
+                border: 1px solid #FECACA;
+                color: #DC2626;
+                padding: 16px;
+                border-radius: 8px;
+                margin: 20px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            ">
+                <h4 style="margin: 0 0 8px 0; font-size: 16px;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Failed to Load Token Allocation System
+                </h4>
+                <p style="margin: 0; font-size: 14px;">
+                    ${error.message}
+                </p>
+                <button onclick="location.reload()" style="
+                    margin-top: 12px;
+                    padding: 8px 16px;
+                    background-color: #DC2626;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                ">
+                    Reload Page
+                </button>
+            </div>
+        `;
         
-        // Unload warning for unsaved changes
-        window.addEventListener('beforeunload', (e) => {
-            if (this.hasUnsavedChanges()) {
-                e.preventDefault();
-                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
-                return e.returnValue;
-            }
-        });
-    }
-    
-    // Public API methods
-    getCurrentMode() {
-        return this.modules.core?.getCurrentMode() || 'single';
-    }
-    
-    switchMode(mode) {
-        if (this.modules.core) {
-            this.modules.core.switchMode(mode);
+        // Insert error message at the top of the token allocation content
+        const tokenContent = document.querySelector('#single-mode-content, .token-allocation-container, body');
+        if (tokenContent) {
+            tokenContent.insertBefore(errorContainer, tokenContent.firstChild);
         }
     }
     
-    validateAllFields() {
-        if (!this.modules.validation) return false;
-        
-        const currentMode = this.getCurrentMode();
-        if (currentMode === 'single') {
-            return this.modules.validation.validateAllSingleFields();
-        } else {
-            return this.modules.validation.validateAllBulkFields();
-        }
+    getLoadedModules() {
+        return Array.from(this.loadedModules);
     }
     
-    clearAllForms() {
-        if (this.modules.single) {
-            this.modules.single.clearSingleForm();
-        }
-        if (this.modules.bulk) {
-            this.modules.bulk.clearAllBulkUsers();
-        }
-        if (this.modules.json) {
-            this.modules.json.clearJsonData();
-        }
-    }
-    
-    showResults(results) {
-        if (this.modules.results) {
-            this.modules.results.showResults(results);
-        }
-    }
-    
-    hideResults() {
-        if (this.modules.results) {
-            this.modules.results.hideResults();
-        }
-    }
-    
-    showNotification(message, type = 'info', duration) {
-        if (this.modules.notifications) {
-            return this.modules.notifications.showNotification(message, type, duration);
-        }
-        return null;
-    }
-    
-    // Utility methods
-    quickSave() {
-        const currentData = this.exportCurrentState();
-        localStorage.setItem('tokenAllocation_backup', JSON.stringify(currentData));
-        
-        if (this.modules.notifications) {
-            this.modules.notifications.showSuccess('Current state saved to local backup');
-        }
-    }
-    
-    quickLoad() {
-        try {
-            const savedData = localStorage.getItem('tokenAllocation_backup');
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                this.importState(data);
-                
-                if (this.modules.notifications) {
-                    this.modules.notifications.showSuccess('State restored from local backup');
-                }
-            } else {
-                if (this.modules.notifications) {
-                    this.modules.notifications.showWarning('No backup found');
-                }
-            }
-        } catch (error) {
-            console.error('Error loading backup:', error);
-            if (this.modules.notifications) {
-                this.modules.notifications.showError('Failed to load backup');
-            }
-        }
-    }
-    
-    exportCurrentState() {
-        const state = {
-            timestamp: new Date().toISOString(),
-            mode: this.getCurrentMode(),
-            singleForm: {},
-            bulkData: [],
-            jsonData: null,
-            results: []
-        };
-        
-        // Export single form data
-        const singleForm = document.getElementById('singleTokenForm');
-        if (singleForm) {
-            const formData = new FormData(singleForm);
-            for (let [key, value] of formData.entries()) {
-                state.singleForm[key] = value;
-            }
-        }
-        
-        // Export bulk data
-        if (this.modules.bulk) {
-            state.bulkData = this.modules.bulk.getBulkFormData();
-        }
-        
-        // Export JSON data
-        if (this.modules.json) {
-            state.jsonData = this.modules.json.getJsonData();
-        }
-        
-        // Export current results
-        if (this.modules.results) {
-            state.results = this.modules.results.getResults();
-        }
-        
-        return state;
-    }
-    
-    importState(state) {
-        if (!state) return;
-        
-        // Switch to saved mode
-        if (state.mode) {
-            this.switchMode(state.mode);
-        }
-        
-        // Import single form data
-        if (state.singleForm) {
-            Object.keys(state.singleForm).forEach(key => {
-                const field = document.getElementById(key);
-                if (field) {
-                    field.value = state.singleForm[key];
-                }
-            });
-        }
-        
-        // Import JSON data
-        if (state.jsonData && this.modules.json) {
-            this.modules.json.setJsonData(state.jsonData);
-        }
-        
-        // Import results
-        if (state.results && this.modules.results) {
-            this.modules.results.showResults(state.results);
-        }
-    }
-    
-    refreshAll() {
-        if (this.hasUnsavedChanges()) {
-            if (confirm('This will clear all current data. Are you sure?')) {
-                this.clearAllForms();
-                this.hideResults();
-                if (this.modules.notifications) {
-                    this.modules.notifications.clearAll();
-                    this.modules.notifications.showInfo('All data cleared');
-                }
-            }
-        } else {
-            this.clearAllForms();
-            this.hideResults();
-        }
-    }
-    
-    hasUnsavedChanges() {
-        // Check if any forms have data
-        const singleForm = document.getElementById('singleTokenForm');
-        if (singleForm) {
-            const formData = new FormData(singleForm);
-            for (let [key, value] of formData.entries()) {
-                if (value.trim()) return true;
-            }
-        }
-        
-        // Check bulk entries
-        const bulkEntries = document.querySelectorAll('.bulk-user-entry input');
-        for (let input of bulkEntries) {
-            if (input.value.trim()) return true;
-        }
-        
-        // Check JSON data
-        const jsonData = document.getElementById('jsonImportData')?.value?.trim();
-        if (jsonData) return true;
-        
-        return false;
-    }
-    
-    cancelAllOperations() {
-        // Cancel any ongoing operations
-        const loadingButtons = document.querySelectorAll('.token-btn-loading');
-        loadingButtons.forEach(button => {
-            button.classList.remove('token-btn-loading');
-            button.disabled = false;
-        });
-        
-        if (this.modules.notifications) {
-            this.modules.notifications.showInfo('All operations cancelled');
-        }
-    }
-    
-    // Module access methods
-    getSingleHandler() {
-        return this.modules.single;
-    }
-    
-    getBulkHandler() {
-        return this.modules.bulk;
-    }
-    
-    getJsonHandler() {
-        return this.modules.json;
-    }
-    
-    getValidationHandler() {
-        return this.modules.validation;
-    }
-    
-    getResultsHandler() {
-        return this.modules.results;
-    }
-    
-    getNotificationHandler() {
-        return this.modules.notifications;
-    }
-    
-    getCoreHandler() {
-        return this.modules.core;
-    }
-    
-    // System info
-    getSystemInfo() {
-        return {
-            initialized: this.initialized,
-            modules: Object.keys(this.modules),
-            currentMode: this.getCurrentMode(),
-            hasResults: this.modules.results?.hasResults() || false,
-            hasNotifications: this.modules.notifications?.hasActiveNotifications() || false,
-            version: '1.0.0'
-        };
+    isModuleLoaded(moduleName) {
+        return this.loadedModules.has(moduleName);
     }
 }
 
-// Global initialization
-let tokenAllocation;
-document.addEventListener('DOMContentLoaded', () => {
-    tokenAllocation = new TokenAllocationSystem();
+// Initialize module loader
+const tokenModuleLoader = new TokenModuleLoader();
+
+// Auto-load modules when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        tokenModuleLoader.loadAllModules();
+    });
+} else {
+    // DOM already loaded
+    tokenModuleLoader.loadAllModules();
+}
+
+// Export for manual loading if needed
+window.tokenModuleLoader = tokenModuleLoader;
+
+// Utility function to check if system is ready
+window.isTokenSystemReady = function() {
+    return tokenModuleLoader.getLoadedModules().length === Object.keys(TOKEN_MODULES).length;
+};
+
+// Event listener for system ready
+document.addEventListener('tokenSystemReady', (event) => {
+    console.log('Token System Ready Event:', event.detail);
     
-    // Make it globally available for debugging
-    window.tokenAllocation = tokenAllocation;
+    // Any additional setup after system is fully loaded
+    if (typeof tokenResultsHandler !== 'undefined') {
+        tokenResultsHandler.addExportButtons();
+    }
 });
-
-// Export for module systems
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = TokenAllocationSystem;
-}

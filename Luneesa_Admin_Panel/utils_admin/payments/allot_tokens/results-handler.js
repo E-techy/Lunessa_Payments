@@ -1,36 +1,25 @@
 /**
- * Token Allocation System - Results Handler Module
- * Handles display and management of operation results
+ * Token Allocation System - Results Handler
+ * Handles display and management of allocation results
  */
 
 class TokenResultsHandler {
     constructor() {
-        this.currentResults = [];
         this.init();
     }
     
     init() {
-        this.bindEvents();
-    }
-    
-    bindEvents() {
-        // Results export functionality
-        const exportBtn = document.getElementById('export-results-btn');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', () => this.exportResults());
-        }
-        
-        // Results clear functionality
-        const clearBtn = document.getElementById('clear-results-btn');
-        if (clearBtn) {
-            clearBtn.addEventListener('click', () => this.hideResults());
-        }
+        // Any initialization needed for results handling
     }
     
     showResults(results) {
-        this.currentResults = results;
         const resultsSection = document.getElementById('tokenResultsSection');
         const resultsContent = document.getElementById('tokenResultsContent');
+        
+        if (!resultsSection || !resultsContent) {
+            console.warn('Results display elements not found');
+            return;
+        }
         
         if (!results || results.length === 0) {
             resultsContent.innerHTML = '<p class="no-results">No results to display.</p>';
@@ -39,114 +28,121 @@ class TokenResultsHandler {
             resultsContent.innerHTML = tableHtml;
         }
         
-        if (resultsSection) {
-            resultsSection.style.display = 'block';
-            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-        
-        // Show export button if results exist
-        this.toggleExportButton(results && results.length > 0);
+        resultsSection.style.display = 'block';
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
     
     generateResultsTable(results) {
-        const stats = this.calculateStats(results);
-        
         return `
-            <div class="results-summary">
-                <div class="results-stats">
-                    <div class="stat-item success">
-                        <span class="stat-label">Successful:</span>
-                        <span class="stat-value">${stats.successful}</span>
-                    </div>
-                    <div class="stat-item error">
-                        <span class="stat-label">Failed:</span>
-                        <span class="stat-value">${stats.failed}</span>
-                    </div>
-                    <div class="stat-item preview">
-                        <span class="stat-label">Previewed:</span>
-                        <span class="stat-value">${stats.previewed}</span>
-                    </div>
-                    <div class="stat-item total">
-                        <span class="stat-label">Total:</span>
-                        <span class="stat-value">${stats.total}</span>
-                    </div>
-                </div>
-            </div>
             <div class="results-table-container">
                 <table class="results-table">
                     <thead>
                         <tr>
                             <th>Username</th>
+                            <th>Agent ID</th>
+                            <th>Model Name</th>
                             <th>Status</th>
                             <th>Message</th>
                             <th>Tokens</th>
-                            <th>Timestamp</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${results.map(result => `
-                            <tr class="result-row ${result.status}">
-                                <td class="username">${this.escapeHtml(result.username)}</td>
-                                <td class="status">
-                                    <span class="status-badge ${result.status}">
-                                        ${this.getStatusIcon(result.status)}
-                                        ${result.status.toUpperCase()}
-                                    </span>
-                                </td>
-                                <td class="message">${this.escapeHtml(result.message)}</td>
-                                <td class="tokens ${this.getTokenClass(result.tokensAllocated)}">
-                                    ${this.formatTokens(result.tokensAllocated)}
-                                </td>
-                                <td class="timestamp">${this.formatTimestamp(result.timestamp)}</td>
-                            </tr>
-                        `).join('')}
+                        ${results.map(result => this.generateResultRow(result)).join('')}
                     </tbody>
                 </table>
+            </div>
+            <div class="results-summary">
+                ${this.generateResultsSummary(results)}
             </div>
         `;
     }
     
-    calculateStats(results) {
-        return {
-            successful: results.filter(r => r.status === 'success').length,
-            failed: results.filter(r => r.status === 'error').length,
-            previewed: results.filter(r => r.status === 'preview').length,
-            total: results.length
-        };
+    generateResultRow(result) {
+        const statusIcon = this.getStatusIcon(result.status);
+        const tokenDisplay = this.formatTokenDisplay(result.tokensAllocated);
+        
+        return `
+            <tr class="result-row result-${result.status}">
+                <td class="username-cell">
+                    <span class="username">${this.escapeHtml(result.username)}</span>
+                </td>
+                <td class="agent-id-cell">
+                    <code class="agent-id">${this.escapeHtml(result.agentId || 'N/A')}</code>
+                </td>
+                <td class="model-name-cell">
+                    <span class="model-name">${this.escapeHtml(result.modelName || 'N/A')}</span>
+                </td>
+                <td class="status-cell status-${result.status}">
+                    <i class="fas ${statusIcon}"></i>
+                    <span class="status-text">${result.status.toUpperCase()}</span>
+                </td>
+                <td class="message-cell">
+                    <span class="message">${this.escapeHtml(result.message)}</span>
+                </td>
+                <td class="token-count-cell">
+                    ${tokenDisplay}
+                </td>
+            </tr>
+        `;
     }
     
     getStatusIcon(status) {
         const icons = {
-            success: '<i class="fas fa-check-circle"></i>',
-            error: '<i class="fas fa-times-circle"></i>',
-            preview: '<i class="fas fa-eye"></i>',
-            pending: '<i class="fas fa-clock"></i>'
+            'success': 'fa-check-circle',
+            'error': 'fa-times-circle',
+            'warning': 'fa-exclamation-triangle',
+            'preview': 'fa-info-circle',
+            'pending': 'fa-clock'
         };
-        return icons[status] || '<i class="fas fa-question-circle"></i>';
+        
+        return icons[status] || 'fa-question-circle';
     }
     
-    getTokenClass(tokens) {
-        if (tokens > 0) return 'positive';
-        if (tokens < 0) return 'negative';
-        return 'neutral';
-    }
-    
-    formatTokens(tokens) {
-        if (tokens === 0) return '0';
-        return tokens > 0 ? `+${tokens}` : `${tokens}`;
-    }
-    
-    formatTimestamp(timestamp) {
-        if (!timestamp) {
-            return new Date().toLocaleString();
+    formatTokenDisplay(tokensAllocated) {
+        if (typeof tokensAllocated === 'number' && tokensAllocated !== 0) {
+            const className = tokensAllocated > 0 ? 'positive' : 'negative';
+            const displayValue = tokensAllocated > 0 ? `+${tokensAllocated}` : tokensAllocated;
+            return `<span class="token-count ${className}">${displayValue}</span>`;
+        } else {
+            return `<span class="token-count neutral">${tokensAllocated || 'N/A'}</span>`;
         }
-        return new Date(timestamp).toLocaleString();
     }
     
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+    generateResultsSummary(results) {
+        const summary = this.calculateSummary(results);
+        
+        return `
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Total:</span>
+                    <span class="stat-value">${summary.total}</span>
+                </div>
+                <div class="stat-item success">
+                    <span class="stat-label">Successful:</span>
+                    <span class="stat-value">${summary.successful}</span>
+                </div>
+                <div class="stat-item error">
+                    <span class="stat-label">Failed:</span>
+                    <span class="stat-value">${summary.failed}</span>
+                </div>
+                ${summary.previews > 0 ? `
+                <div class="stat-item preview">
+                    <span class="stat-label">Previewed:</span>
+                    <span class="stat-value">${summary.previews}</span>
+                </div>
+                ` : ''}
+            </div>
+        `;
+    }
+    
+    calculateSummary(results) {
+        return {
+            total: results.length,
+            successful: results.filter(r => r.status === 'success').length,
+            failed: results.filter(r => r.status === 'error').length,
+            previews: results.filter(r => r.status === 'preview').length,
+            warnings: results.filter(r => r.status === 'warning').length
+        };
     }
     
     hideResults() {
@@ -154,154 +150,133 @@ class TokenResultsHandler {
         if (resultsSection) {
             resultsSection.style.display = 'none';
         }
-        this.currentResults = [];
-        this.toggleExportButton(false);
-    }
-    
-    toggleExportButton(show) {
-        const exportBtn = document.getElementById('export-results-btn');
-        if (exportBtn) {
-            exportBtn.style.display = show ? 'inline-block' : 'none';
-        }
-    }
-    
-    exportResults() {
-        if (!this.currentResults || this.currentResults.length === 0) {
-            if (typeof tokenNotificationHandler !== 'undefined') {
-                tokenNotificationHandler.showWarning('No results to export.');
-            } else {
-                alert('No results to export.');
-            }
-            return;
-        }
-        
-        const exportData = this.prepareExportData();
-        this.downloadAsCSV(exportData);
-    }
-    
-    prepareExportData() {
-        const headers = ['Username', 'Status', 'Message', 'Tokens Allocated', 'Timestamp'];
-        const rows = this.currentResults.map(result => [
-            result.username,
-            result.status,
-            result.message,
-            result.tokensAllocated,
-            this.formatTimestamp(result.timestamp)
-        ]);
-        
-        return [headers, ...rows];
-    }
-    
-    downloadAsCSV(data) {
-        const csvContent = data.map(row => 
-            row.map(cell => `"${String(cell).replace(/"/g, '""')}`).join(',')
-        ).join('\n');
-        
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        
-        link.setAttribute('href', url);
-        link.setAttribute('download', `token-allocation-results-${new Date().toISOString().split('T')[0]}.csv`);
-        link.style.visibility = 'hidden';
-        
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        if (typeof tokenNotificationHandler !== 'undefined') {
-            tokenNotificationHandler.showSuccess('Results exported successfully!');
-        }
-    }
-    
-    exportAsJSON() {
-        if (!this.currentResults || this.currentResults.length === 0) {
-            if (typeof tokenNotificationHandler !== 'undefined') {
-                tokenNotificationHandler.showWarning('No results to export.');
-            } else {
-                alert('No results to export.');
-            }
-            return;
-        }
-        
-        const exportData = {
-            exportDate: new Date().toISOString(),
-            totalResults: this.currentResults.length,
-            summary: this.calculateStats(this.currentResults),
-            results: this.currentResults
-        };
-        
-        const jsonContent = JSON.stringify(exportData, null, 2);
-        const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        
-        link.setAttribute('href', url);
-        link.setAttribute('download', `token-allocation-results-${new Date().toISOString().split('T')[0]}.json`);
-        link.style.visibility = 'hidden';
-        
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        if (typeof tokenNotificationHandler !== 'undefined') {
-            tokenNotificationHandler.showSuccess('Results exported as JSON successfully!');
-        }
-    }
-    
-    addResult(result) {
-        if (!result.timestamp) {
-            result.timestamp = new Date().toISOString();
-        }
-        
-        this.currentResults.push(result);
-        this.showResults(this.currentResults);
-    }
-    
-    updateResult(username, updatedData) {
-        const resultIndex = this.currentResults.findIndex(r => r.username === username);
-        if (resultIndex !== -1) {
-            this.currentResults[resultIndex] = { ...this.currentResults[resultIndex], ...updatedData };
-            this.showResults(this.currentResults);
-        }
-    }
-    
-    removeResult(username) {
-        this.currentResults = this.currentResults.filter(r => r.username !== username);
-        this.showResults(this.currentResults);
     }
     
     clearResults() {
-        this.currentResults = [];
+        const resultsContent = document.getElementById('tokenResultsContent');
+        if (resultsContent) {
+            resultsContent.innerHTML = '';
+        }
         this.hideResults();
     }
     
-    getResults() {
-        return [...this.currentResults];
+    exportResults(results, format = 'csv') {
+        if (!results || results.length === 0) {
+            if (typeof tokenNotificationHandler !== 'undefined') {
+                tokenNotificationHandler.showNotification('No results to export', 'warning');
+            }
+            return;
+        }
+        
+        switch (format.toLowerCase()) {
+            case 'csv':
+                this.exportAsCSV(results);
+                break;
+            case 'json':
+                this.exportAsJSON(results);
+                break;
+            default:
+                this.exportAsCSV(results);
+        }
     }
     
-    hasResults() {
-        return this.currentResults.length > 0;
+    exportAsCSV(results) {
+        const headers = ['Username', 'Agent ID', 'Model Name', 'Status', 'Message', 'Tokens Allocated'];
+        const csvContent = [
+            headers.join(','),
+            ...results.map(result => [
+                this.escapeCsvField(result.username),
+                this.escapeCsvField(result.agentId || 'N/A'),
+                this.escapeCsvField(result.modelName || 'N/A'),
+                this.escapeCsvField(result.status),
+                this.escapeCsvField(result.message),
+                this.escapeCsvField(result.tokensAllocated?.toString() || 'N/A')
+            ].join(','))
+        ].join('\n');
+        
+        this.downloadFile(csvContent, 'token-allocation-results.csv', 'text/csv');
     }
     
-    getResultsCount() {
-        return this.currentResults.length;
+    exportAsJSON(results) {
+        const jsonContent = JSON.stringify(results, null, 2);
+        this.downloadFile(jsonContent, 'token-allocation-results.json', 'application/json');
     }
     
-    getSuccessfulResults() {
-        return this.currentResults.filter(r => r.status === 'success');
+    downloadFile(content, filename, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        if (typeof tokenNotificationHandler !== 'undefined') {
+            tokenNotificationHandler.showNotification(`Results exported as ${filename}`, 'success');
+        }
     }
     
-    getFailedResults() {
-        return this.currentResults.filter(r => r.status === 'error');
+    escapeCsvField(field) {
+        if (field === null || field === undefined) {
+            return '';
+        }
+        
+        const stringField = field.toString();
+        
+        // If field contains comma, newline, or quote, wrap in quotes and escape internal quotes
+        if (stringField.includes(',') || stringField.includes('\n') || stringField.includes('"')) {
+            return `"${stringField.replace(/"/g, '""')}"`;
+        }
+        
+        return stringField;
     }
     
-    getPreviewResults() {
-        return this.currentResults.filter(r => r.status === 'preview');
+    escapeHtml(text) {
+        if (text === null || text === undefined) {
+            return '';
+        }
+        
+        const div = document.createElement('div');
+        div.textContent = text.toString();
+        return div.innerHTML;
+    }
+    
+    addExportButtons() {
+        const resultsSection = document.getElementById('tokenResultsSection');
+        if (!resultsSection) return;
+        
+        // Check if export buttons already exist
+        if (resultsSection.querySelector('.export-buttons')) return;
+        
+        const exportButtonsHtml = `
+            <div class="export-buttons">
+                <button type="button" class="export-btn" onclick="tokenResultsHandler.exportLastResults('csv')">
+                    <i class="fas fa-file-csv"></i> Export CSV
+                </button>
+                <button type="button" class="export-btn" onclick="tokenResultsHandler.exportLastResults('json')">
+                    <i class="fas fa-file-code"></i> Export JSON
+                </button>
+            </div>
+        `;
+        
+        resultsSection.insertAdjacentHTML('beforeend', exportButtonsHtml);
+    }
+    
+    // Store last results for export functionality
+    storeResults(results) {
+        this.lastResults = results;
+    }
+    
+    exportLastResults(format) {
+        if (this.lastResults) {
+            this.exportResults(this.lastResults, format);
+        }
     }
 }
 
-// Initialize results handler
+// Initialize results handler when DOM is loaded
 let tokenResultsHandler;
 document.addEventListener('DOMContentLoaded', () => {
     tokenResultsHandler = new TokenResultsHandler();

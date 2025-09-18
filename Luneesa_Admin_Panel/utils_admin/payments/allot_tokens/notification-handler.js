@@ -1,52 +1,321 @@
 /**
- * Token Allocation System - Notification Handler Module
- * Handles system notifications, alerts, and user feedback
+ * Token Allocation System - Notification Handler
+ * Handles all notification and toast messages
  */
 
 class TokenNotificationHandler {
     constructor() {
         this.notifications = [];
         this.maxNotifications = 5;
-        this.defaultDuration = 5000;
+        this.defaultDuration = 5000; // 5 seconds
+        
         this.init();
     }
     
     init() {
         this.createNotificationContainer();
-        this.bindEvents();
+        this.addNotificationStyles();
     }
     
     createNotificationContainer() {
-        if (!document.getElementById('token-notifications-container')) {
-            const container = document.createElement('div');
-            container.id = 'token-notifications-container';
-            container.className = 'token-notifications-container';
-            container.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 10000;
-                max-width: 400px;
-                pointer-events: none;
-            `;
-            document.body.appendChild(container);
+        // Check if container already exists
+        if (document.getElementById('token-notification-container')) {
+            return;
         }
+        
+        const container = document.createElement('div');
+        container.id = 'token-notification-container';
+        container.className = 'token-notification-container';
+        container.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            pointer-events: none;
+            max-width: 400px;
+        `;
+        
+        document.body.appendChild(container);
     }
     
-    bindEvents() {
-        // Listen for keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'Escape') {
-                this.clearAll();
+    showNotification(message, type = 'info', duration = null) {
+        const notificationId = this.generateId();
+        const notification = this.createNotificationElement(notificationId, message, type);
+        
+        // Manage notification count
+        if (this.notifications.length >= this.maxNotifications) {
+            this.removeOldestNotification();
+        }
+        
+        // Add to container
+        const container = document.getElementById('token-notification-container');
+        container.appendChild(notification);
+        
+        // Add to tracking array
+        this.notifications.push({
+            id: notificationId,
+            element: notification,
+            timestamp: Date.now()
+        });
+        
+        // Animate in
+        setTimeout(() => {
+            notification.classList.add('notification-show');
+        }, 10);
+        
+        // Auto remove
+        const autoRemoveDuration = duration || this.defaultDuration;
+        setTimeout(() => {
+            this.removeNotification(notificationId);
+        }, autoRemoveDuration);
+        
+        return notificationId;
+    }
+    
+    createNotificationElement(id, message, type) {
+        const notification = document.createElement('div');
+        notification.id = `notification-${id}`;
+        notification.className = `token-notification token-notification-${type}`;
+        
+        const config = this.getTypeConfig(type);
+        
+        notification.innerHTML = `
+            <div class="notification-content">
+                <div class="notification-icon">
+                    <i class="fas ${config.icon}"></i>
+                </div>
+                <div class="notification-message">
+                    ${this.formatMessage(message)}
+                </div>
+                <button class="notification-close" onclick="tokenNotificationHandler.removeNotification('${id}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        
+        notification.style.cssText = `
+            background-color: ${config.backgroundColor};
+            color: ${config.textColor};
+            border-left: 4px solid ${config.borderColor};
+        `;
+        
+        return notification;
+    }
+    
+    getTypeConfig(type) {
+        const configs = {
+            success: {
+                icon: 'fa-check-circle',
+                backgroundColor: '#10B981',
+                textColor: '#FFFFFF',
+                borderColor: '#059669'
+            },
+            error: {
+                icon: 'fa-exclamation-circle',
+                backgroundColor: '#EF4444',
+                textColor: '#FFFFFF',
+                borderColor: '#DC2626'
+            },
+            warning: {
+                icon: 'fa-exclamation-triangle',
+                backgroundColor: '#F59E0B',
+                textColor: '#FFFFFF',
+                borderColor: '#D97706'
+            },
+            info: {
+                icon: 'fa-info-circle',
+                backgroundColor: '#3B82F6',
+                textColor: '#FFFFFF',
+                borderColor: '#2563EB'
             }
+        };
+        
+        return configs[type] || configs.info;
+    }
+    
+    formatMessage(message) {
+        if (typeof message !== 'string') {
+            message = String(message);
+        }
+        
+        // Convert newlines to <br> tags
+        message = message.replace(/\n/g, '<br>');
+        
+        // Escape HTML to prevent XSS (but allow <br> tags)
+        const div = document.createElement('div');
+        div.textContent = message;
+        let escapedMessage = div.innerHTML;
+        escapedMessage = escapedMessage.replace(/&lt;br&gt;/g, '<br>');
+        
+        return escapedMessage;
+    }
+    
+    removeNotification(id) {
+        const notification = document.getElementById(`notification-${id}`);
+        if (!notification) return;
+        
+        // Animate out
+        notification.classList.add('notification-hide');
+        
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+            
+            // Remove from tracking array
+            this.notifications = this.notifications.filter(n => n.id !== id);
+        }, 300);
+    }
+    
+    removeOldestNotification() {
+        if (this.notifications.length === 0) return;
+        
+        const oldest = this.notifications[0];
+        this.removeNotification(oldest.id);
+    }
+    
+    clearAllNotifications() {
+        this.notifications.forEach(notification => {
+            this.removeNotification(notification.id);
         });
     }
     
-    showSuccess(message, duration = this.defaultDuration) {
+    generateId() {
+        return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    }
+    
+    addNotificationStyles() {
+        // Check if styles already added
+        if (document.getElementById('token-notification-styles')) {
+            return;
+        }
+        
+        const style = document.createElement('style');
+        style.id = 'token-notification-styles';
+        style.textContent = `
+            .token-notification {
+                margin-bottom: 10px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-size: 14px;
+                line-height: 1.4;
+                pointer-events: auto;
+                transform: translateX(100%);
+                opacity: 0;
+                transition: all 0.3s ease-out;
+                max-width: 100%;
+            }
+            
+            .token-notification.notification-show {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            
+            .token-notification.notification-hide {
+                transform: translateX(100%);
+                opacity: 0;
+                transition: all 0.3s ease-in;
+            }
+            
+            .notification-content {
+                display: flex;
+                align-items: flex-start;
+                padding: 16px;
+                gap: 12px;
+            }
+            
+            .notification-icon {
+                flex-shrink: 0;
+                font-size: 18px;
+                margin-top: 2px;
+            }
+            
+            .notification-message {
+                flex: 1;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+            
+            .notification-close {
+                flex-shrink: 0;
+                background: none;
+                border: none;
+                color: inherit;
+                cursor: pointer;
+                padding: 4px;
+                border-radius: 4px;
+                font-size: 16px;
+                opacity: 0.7;
+                transition: all 0.2s ease;
+                margin-top: -2px;
+            }
+            
+            .notification-close:hover {
+                opacity: 1;
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+            
+            .notification-close:active {
+                transform: scale(0.95);
+            }
+            
+            /* Animation keyframes */
+            @keyframes slideInRight {
+                from { 
+                    transform: translateX(100%); 
+                    opacity: 0; 
+                }
+                to { 
+                    transform: translateX(0); 
+                    opacity: 1; 
+                }
+            }
+            
+            @keyframes slideOutRight {
+                from { 
+                    transform: translateX(0); 
+                    opacity: 1; 
+                }
+                to { 
+                    transform: translateX(100%); 
+                    opacity: 0; 
+                }
+            }
+            
+            /* Responsive design */
+            @media (max-width: 480px) {
+                .token-notification-container {
+                    top: 10px;
+                    right: 10px;
+                    left: 10px;
+                    max-width: none;
+                }
+                
+                .notification-content {
+                    padding: 12px;
+                    gap: 8px;
+                }
+                
+                .notification-icon {
+                    font-size: 16px;
+                }
+                
+                .token-notification {
+                    font-size: 13px;
+                }
+            }
+        `;
+        
+        document.head.appendChild(style);
+    }
+    
+    // Utility methods for common notification patterns
+    showSuccess(message, duration = null) {
         return this.showNotification(message, 'success', duration);
     }
     
-    showError(message, duration = 8000) {
+    showError(message, duration = 8000) { // Errors stay longer
         return this.showNotification(message, 'error', duration);
     }
     
@@ -54,330 +323,98 @@ class TokenNotificationHandler {
         return this.showNotification(message, 'warning', duration);
     }
     
-    showInfo(message, duration = this.defaultDuration) {
+    showInfo(message, duration = null) {
         return this.showNotification(message, 'info', duration);
     }
     
-    showNotification(message, type = 'info', duration = this.defaultDuration) {
-        const notification = {
-            id: this.generateId(),
-            message,
-            type,
-            duration,
-            timestamp: Date.now()
-        };
+    // Progress notification for long operations
+    showProgress(message) {
+        const id = this.generateId();
+        const notification = this.createProgressNotification(id, message);
         
-        this.notifications.push(notification);
-        this.renderNotification(notification);
+        const container = document.getElementById('token-notification-container');
+        container.appendChild(notification);
         
-        // Auto-dismiss after duration
-        if (duration > 0) {
-            setTimeout(() => {
-                this.dismiss(notification.id);
-            }, duration);
-        }
+        this.notifications.push({
+            id: id,
+            element: notification,
+            timestamp: Date.now(),
+            type: 'progress'
+        });
         
-        // Clean up old notifications if too many
-        this.cleanupNotifications();
+        setTimeout(() => {
+            notification.classList.add('notification-show');
+        }, 10);
         
-        return notification.id;
+        return id;
     }
     
-    renderNotification(notification) {
-        const container = document.getElementById('token-notifications-container');
-        if (!container) return;
+    createProgressNotification(id, message) {
+        const notification = document.createElement('div');
+        notification.id = `notification-${id}`;
+        notification.className = 'token-notification token-notification-progress';
         
-        const notificationElement = document.createElement('div');
-        notificationElement.id = `notification-${notification.id}`;
-        notificationElement.className = `token-notification ${notification.type}`;
-        notificationElement.style.cssText = `
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-left: 4px solid ${this.getTypeColor(notification.type)};
-            border-radius: 6px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            pointer-events: auto;
-            transform: translateX(100%);
-            transition: all 0.3s ease;
-            max-width: 100%;
-            word-wrap: break-word;
-        `;
-        
-        notificationElement.innerHTML = `
-            <div class="token-notification-content">
-                <div class="token-notification-header">
-                    <span class="token-notification-icon">
-                        ${this.getTypeIcon(notification.type)}
-                    </span>
-                    <span class="token-notification-type">
-                        ${notification.type.toUpperCase()}
-                    </span>
-                    <button class="token-notification-close" onclick="tokenNotificationHandler.dismiss('${notification.id}')">
-                        <i class="fas fa-times"></i>
-                    </button>
+        notification.innerHTML = `
+            <div class="notification-content">
+                <div class="notification-icon">
+                    <i class="fas fa-spinner fa-spin"></i>
                 </div>
-                <div class="token-notification-message">
-                    ${this.escapeHtml(notification.message)}
-                </div>
-                <div class="token-notification-time">
-                    ${new Date(notification.timestamp).toLocaleTimeString()}
-                </div>
+                <div class="notification-message">${this.formatMessage(message)}</div>
             </div>
         `;
         
-        container.appendChild(notificationElement);
-        
-        // Trigger animation
-        setTimeout(() => {
-            notificationElement.style.transform = 'translateX(0)';
-        }, 10);
-        
-        // Add hover effects
-        notificationElement.addEventListener('mouseenter', () => {
-            notificationElement.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
-        });
-        
-        notificationElement.addEventListener('mouseleave', () => {
-            notificationElement.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-        });
-    }
-    
-    dismiss(notificationId) {
-        const element = document.getElementById(`notification-${notificationId}`);
-        if (element) {
-            element.style.transform = 'translateX(100%)';
-            element.style.opacity = '0';
-            
-            setTimeout(() => {
-                if (element.parentNode) {
-                    element.parentNode.removeChild(element);
-                }
-            }, 300);
-        }
-        
-        // Remove from notifications array
-        this.notifications = this.notifications.filter(n => n.id !== notificationId);
-    }
-    
-    clearAll() {
-        this.notifications.forEach(notification => {
-            this.dismiss(notification.id);
-        });
-        this.notifications = [];
-    }
-    
-    getTypeColor(type) {
-        const colors = {
-            success: '#10B981',
-            error: '#EF4444',
-            warning: '#F59E0B',
-            info: '#3B82F6'
-        };
-        return colors[type] || colors.info;
-    }
-    
-    getTypeIcon(type) {
-        const icons = {
-            success: '<i class="fas fa-check-circle" style="color: #10B981;"></i>',
-            error: '<i class="fas fa-exclamation-circle" style="color: #EF4444;"></i>',
-            warning: '<i class="fas fa-exclamation-triangle" style="color: #F59E0B;"></i>',
-            info: '<i class="fas fa-info-circle" style="color: #3B82F6;"></i>'
-        };
-        return icons[type] || icons.info;
-    }
-    
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
-    generateId() {
-        return 'notif_' + Math.random().toString(36).substr(2, 9);
-    }
-    
-    cleanupNotifications() {
-        if (this.notifications.length > this.maxNotifications) {
-            const oldestNotifications = this.notifications
-                .sort((a, b) => a.timestamp - b.timestamp)
-                .slice(0, this.notifications.length - this.maxNotifications);
-                
-            oldestNotifications.forEach(notification => {
-                this.dismiss(notification.id);
-            });
-        }
-    }
-    
-    // Advanced notification methods
-    showProgress(message, progress = 0) {
-        const notificationId = this.showNotification(message, 'info', 0); // No auto-dismiss
-        this.updateProgress(notificationId, progress);
-        return notificationId;
-    }
-    
-    updateProgress(notificationId, progress) {
-        const element = document.getElementById(`notification-${notificationId}`);
-        if (element) {
-            let progressBar = element.querySelector('.progress-bar');
-            if (!progressBar) {
-                progressBar = document.createElement('div');
-                progressBar.className = 'progress-bar';
-                progressBar.style.cssText = `
-                    width: 100%;
-                    height: 4px;
-                    background: #e5e7eb;
-                    border-radius: 2px;
-                    margin-top: 8px;
-                    overflow: hidden;
-                `;
-                
-                const progressFill = document.createElement('div');
-                progressFill.className = 'progress-fill';
-                progressFill.style.cssText = `
-                    height: 100%;
-                    background: #3B82F6;
-                    transition: width 0.3s ease;
-                    width: 0%;
-                `;
-                
-                progressBar.appendChild(progressFill);
-                element.querySelector('.token-notification-content').appendChild(progressBar);
-            }
-            
-            const progressFill = progressBar.querySelector('.progress-fill');
-            if (progressFill) {
-                progressFill.style.width = `${Math.min(Math.max(progress, 0), 100)}%`;
-            }
-        }
-    }
-    
-    showLoading(message) {
-        const notificationId = this.generateId();
-        const container = document.getElementById('token-notifications-container');
-        if (!container) return;
-        
-        const notificationElement = document.createElement('div');
-        notificationElement.id = `notification-${notificationId}`;
-        notificationElement.className = 'token-notification loading';
-        notificationElement.style.cssText = `
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-left: 4px solid #3B82F6;
-            border-radius: 6px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            pointer-events: auto;
-            transform: translateX(100%);
-            transition: all 0.3s ease;
-            max-width: 100%;
+        notification.style.cssText = `
+            background-color: #6366F1;
+            color: #FFFFFF;
+            border-left: 4px solid #4F46E5;
         `;
         
-        notificationElement.innerHTML = `
-            <div class="token-notification-content">
-                <div class="token-notification-header">
-                    <span class="token-notification-icon">
-                        <i class="fas fa-spinner fa-spin" style="color: #3B82F6;"></i>
-                    </span>
-                    <span class="token-notification-type">LOADING</span>
-                </div>
-                <div class="token-notification-message">
-                    ${this.escapeHtml(message)}
-                </div>
-            </div>
-        `;
-        
-        container.appendChild(notificationElement);
-        
-        // Trigger animation
-        setTimeout(() => {
-            notificationElement.style.transform = 'translateX(0)';
-        }, 10);
-        
-        return notificationId;
+        return notification;
     }
     
-    updateLoadingMessage(notificationId, newMessage) {
-        const element = document.getElementById(`notification-${notificationId}`);
-        if (element) {
-            const messageElement = element.querySelector('.token-notification-message');
+    updateProgress(id, message) {
+        const notification = document.getElementById(`notification-${id}`);
+        if (notification) {
+            const messageElement = notification.querySelector('.notification-message');
             if (messageElement) {
-                messageElement.textContent = newMessage;
+                messageElement.innerHTML = this.formatMessage(message);
             }
         }
     }
     
-    // Batch operations
-    showBatchStart(operation, itemCount) {
-        return this.showLoading(`Starting ${operation} for ${itemCount} items...`);
-    }
-    
-    showBatchProgress(notificationId, completed, total, operation) {
-        const progress = Math.round((completed / total) * 100);
-        this.updateLoadingMessage(notificationId, `${operation}: ${completed}/${total} completed (${progress}%)`);
-        this.updateProgress(notificationId, progress);
-    }
-    
-    showBatchComplete(notificationId, operation, successCount, failCount) {
-        this.dismiss(notificationId);
-        
-        if (failCount === 0) {
-            this.showSuccess(`${operation} completed successfully! ${successCount} items processed.`);
-        } else {
-            this.showWarning(`${operation} completed with ${failCount} failures. ${successCount} items succeeded.`);
+    completeProgress(id, message, type = 'success') {
+        const notification = document.getElementById(`notification-${id}`);
+        if (notification) {
+            const config = this.getTypeConfig(type);
+            
+            // Update icon
+            const iconElement = notification.querySelector('.notification-icon i');
+            if (iconElement) {
+                iconElement.className = `fas ${config.icon}`;
+            }
+            
+            // Update message
+            const messageElement = notification.querySelector('.notification-message');
+            if (messageElement) {
+                messageElement.innerHTML = this.formatMessage(message);
+            }
+            
+            // Update styles
+            notification.style.cssText = `
+                background-color: ${config.backgroundColor};
+                color: ${config.textColor};
+                border-left: 4px solid ${config.borderColor};
+            `;
+            
+            // Auto remove after delay
+            setTimeout(() => {
+                this.removeNotification(id);
+            }, 3000);
         }
-    }
-    
-    // API response handlers
-    handleApiResponse(response, operation) {
-        if (response.success) {
-            this.showSuccess(response.message || `${operation} completed successfully.`);
-        } else {
-            this.showError(response.message || `${operation} failed. Please try again.`);
-        }
-    }
-    
-    handleApiError(error, operation) {
-        let message = `${operation} failed: `;
-        
-        if (error.response && error.response.data && error.response.data.message) {
-            message += error.response.data.message;
-        } else if (error.message) {
-            message += error.message;
-        } else {
-            message += 'Unknown error occurred';
-        }
-        
-        this.showError(message);
-    }
-    
-    // Utility methods
-    getActiveNotifications() {
-        return [...this.notifications];
-    }
-    
-    hasActiveNotifications() {
-        return this.notifications.length > 0;
-    }
-    
-    getNotificationById(id) {
-        return this.notifications.find(n => n.id === id);
-    }
-    
-    // Settings
-    setDefaultDuration(duration) {
-        this.defaultDuration = duration;
-    }
-    
-    setMaxNotifications(max) {
-        this.maxNotifications = max;
-        this.cleanupNotifications();
     }
 }
 
-// Initialize notification handler
+// Initialize notification handler when DOM is loaded
 let tokenNotificationHandler;
 document.addEventListener('DOMContentLoaded', () => {
     tokenNotificationHandler = new TokenNotificationHandler();

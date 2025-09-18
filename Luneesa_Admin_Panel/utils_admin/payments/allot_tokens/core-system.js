@@ -1,13 +1,12 @@
 /**
  * Token Allocation System - Core System Module
- * Core functionality and initialization
+ * Main controller for the token allocation system
  */
 
-class TokenAllocationCore {
+class TokenAllocationSystem {
     constructor() {
         this.currentMode = 'single';
-        this.bulkUserCount = 1;
-        this.bulkUsers = [];
+        this.bulkUserCount = 0;
         this.apiEndpoint = '/admin/allot_tokens_to_agents';
         
         this.init();
@@ -16,18 +15,10 @@ class TokenAllocationCore {
     init() {
         this.bindModeEvents();
         this.initializeBulkMode();
-        
-        // Initialize other handlers
-        if (typeof TokenResultsHandler !== 'undefined') {
-            this.resultsHandler = new TokenResultsHandler();
-        }
-        if (typeof TokenNotificationHandler !== 'undefined') {
-            this.notificationHandler = new TokenNotificationHandler();
-        }
     }
     
     bindModeEvents() {
-        // Mode switching
+        // Mode switching events
         document.getElementById('single-mode-tab')?.addEventListener('click', () => {
             this.switchMode('single');
         });
@@ -36,7 +27,7 @@ class TokenAllocationCore {
             this.switchMode('bulk');
         });
         
-        // Bulk method switching
+        // Bulk method switching events
         document.getElementById('manual-entry-tab')?.addEventListener('click', () => {
             this.switchBulkMethod('manual');
         });
@@ -62,8 +53,8 @@ class TokenAllocationCore {
         document.getElementById(`${mode}-mode-content`).classList.add('token-mode-content-active');
         
         // Clear results when switching modes
-        if (this.resultsHandler) {
-            this.resultsHandler.hideResults();
+        if (typeof tokenResultsHandler !== 'undefined') {
+            tokenResultsHandler.hideResults();
         }
     }
     
@@ -83,32 +74,29 @@ class TokenAllocationCore {
     
     initializeBulkMode() {
         // Add initial bulk user entry
-        if (typeof TokenBulkHandler !== 'undefined') {
-            this.bulkHandler = new TokenBulkHandler();
-            this.bulkHandler.addBulkUser();
+        if (typeof tokenBulkHandler !== 'undefined') {
+            tokenBulkHandler.addBulkUser();
         }
     }
     
-    getCurrentMode() {
-        return this.currentMode;
-    }
-    
-    getBulkUserCount() {
-        return this.bulkUserCount;
-    }
-    
-    incrementBulkUserCount() {
-        this.bulkUserCount++;
-        return this.bulkUserCount;
-    }
-    
-    resetBulkUserCount() {
-        this.bulkUserCount = 0;
+    // Helper method to get authentication token
+    getAuthToken() {
+        // Try to get token from cookie first
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'authToken') {
+                return value;
+            }
+        }
+        
+        // Try to get token from localStorage as fallback
+        return localStorage.getItem('authToken') || '';
     }
 }
 
-// Initialize core system
-let tokenAllocationCore;
+// Initialize the token allocation system when DOM is loaded
+let tokenAllocation;
 document.addEventListener('DOMContentLoaded', () => {
-    tokenAllocationCore = new TokenAllocationCore();
+    tokenAllocation = new TokenAllocationSystem();
 });
