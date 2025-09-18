@@ -9,6 +9,13 @@ class DataManager {
             // Show loading state
             this.showLoadingState();
             
+            // Get the selected agent ID from the global variable or URL
+            const selectedAgentId = window.selectedAgent || this.getAgentIdFromUrl();
+            
+            // Prepare request body with agentId if available
+            const requestBody = selectedAgentId ? { agentId: selectedAgentId } : {};
+            console.log('Request body:', requestBody);
+            
             // Fetch data from the API endpoint
             const response = await fetch('/view_agent_tokens', {
                 method: 'POST',
@@ -18,7 +25,7 @@ class DataManager {
                     ...(Utils.getAuthToken() && { 'Authorization': `Bearer ${Utils.getAuthToken()}` })
                 },
                 credentials: 'include', // Include cookies for authentication
-                body: JSON.stringify({}) // Empty body - no specific agentId to get all agents
+                body: JSON.stringify(requestBody) // Include agentId in request if available
             });
             
             if (!response.ok) {
@@ -205,6 +212,12 @@ class DataManager {
             saveButton.style.opacity = '1';
             saveButton.style.cursor = 'pointer';
         }
+    }
+
+    // Helper method to extract agentId from URL parameters
+    getAgentIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('agentId');
     }
 
     async refreshData() {

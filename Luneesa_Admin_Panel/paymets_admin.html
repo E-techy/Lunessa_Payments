@@ -65,6 +65,18 @@
     
     <!-- payments -->
     <script src="/utils_admin/payments/navigation.js"></script>
+    
+    <!-- token allocation -->
+    <script src="/utils_admin/payments/allot_tokens/notifications.js"></script>
+    <script src="/utils_admin/payments/allot_tokens/data-handler.js"></script>
+    <script src="/utils_admin/payments/allot_tokens/api-handler.js"></script>
+    <script src="/utils_admin/payments/allot_tokens/json-handler.js"></script>
+    <script src="/utils_admin/payments/allot_tokens/bulk-manager.js"></script>
+    <script src="/utils_admin/payments/allot_tokens/results-display.js"></script>
+    <script src="/utils_admin/payments/allot_tokens/success-display.js"></script>
+    <script src="/utils_admin/payments/allot_tokens/forms-handler.js"></script>
+    <script src="/utils_admin/payments/allot_tokens/core-system.js"></script>
+    <script src="/utils_admin/payments/allot_tokens/index.js"></script>
 </head>
 <body>
     <div class="container">
@@ -951,11 +963,139 @@
                             <i class="fas fa-coins"></i>
                             <h3>Token Allocation System</h3>
                         </div>
-                        <div class="portal-temp-content">
-                            <i class="fas fa-coins"></i>
-                            <h4>Token Allocation Management</h4>
-                            <p>This section will contain functionality to allocate tokens to users.<br>
-                               You can implement the token allocation features here.</p>
+                        
+                        <!-- Mode Selection Tabs -->
+                        <div class="token-allocation-modes" id="tokenAllocationModes">
+                            <div class="token-mode-tab token-mode-active" id="single-mode-tab">
+                                <i class="fas fa-user"></i> Single Mode
+                            </div>
+                            <div class="token-mode-tab" id="bulk-mode-tab">
+                                <i class="fas fa-users"></i> Bulk Mode
+                            </div>
+                        </div>
+
+                        <!-- Single Mode Content -->
+                        <div class="token-mode-content token-mode-content-active" id="single-mode-content">
+                            <div class="token-mode-header">
+                                <i class="fas fa-user-plus"></i>
+                                <h4>Single User Token Allocation</h4>
+                                <p>Allocate tokens to a single user with specific agent and model</p>
+                            </div>
+                            
+                            <form id="singleTokenForm" class="token-allocation-form">
+                                <div class="token-form-row">
+                                    <div class="token-form-group">
+                                        <label>Username *</label>
+                                        <input type="text" id="singleUsername" placeholder="Enter username" required>
+                                    </div>
+                                    <div class="token-form-group">
+                                        <label>Agent ID *</label>
+                                        <input type="text" id="singleAgentId" placeholder="AGT-50345a8fdb40c313" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="token-form-row">
+                                    <div class="token-form-group">
+                                        <label>Model Name *</label>
+                                        <input type="text" id="singleModelName" placeholder="e.g., gpt-4, claude-3-sonnet, gemini-pro" required>
+                                        <small class="token-hint">Enter the AI model name (e.g., gpt-4, gpt-3.5-turbo, claude-3-sonnet, gemini-pro)</small>
+                                    </div>
+                                    <div class="token-form-group">
+                                        <label>Tokens to Add/Deduct *</label>
+                                        <input type="number" id="singleTokensToAdd" placeholder="30 or -10" step="1" required>
+                                        <small class="token-hint">Use positive values to add tokens, negative to deduct</small>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <div class="token-action-buttons">
+                                <button type="button" class="token-success" id="single-allocate-btn">
+                                    <i class="fas fa-coins"></i> Allocate Tokens
+                                </button>
+                                <button type="button" class="token-secondary" id="single-clear-btn">
+                                    <i class="fas fa-times"></i> Clear Form
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Bulk Mode Content -->
+                        <div class="token-mode-content" id="bulk-mode-content">
+                            <div class="token-mode-header">
+                                <i class="fas fa-users-cog"></i>
+                                <h4>Bulk Token Allocation</h4>
+                                <p>Allocate tokens to multiple users at once</p>
+                            </div>
+                            
+                            <!-- Bulk Entry Methods -->
+                            <div class="bulk-entry-methods">
+                                <div class="bulk-method-tabs">
+                                    <div class="bulk-method-tab bulk-method-active" id="manual-entry-tab">
+                                        <i class="fas fa-keyboard"></i> Manual Entry
+                                    </div>
+                                    <div class="bulk-method-tab" id="json-import-tab">
+                                        <i class="fas fa-code"></i> JSON Import
+                                    </div>
+                                </div>
+                                
+                                <!-- Manual Entry Form -->
+                                <div class="bulk-entry-content bulk-entry-active" id="manual-entry-content">
+                                    <div class="bulk-users-container" id="bulkUsersContainer">
+                                        <!-- Dynamic user entries will be added here -->
+                                    </div>
+                                    
+                                    <div class="bulk-controls">
+                                        <button type="button" class="token-primary" id="add-bulk-user-btn">
+                                            <i class="fas fa-plus"></i> Add User
+                                        </button>
+                                        <button type="button" class="token-secondary" id="clear-all-bulk-btn">
+                                            <i class="fas fa-trash"></i> Clear All
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- JSON Import Form -->
+                                <div class="bulk-entry-content" id="json-import-content">
+                                    <div class="json-import-section">
+                                        <label>JSON Data *</label>
+                                        <textarea id="jsonImportData" rows="10" placeholder='[
+  { "username": "user1", "agentId": "USER123AGENT789ABC1", "modelName": "gpt-4", "tokensToAdd": 50 },
+  { "username": "user2", "agentId": "USER456AGENT012DEF2", "modelName": "gpt-3.5-turbo", "tokensToAdd": -10 }
+]'></textarea>
+                                        <small class="token-hint">Paste your JSON array with user token allocation data</small>
+                                    </div>
+                                    
+                                    <div class="json-controls">
+                                        <button type="button" class="token-primary" id="validate-json-btn">
+                                            <i class="fas fa-check"></i> Validate JSON
+                                        </button>
+                                        <button type="button" class="token-secondary" id="clear-json-btn">
+                                            <i class="fas fa-times"></i> Clear
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="json-validation-result" id="jsonValidationResult" style="display: none;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="bulk-action-buttons">
+                                <button type="button" class="token-success" id="bulk-allocate-btn">
+                                    <i class="fas fa-users"></i> Allocate Bulk Tokens
+                                </button>
+                                <button type="button" class="token-warning" id="bulk-preview-btn">
+                                    <i class="fas fa-eye"></i> Preview Changes
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Results Section -->
+                        <div class="token-results-section" id="tokenResultsSection" style="display: none;">
+                            <div class="results-header">
+                                <i class="fas fa-chart-line"></i>
+                                <h4>Allocation Results</h4>
+                            </div>
+                            <div class="results-content" id="tokenResultsContent">
+                                <!-- Results will be displayed here -->
+                            </div>
                         </div>
                     </div>
                 </div>

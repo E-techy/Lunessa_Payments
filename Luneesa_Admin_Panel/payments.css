@@ -2,3 +2,7 @@
 
 /* Import order is important for proper CSS cascading */
 @import url('./css_admin/payments/tabs.css');
+@import url('./css_admin/payments/token-allocation.css');
+@import url('./css_admin/payments/token-forms.css');
+@import url('./css_admin/payments/token-buttons.css');
+@import url('./css_admin/payments/token-success.css');
