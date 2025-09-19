@@ -9,7 +9,9 @@ class TokenBulkManager {
     }
     
     addBulkUser(bulkUserCount) {
-        this.userCount = bulkUserCount || (this.userCount + 1);
+        // Calculate the next user number based on existing entries
+        const existingUsers = document.querySelectorAll('.bulk-user-entry').length;
+        this.userCount = bulkUserCount || (existingUsers + 1);
         const container = document.getElementById('bulkUsersContainer');
         
         const userEntry = document.createElement('div');
@@ -62,6 +64,8 @@ class TokenBulkManager {
         const userEntry = document.getElementById(`bulk-user-${userId}`);
         if (userEntry) {
             userEntry.remove();
+            // Renumber all remaining users to maintain sequential numbering
+            this.renumberUsers();
         }
     }
     
@@ -75,7 +79,72 @@ class TokenBulkManager {
         return document.querySelectorAll('.bulk-user-entry').length;
     }
     
+    renumberUsers() {
+        const container = document.getElementById('bulkUsersContainer');
+        const userEntries = container.querySelectorAll('.bulk-user-entry');
+        
+        // Reset user count to the actual number of entries
+        this.userCount = userEntries.length;
+        
+        // Renumber each user entry
+        userEntries.forEach((entry, index) => {
+            const newUserNumber = index + 1;
+            const newId = `bulk-user-${newUserNumber}`;
+            
+            // Update the main container ID
+            entry.id = newId;
+            
+            // Update the header text
+            const header = entry.querySelector('.bulk-user-entry-header h5');
+            if (header) {
+                header.textContent = `User ${newUserNumber}`;
+            }
+            
+            // Update the remove button onclick
+            const removeButton = entry.querySelector('.bulk-remove-user');
+            if (removeButton) {
+                removeButton.setAttribute('onclick', `tokenAllocation.removeBulkUser(${newUserNumber})`);
+            }
+            
+            // Update all input field IDs
+            const usernameInput = entry.querySelector('[id^="bulk-username-"]');
+            if (usernameInput) {
+                usernameInput.id = `bulk-username-${newUserNumber}`;
+            }
+            
+            const agentIdInput = entry.querySelector('[id^="bulk-agentid-"]');
+            if (agentIdInput) {
+                agentIdInput.id = `bulk-agentid-${newUserNumber}`;
+            }
+            
+            const modelNameInput = entry.querySelector('[id^="bulk-modelname-"]');
+            if (modelNameInput) {
+                modelNameInput.id = `bulk-modelname-${newUserNumber}`;
+            }
+            
+            const tokensInput = entry.querySelector('[id^="bulk-tokens-"]');
+            if (tokensInput) {
+                tokensInput.id = `bulk-tokens-${newUserNumber}`;
+            }
+        });
+        
+        console.log(`🔄 Renumbered ${userEntries.length} user entries`);
+        
+        // Re-setup validation for renumbered entries
+        if (typeof tokenFormsHandler !== 'undefined') {
+            userEntries.forEach(entry => {
+                tokenFormsHandler.setupBulkEntryValidation(entry);
+            });
+        }
+    }
+    
     validateAllBulkEntries() {
+        // Check if validator is available
+        if (typeof tokenValidator === 'undefined' || !tokenValidator) {
+            console.warn('tokenValidator not available, skipping validation');
+            return true; // Allow submission if validator isn't loaded
+        }
+        
         const bulkEntries = document.querySelectorAll('.bulk-user-entry');
         let allValid = true;
         
