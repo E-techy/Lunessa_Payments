@@ -1,8 +1,11 @@
 /* Main CSS file - imports all payments component stylesheets */
+/* main css file */
+@import url('./css_admin/payments/tabs.css');
 
 /* Import order is important for proper CSS cascading */
-@import url('./css_admin/payments/tabs.css');
-@import url('./css_admin/payments/token-allocation.css');
-@import url('./css_admin/payments/token-forms.css');
-@import url('./css_admin/payments/token-buttons.css');
-@import url('./css_admin/payments/token-success.css');
+/* Allot tokens */
+@import url('./css_admin/payments/allot_tokens/token-allocation.css');
+@import url('./css_admin/payments/allot_tokens/token-forms.css');
+@import url('./css_admin/payments/allot_tokens/token-buttons.css');
+@import url('./css_admin/payments/allot_tokens/success-display.css');
+@import url('./css_admin/payments/allot_tokens/token-result.css');
