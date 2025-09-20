@@ -1,4 +1,4 @@
-// Basic functionality for the buttons
+// Clear functionality for the Clear Filters button
 document.addEventListener('DOMContentLoaded', function() {
     // Clear Filters button
     document.getElementById('razorpay-clear-filters-btn').addEventListener('click', function() {
@@ -14,10 +14,5 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Hide results section
         document.getElementById('razorpay-orders-display-section').style.display = 'none';
-    });
-    
-    // Help button
-    document.getElementById('razorpay-help-btn').addEventListener('click', function() {
-        console.log('Help button clicked');
     });
 });
