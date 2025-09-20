@@ -4,3 +4,4 @@ Use the admin routes to make any changes to the database, and always use the adm
 
 all the authentication is done using the jwt, so it has to be secure
 
+use the dispute panel to resolve disputes related to the users, always verify the users order before alloting them tokens 
