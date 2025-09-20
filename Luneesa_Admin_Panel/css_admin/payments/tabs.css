@@ -76,8 +76,7 @@
 .portal-title-section {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
+    padding: 10px;
     border-bottom: 2px solid #F3F4F6;
 }
 

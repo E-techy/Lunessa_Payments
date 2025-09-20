@@ -75,6 +75,12 @@
     <script src="/utils_admin/payments/allot_tokens/event-handlers.js"></script>
     <script src="/utils_admin/payments/allot_tokens/success-display.js"></script>
     <script src="/utils_admin/payments/allot_tokens/mode-manager.js"></script>
+
+    <!-- Razorpay Orders -->
+    <script src="/utils_admin/payments/razorpay_orders/razorpay-fetch-orders-and-render.js"></script>
+    <script src="/utils_admin/payments/razorpay_orders/button_functionality.js"></script>
+    <script src="/utils_admin/payments/razorpay_orders/razorpay-help-modal.js"></script>
+    <script src="utils_admin/payments/razorpay_orders/export-data-razorpay-orders.js"></script>
 </head>
 <body>
     <div class="container">
@@ -1099,17 +1105,146 @@
                 </div>
 
                 <!-- Razorpay Management Section View -->
-                <div class="portal-section-view" id="razorpay-management-view">
+                <div class="portal-section-view view-active" id="razorpay-management-view">
                     <div class="portal-main-wrapper">
                         <div class="portal-title-section">
                             <i class="fas fa-credit-card"></i>
-                            <h3>Razorpay Management System</h3>
+                            <h3>Razorpay Orders Management</h3>
                         </div>
-                        <div class="portal-temp-content">
-                            <i class="fas fa-credit-card"></i>
-                            <h4>Order Processing & Management</h4>
-                            <p>This section will contain functionality to manage Razorpay orders.<br>
-                               You can implement the order processing features here.</p>
+                        
+                        <!-- Filters Section -->
+                        <div class="razorpay-filters-section">
+                            <div class="razorpay-filters-header">
+                                <i class="fas fa-filter"></i>
+                                <h4>Order Filters</h4>
+                            </div>
+                            
+                            <div class="razorpay-form-grid">
+                                <!-- OrderID Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-order-id">Order ID</label>
+                                    <input type="text" id="razorpay-order-id" placeholder="Enter Order ID" />
+                                </div>
+                                
+                                <!-- Username Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-username">Username</label>
+                                    <input type="text" id="razorpay-username" placeholder="Enter Username" />
+                                </div>
+                                
+                                <!-- Payment Methods Select -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-payment-method">Payment Method</label>
+                                    <select id="razorpay-payment-method">
+                                        <option value="">All Payment Methods</option>
+                                        <option value="UPI">UPI</option>
+                                        <option value="Card">Card</option>
+                                        <option value="Netbanking">Netbanking</option>
+                                        <option value="Wallet">Wallet</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- From Date Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-from-date">From Date</label>
+                                    <input type="datetime-local" id="razorpay-from-date" class="razorpay-date-input" />
+                                </div>
+                                
+                                <!-- To Date Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-to-date">To Date</label>
+                                    <input type="datetime-local" id="razorpay-to-date" class="razorpay-date-input" />
+                                </div>
+                                
+                                <!-- Count (Limit) Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-count-limit">Count (Limit)</label>
+                                    <input type="number" id="razorpay-count-limit" placeholder="default (10)" min="1" max="1000" />
+                                </div>
+                                
+                                <!-- Skip (Offset) Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-skip-offset">Skip (Offset)</label>
+                                    <input type="number" id="razorpay-skip-offset" placeholder="e.g., 0" min="0" />
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="razorpay-actions-section">
+                                <button type="button" class="razorpay-btn razorpay-btn-primary" id="razorpay-fetch-orders-btn">
+                                    <i class="fas fa-search"></i>
+                                    Fetch Orders
+                                </button>
+                                
+                                <button type="button" class="razorpay-btn razorpay-btn-secondary" id="razorpay-clear-filters-btn">
+                                    <i class="fas fa-times"></i>
+                                    Clear Filters
+                                </button>
+                                
+                                <button type="button" class="razorpay-btn razorpay-btn-success" id="razorpay-export-csv-btn">
+                                    <i class="fas fa-download"></i>
+                                    Export CSV
+                                </button>
+                                
+                                <button type="button" class="razorpay-btn razorpay-btn-warning" id="razorpay-help-btn">
+                                    <i class="fas fa-question-circle"></i>
+                                    Help
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Order Results Display Section -->
+                        <div class="razorpay-orders-display-section" id="razorpay-orders-display-section" style="display: none;">
+                            <div class="portal-title-section">
+                                <i class="fas fa-table"></i>
+                                <h4>Order Results</h4>
+                            </div>
+                            
+                            <!-- Orders Table -->
+                            <div class="razorpay-orders-table-container">
+                                <table class="razorpay-orders-table" id="razorpay-orders-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Username</th>
+                                            <th>Payment Method</th>
+                                            <th>Created At</th>
+                                            <th>Receipt</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="razorpay-orders-table-body">
+                                        <!-- Order rows will be populated here -->
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Loading indicator -->
+                                <div class="razorpay-orders-loading" id="razorpay-orders-loading" style="display: none;">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span>Loading orders...</span>
+                                </div>
+                                
+                                <!-- No data message -->
+                                <div class="razorpay-orders-no-data" id="razorpay-orders-no-data" style="display: none;">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>No orders found with the current filters</span>
+                                </div>
+                            </div>
+                            
+                            <!-- JSON Response Display Section -->
+                            <div class="razorpay-json-response-section" id="razorpay-json-response-section">
+                                <div class="json-response-header">
+                                    <i class="fas fa-code"></i>
+                                    <h4>Raw JSON Response</h4>
+                                    <button class="razorpay-btn razorpay-btn-secondary btn-sm" id="toggle-json-response-btn">
+                                        <i class="fas fa-eye"></i> Show JSON
+                                    </button>
+                                </div>
+                                <div class="json-response-content" id="json-response-content" style="display: none;">
+                                    <pre id="json-response-data"></pre>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

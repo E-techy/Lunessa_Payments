@@ -1,0 +1,17 @@
+/* Responsive Design */
+@media (max-width: 768px) {
+    .razorpay-form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .razorpay-actions-section {
+        justify-content: center;
+    }
+
+    .razorpay-btn {
+        flex: 1;
+        justify-content: center;
+        min-width: 120px;
+    }
+}

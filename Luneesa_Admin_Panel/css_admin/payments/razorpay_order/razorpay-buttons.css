@@ -1,0 +1,52 @@
+.razorpay-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.razorpay-btn i {
+    font-size: 12px;
+}
+
+.razorpay-btn-primary {
+    background: #8B5CF6;
+    color: white;
+}
+.razorpay-btn-primary:hover {
+    background: #7C3AED;
+    transform: translateY(-1px);
+}
+
+.razorpay-btn-secondary {
+    background: #6B7280;
+    color: white;
+}
+.razorpay-btn-secondary:hover {
+    background: #4B5563;
+    transform: translateY(-1px);
+}
+
+.razorpay-btn-success {
+    background: #10B981;
+    color: white;
+}
+.razorpay-btn-success:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.razorpay-btn-warning {
+    background: #F59E0B;
+    color: white;
+}
+.razorpay-btn-warning:hover {
+    background: #D97706;
+    transform: translateY(-1px);
+}
