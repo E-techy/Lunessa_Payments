@@ -16,12 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('razorpay-orders-display-section').style.display = 'none';
     });
     
-    // Export CSV button
-    document.getElementById('razorpay-export-csv-btn').addEventListener('click', function() {
-        console.log('Export CSV button clicked');
-        // Add your export logic here
-    });
-    
     // Help button
     document.getElementById('razorpay-help-btn').addEventListener('click', function() {
         console.log('Help button clicked');
