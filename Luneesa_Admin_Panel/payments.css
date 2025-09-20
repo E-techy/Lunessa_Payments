@@ -9,3 +9,9 @@
 @import url('./css_admin/payments/allot_tokens/token-buttons.css');
 @import url('./css_admin/payments/allot_tokens/success-display.css');
 @import url('./css_admin/payments/allot_tokens/token-result.css');
+
+/* Razorpay Order */
+@import url('./css_admin/payments/razorpay_order/razorpay-base.css');
+@import url('./css_admin/payments/razorpay_order/razorpay-buttons.css');
+@import url('./css_admin/payments/razorpay_order/razorpay-responsive.css');
+@import url('./css_admin/payments/razorpay_order/razorpay-accessibility.css');

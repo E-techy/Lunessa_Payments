@@ -1099,17 +1099,92 @@
                 </div>
 
                 <!-- Razorpay Management Section View -->
-                <div class="portal-section-view" id="razorpay-management-view">
+                <div class="portal-section-view view-active" id="razorpay-management-view">
                     <div class="portal-main-wrapper">
                         <div class="portal-title-section">
                             <i class="fas fa-credit-card"></i>
-                            <h3>Razorpay Management System</h3>
+                            <h3>Razorpay Orders Management</h3>
                         </div>
-                        <div class="portal-temp-content">
-                            <i class="fas fa-credit-card"></i>
-                            <h4>Order Processing & Management</h4>
-                            <p>This section will contain functionality to manage Razorpay orders.<br>
-                               You can implement the order processing features here.</p>
+                        
+                        <!-- Filters Section -->
+                        <div class="razorpay-filters-section">
+                            <div class="razorpay-filters-header">
+                                <i class="fas fa-filter"></i>
+                                <h4>Order Filters</h4>
+                            </div>
+                            
+                            <div class="razorpay-form-grid">
+                                <!-- OrderID Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-order-id">Order ID</label>
+                                    <input type="text" id="razorpay-order-id" placeholder="Enter Order ID" />
+                                </div>
+                                
+                                <!-- Username Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-username">Username</label>
+                                    <input type="text" id="razorpay-username" placeholder="Enter Username" />
+                                </div>
+                                
+                                <!-- Payment Methods Select -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-payment-method">Payment Method</label>
+                                    <select id="razorpay-payment-method">
+                                        <option value="">All Payment Methods</option>
+                                        <option value="UPI">UPI</option>
+                                        <option value="Card">Card</option>
+                                        <option value="Netbanking">Netbanking</option>
+                                        <option value="Wallet">Wallet</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- From Date Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-from-date">From Date</label>
+                                    <input type="datetime-local" id="razorpay-from-date" class="razorpay-date-input" />
+                                </div>
+                                
+                                <!-- To Date Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-to-date">To Date</label>
+                                    <input type="datetime-local" id="razorpay-to-date" class="razorpay-date-input" />
+                                </div>
+                                
+                                <!-- Count (Limit) Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-count-limit">Count (Limit)</label>
+                                    <input type="number" id="razorpay-count-limit" placeholder="default (10)" min="1" max="1000" />
+                                </div>
+                                
+                                <!-- Skip (Offset) Input -->
+                                <div class="razorpay-form-group">
+                                    <label for="razorpay-skip-offset">Skip (Offset)</label>
+                                    <input type="number" id="razorpay-skip-offset" placeholder="e.g., 0" min="0" />
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="razorpay-actions-section">
+                                <button type="button" class="razorpay-btn razorpay-btn-primary" id="razorpay-fetch-orders-btn">
+                                    <i class="fas fa-search"></i>
+                                    Fetch Orders
+                                </button>
+                                
+                                <button type="button" class="razorpay-btn razorpay-btn-secondary" id="razorpay-clear-filters-btn">
+                                    <i class="fas fa-times"></i>
+                                    Clear Filters
+                                </button>
+                                
+                                <button type="button" class="razorpay-btn razorpay-btn-success" id="razorpay-export-csv-btn">
+                                    <i class="fas fa-download"></i>
+                                    Export CSV
+                                </button>
+                                
+                                <button type="button" class="razorpay-btn razorpay-btn-warning" id="razorpay-help-btn">
+                                    <i class="fas fa-question-circle"></i>
+                                    Help
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
