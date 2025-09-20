@@ -196,10 +196,88 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function displayJsonResponse(data) {
-        const jsonDataElement = document.getElementById("json-response-data");
-        if (jsonDataElement) {
-            jsonDataElement.textContent = JSON.stringify(data, null, 2);
+    const jsonDataElement = document.getElementById("json-response-data");
+    if (jsonDataElement) {
+        const enhancedData = enhancePaymentInfoDescriptions(data);
+        jsonDataElement.textContent = JSON.stringify(enhancedData, null, 2);
+    }
+    }
+
+    // Enhanced function to clean up both paymentInfo and userDetails
+    function enhancePaymentInfoDescriptions(data) {
+        // Create a deep copy to avoid modifying original data
+        const enhanced = JSON.parse(JSON.stringify(data));
+        
+        // Key mappings for payment info
+        const paymentInfoMappings = {
+            'u': 'username',
+            'a': 'agentid', 
+            't': 'tokens',
+            'amt': 'amount',
+            'bp': 'base_price',
+            'pp': 'price_per_token',
+            'bd': 'base_discount',
+            'pd': 'promotional_discount',
+            'pt': 'promotion_type',
+            'pc': 'promotion_code'
+        };
+        
+        // Function to enhance a single order
+        function enhanceOrder(order) {
+            if (order.notes) {
+                
+                // Handle paymentInfo conversion
+                if (order.notes.paymentInfo) {
+                    try {
+                        // Parse the payment info JSON string
+                        const paymentInfoData = JSON.parse(order.notes.paymentInfo);
+                        
+                        // Create enhanced payment info object with full key names
+                        const enhancedPaymentInfo = {};
+                        
+                        Object.keys(paymentInfoData).forEach(key => {
+                            // Use full description if available, otherwise keep original key
+                            const fullKey = paymentInfoMappings[key] || key;
+                            enhancedPaymentInfo[fullKey] = paymentInfoData[key];
+                        });
+                        
+                        // Replace the old paymentInfo with enhanced version as direct object
+                        order.notes.paymentInfo = enhancedPaymentInfo;
+                        
+                    } catch (e) {
+                        console.warn('Could not parse paymentInfo for order:', order.id);
+                    }
+                }
+                
+                // Handle userDetails conversion
+                if (order.notes.userDetails) {
+                    try {
+                        // Parse the userDetails JSON string
+                        const userDetailsData = JSON.parse(order.notes.userDetails);
+                        
+                        // Replace the JSON string with direct object
+                        order.notes.userDetails = userDetailsData;
+                        
+                    } catch (e) {
+                        console.warn('Could not parse userDetails for order:', order.id);
+                    }
+                }
+            }
+            return order;
         }
+        
+        // Handle both single order and array of orders
+        if (enhanced.success && enhanced.data) {
+            if (Array.isArray(enhanced.data)) {
+                // Multiple orders
+                enhanced.data = enhanced.data.map(order => enhanceOrder(order));
+            } else {
+                // Single order
+                enhanced.data = enhanceOrder(enhanced.data);
+            }
+        }
+        
+        return enhanced;
     }
 
     function formatAmount(amountInCents) {
