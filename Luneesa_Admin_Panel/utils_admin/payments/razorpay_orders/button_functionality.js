@@ -1,12 +1,5 @@
 // Basic functionality for the buttons
 document.addEventListener('DOMContentLoaded', function() {
-
-    // Fetch Order button
-    document.getElementById('razorpay-fetch-orders-btn').addEventListener('click', function() { 
-        console.log('Fetch Orders clicked'); 
-        // Add your fetch logic here 
-        document.getElementById('razorpay-results-section').style.display = 'block'; });
-
     // Clear Filters button
     document.getElementById('razorpay-clear-filters-btn').addEventListener('click', function() {
         console.log('Clear Filters clicked');
