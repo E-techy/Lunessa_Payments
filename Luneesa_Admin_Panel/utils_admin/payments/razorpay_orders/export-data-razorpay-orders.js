@@ -96,10 +96,10 @@ function convertOrdersToCSV(orders) {
         'User Agent',
         'Tokens',
         'Base Price',
-        'Premium Price',
+        'Price Per Token',
         'Base Discount',
         'Premium Discount',
-        'Payment Type',
+        'Discount Type',
         'Promo Code',
         'Created Date',
         'Attempts',
@@ -115,19 +115,28 @@ function convertOrdersToCSV(orders) {
         // Parse payment info and user details
         let paymentInfo = {};
         let userDetails = {};
-        
+
         try {
+            // Handle both JSON string and direct object formats
             if (order.notes && order.notes.paymentInfo) {
-                paymentInfo = JSON.parse(order.notes.paymentInfo);
+                if (typeof order.notes.paymentInfo === 'string') {
+                    paymentInfo = JSON.parse(order.notes.paymentInfo);
+                } else {
+                    paymentInfo = order.notes.paymentInfo;
+                }
             }
             if (order.notes && order.notes.userDetails) {
-                userDetails = JSON.parse(order.notes.userDetails);
+                if (typeof order.notes.userDetails === 'string') {
+                    userDetails = JSON.parse(order.notes.userDetails);
+                } else {
+                    userDetails = order.notes.userDetails;
+                }
             }
         } catch (e) {
             console.warn("Could not parse order notes for:", order.id);
         }
 
-        // Create row data
+        // Create row data with proper field mapping
         const row = [
             escapeCsvValue(order.id || ''),
             order.amount || 0,
@@ -137,22 +146,34 @@ function convertOrdersToCSV(orders) {
             escapeCsvValue(order.currency || ''),
             escapeCsvValue(order.status || ''),
             escapeCsvValue(order.receipt || ''),
-            escapeCsvValue(paymentInfo.u || userDetails.username || ''),
-            escapeCsvValue(paymentInfo.a || ''),
-            paymentInfo.t || 0,
-            paymentInfo.bp || 0,
-            paymentInfo.pp || 0,
-            paymentInfo.bd || 0,
-            paymentInfo.pd || 0,
-            escapeCsvValue(paymentInfo.pt || ''),
-            escapeCsvValue(paymentInfo.pc || ''),
+            // Username: try multiple possible sources
+            escapeCsvValue(paymentInfo.username || paymentInfo.u || userDetails.username || ''),
+            // User Agent: map to agentid
+            escapeCsvValue(paymentInfo.agentid || paymentInfo.a || ''),
+            // Tokens
+            paymentInfo.tokens || paymentInfo.t || 0,
+            // Base Price
+            paymentInfo.base_price || paymentInfo.bp || 0,
+            // Premium Price: use price_per_token
+            paymentInfo.price_per_token || paymentInfo.pp || 0,
+            // Base Discount
+            paymentInfo.base_discount || paymentInfo.bd || 0,
+            // Premium Discount
+            paymentInfo.promotional_discount || paymentInfo.pd || 0,
+            // Payment Type: use promotion_type
+            escapeCsvValue(paymentInfo.promotion_type || paymentInfo.pt || ''),
+            // Promo Code: use promotion_code
+            escapeCsvValue(paymentInfo.promotion_code || paymentInfo.pc || ''),
             formatDateForCSV(order.created_at),
+            // Attempts: actual attempts count
             order.attempts || 0,
+            // Description: actual description field (can be empty)
             escapeCsvValue(order.description || ''),
+            // Order Type: from notes.orderType
             escapeCsvValue(order.notes?.orderType || ''),
+            // Offer ID: actual offer_id field
             escapeCsvValue(order.offer_id || '')
         ];
-
         csvRows.push(row.join(','));
     });
 
@@ -206,7 +227,7 @@ function formatDateForCSV(unixTimestamp) {
         second: '2-digit',
         hour12: false,
         timeZone: 'UTC'
-    });
+    }).replace(',', ''); // Remove the comma from the date string
 }
 
 /**
