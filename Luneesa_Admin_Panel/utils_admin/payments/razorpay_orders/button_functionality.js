@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('razorpay-skip-offset').value = '';
         
         // Hide results section
-        document.getElementById('razorpay-results-section').style.display = 'none';
+        document.getElementById('razorpay-orders-display-section').style.display = 'none';
     });
     
     // Export CSV button

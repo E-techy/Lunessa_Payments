@@ -79,3 +79,234 @@
     justify-content: flex-start;
     align-items: center;
 }
+
+/* Razorpay Orders Display Styles */
+.razorpay-orders-display-section {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.razorpay-orders-table-container {
+    position: relative;
+    min-height: 200px;
+}
+
+.razorpay-orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.razorpay-orders-table thead {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: white;
+}
+
+.razorpay-orders-table th,
+.razorpay-orders-table td {
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+}
+
+.razorpay-orders-table th {
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.razorpay-orders-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Status badges */
+.order-status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-created {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.status-paid {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+.status-failed {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+/* Amount styling */
+.order-amount {
+    font-weight: 600;
+    color: #374151;
+}
+
+.order-amount::before {
+    content: '
+;
+    color: #6b7280;
+    margin-right: 2px;
+}
+
+/* Order ID styling */
+.order-id {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 12px;
+    color: #4f46e5;
+    background: #f0f9ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Username styling */
+.order-username {
+    color: #374151;
+    font-weight: 500;
+}
+
+/* Date styling */
+.order-date {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+/* Receipt styling */
+.order-receipt {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 11px;
+    color: #6b7280;
+    background: #f9fafb;
+    padding: 2px 4px;
+    border-radius: 3px;
+    word-break: break-all;
+}
+
+/* Loading and No Data States */
+.razorpay-orders-loading,
+.razorpay-orders-no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #6b7280;
+    background: #f9fafb;
+}
+
+.razorpay-orders-loading i,
+.razorpay-orders-no-data i {
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.razorpay-orders-loading span,
+.razorpay-orders-no-data span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* JSON Response Section */
+.razorpay-json-response-section {
+    border-top: 1px solid #e5e7eb;
+    background: #f8fafc;
+}
+
+.json-response-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f1f5f9;
+}
+
+.json-response-header h4 {
+    margin: 0;
+    color: #374151;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.json-response-content {
+    max-height: 400px;
+    overflow: auto;
+    background: #1e293b;
+}
+
+.json-response-content pre {
+    margin: 0;
+    padding: 20px;
+    color: #e2e8f0;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Button styles for JSON toggle */
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+/* Scrollbar styling for JSON response */
+.json-response-content::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.json-response-content::-webkit-scrollbar-track {
+    background: #334155;
+}
+
+.json-response-content::-webkit-scrollbar-thumb {
+    background: #64748b;
+    border-radius: 4px;
+}
+
+.json-response-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .razorpay-orders-table {
+        font-size: 12px;
+    }
+    
+    .razorpay-orders-table th,
+    .razorpay-orders-table td {
+        padding: 8px 4px;
+    }
+    
+    .order-id,
+    .order-receipt {
+        font-size: 10px;
+    }
+    
+    .json-response-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+}

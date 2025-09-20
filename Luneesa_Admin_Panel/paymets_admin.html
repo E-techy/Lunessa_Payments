@@ -1191,18 +1191,57 @@
                             </div>
                         </div>
                         
-                        <!-- Results Section (placeholder for future implementation) -->
-                        <div class="razorpay-results-section" id="razorpay-results-section" style="display: none;">
+                        <!-- Order Results Display Section -->
+                        <div class="razorpay-orders-display-section" id="razorpay-orders-display-section" style="display: none;">
                             <div class="portal-title-section">
                                 <i class="fas fa-table"></i>
                                 <h4>Order Results</h4>
                             </div>
-                            <div class="razorpay-results-content">
-                                <!-- Results table will be displayed here -->
-                                <p style="text-align: center; color: #6B7280; padding: 40px;">
-                                    <i class="fas fa-info-circle"></i><br>
-                                    Order results will be displayed here after fetching data
-                                </p>
+                            
+                            <!-- Orders Table -->
+                            <div class="razorpay-orders-table-container">
+                                <table class="razorpay-orders-table" id="razorpay-orders-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Username</th>
+                                            <th>Payment Method</th>
+                                            <th>Created At</th>
+                                            <th>Receipt</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="razorpay-orders-table-body">
+                                        <!-- Order rows will be populated here -->
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Loading indicator -->
+                                <div class="razorpay-orders-loading" id="razorpay-orders-loading" style="display: none;">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span>Loading orders...</span>
+                                </div>
+                                
+                                <!-- No data message -->
+                                <div class="razorpay-orders-no-data" id="razorpay-orders-no-data" style="display: none;">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>No orders found with the current filters</span>
+                                </div>
+                            </div>
+                            
+                            <!-- JSON Response Display Section -->
+                            <div class="razorpay-json-response-section" id="razorpay-json-response-section">
+                                <div class="json-response-header">
+                                    <i class="fas fa-code"></i>
+                                    <h4>Raw JSON Response</h4>
+                                    <button class="razorpay-btn razorpay-btn-secondary btn-sm" id="toggle-json-response-btn">
+                                        <i class="fas fa-eye"></i> Show JSON
+                                    </button>
+                                </div>
+                                <div class="json-response-content" id="json-response-content" style="display: none;">
+                                    <pre id="json-response-data"></pre>
+                                </div>
                             </div>
                         </div>
                     </div>
