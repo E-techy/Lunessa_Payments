@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - Dashboard</title>
+    <link rel="stylesheet" href="/order_management.css">
+
+    <!-- Main Javascript -->
+    <script src="/utils_order_management/tab_switching.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">ORDERS</h1>
+            <p class="page-subtitle">Manage your orders and resolve any disputes</p>
+        </div>
+
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-button active" data-tab="your-order">
+                    <span>Your Order</span>
+                </button>
+                <button class="tab-button" data-tab="disputes">
+                    <span>Disputes</span>
+                </button>
+            </div>
+
+            <div class="tab-content">
+                <div class="tab-panel active" id="your-order">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">📦</div>
+                        <h3>Your Order Content</h3>
+                        <p>Content for Your Order tab will be implemented here.</p>
+                    </div>
+                </div>
+
+                <div class="tab-panel" id="disputes">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">⚖️</div>
+                        <h3>Disputes Content</h3>
+                        <p>Content for Disputes tab will be implemented here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

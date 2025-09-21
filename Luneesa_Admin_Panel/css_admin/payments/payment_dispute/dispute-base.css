@@ -1,0 +1,28 @@
+/* Override default selected style for specific buttons */
+#token-allocation-nav-btn.nav-selected {
+    background: #8B5CF6;
+    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
+}
+
+#razorpay-management-nav-btn.nav-selected {
+    background: linear-gradient(135deg, #059669, #047857);
+    box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);
+}
+
+/* Dispute Management Tab Styles */
+#payment-dispute-management-nav-btn {
+    background: transparent;
+    color: #6B7280;
+}
+
+#payment-dispute-management-nav-btn:hover {
+    background: #F3F4F6;
+    color: #374151;
+    transform: none;
+}
+
+#payment-dispute-management-nav-btn.nav-selected {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+}
