@@ -1,7 +1,24 @@
 /* Header styles */
-.header {
+.page-header {
+    background: white;
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f1f5f9;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1e293b;
     text-align: center;
-    margin-bottom: 40px;
+    margin: 0;
+    letter-spacing: -0.025em;
+}
+
+.header {
+    padding: 0 10px 0 10px;
 }
 
 .header h1 {

@@ -3,49 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agent Token</title>
+    <title>Agent Token - Dashboard</title>
     <link rel="stylesheet" href="/all_agents_viewer.css">
-    <!-- JavaScript modules in dependency order -->
+    
+    <!-- Main JavaScript -->
+    <script src="/utils_viewer/tab_switching.js"></script>
 
-    <script src="/utils_viewer/state.js"></script>
-    <script src="/utils_viewer/utils.js"></script>
-    <script src="/utils_viewer/ui-renderer.js"></script>
-    <script src="/utils_viewer/event-handlers.js"></script>
-    <script src="/utils_viewer/save-manager.js"></script>
-    <script src="/utils_viewer/app.js"></script>
-
-    <script src="/utils_viewer/get_agents_token_details_from_db.js"></script>
+    <!-- Tokens Viewer -->
+    <script src="/utils_viewer/tokens_viewer/state.js"></script>
+    <script src="/utils_viewer/tokens_viewer/utils.js"></script>
+    <script src="/utils_viewer/tokens_viewer/ui-renderer.js"></script>
+    <script src="/utils_viewer/tokens_viewer/event-handlers.js"></script>
+    <script src="/utils_viewer/tokens_viewer/save-manager.js"></script>
+    <script src="/utils_viewer/tokens_viewer/app.js"></script>
+    <script src="/utils_viewer/tokens_viewer/get_agents_token_details_from_db.js"></script>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <div>
-                    <h1>Agent Token Marketplace</h1>
-                    <p>Purchase tokens to unlock premium agent capabilities</p>
-                </div>
-                <button id="refresh-data-btn" class="refresh-view-btn"
-                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(59, 130, 246, 0.4)';"
-                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)';">
-                     Refresh Data
-                </button>
-            </div>
+        <div class="page-header">
+            <h1 class="page-title">Payment Services Dashboard</h1>
         </div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Agent Name</th>
-                        <th>Agent ID</th>
-                        <th>Using Model</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Table content will be populated by JavaScript -->
-                </tbody>
-            </table>
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-button active" data-tab="tokens">
+                    <span>Tokens</span>
+                </button>
+                <button class="tab-button" data-tab="your-orders">
+                    <span>Your Orders</span>
+                </button>
+                <button class="tab-button" data-tab="disputes">
+                    <span>Disputes</span>
+                </button>
+            </div>
+
+            <div class="tab-content">
+                <div class="tab-panel active" id="tokens">
+                    <div class="header">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <div>
+                                <h2>Agent Token Purchase</h2>
+                            </div>
+                            <button id="refresh-data-btn" class="refresh-view-btn"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(59, 130, 246, 0.4)';"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)';">
+                                 Refresh Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Agent Name</th>
+                                    <th>Agent ID</th>
+                                    <th>Using Model</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Table content will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-panel" id="your-orders">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">📦</div>
+                        <h3>Your Orders Content</h3>
+                        <p>Content for Your Orders tab will be implemented here.</p>
+                    </div>
+                </div>
+
+                <div class="tab-panel" id="disputes">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">⚖️</div>
+                        <h3>Disputes Content</h3>
+                        <p>Content for Disputes tab will be implemented here.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>

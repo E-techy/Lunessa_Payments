@@ -1,8 +1,11 @@
 /* Main CSS file - imports all component styles */
-@import url('./css_viewer/base.css');
-@import url('./css_viewer/header.css');
-@import url('./css_viewer/table.css');
-@import url('./css_viewer/buttons.css');
-@import url('./css_viewer/status.css');
-@import url('./css_viewer/agent-viewer.css');
-@import url('./css_viewer/responsive.css');
+@import url('./css_viewer/tabs.css');
+
+/* Tokens Viewers */
+@import url('./css_viewer/tokens_viewer/base.css');
+@import url('./css_viewer/tokens_viewer/header.css');
+@import url('./css_viewer/tokens_viewer/table.css');
+@import url('./css_viewer/tokens_viewer/buttons.css');
+@import url('./css_viewer/tokens_viewer/status.css');
+@import url('./css_viewer/tokens_viewer/agent-viewer.css');
+@import url('./css_viewer/tokens_viewer/responsive.css');
