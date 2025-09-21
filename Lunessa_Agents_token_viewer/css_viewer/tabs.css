@@ -1,55 +1,40 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #ffffff;
-    color: #18181B;
-    line-height: 1.6;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
+/* Tab System Styles */
 .page-header {
     margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #F4F4F5;
+    padding: 30px 0;
 }
 
 .page-title {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #18181B;
+    color: #1e293b;
     margin-bottom: 8px;
+    letter-spacing: -0.02em;
 }
 
 .page-subtitle {
     font-size: 1rem;
-    color: #6B7280;
+    color: #64748b;
     font-weight: 400;
 }
 
 .tabs-container {
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    border: 1px solid #F4F4F5;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    border: none;
 }
 
 .tabs-header {
     display: flex;
-    background: #F4F4F5;
-    border-bottom: 1px solid #E5E7EB;
+    background: #f8fafc;
+    border-bottom: none;
     padding: 8px;
-    gap: 8px;
+    gap: 4px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
 }
 
 .tab-button {
@@ -57,33 +42,36 @@ body {
     padding: 12px 24px;
     background: transparent;
     border: none;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    color: #6B7280;
+    color: #64748b;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     position: relative;
     text-align: center;
     border-radius: 8px;
 }
 
 .tab-button:hover {
-    background: rgba(139, 92, 246, 0.1);
-    color: #8B5CF6;
+    background: #e2e8f0;
+    color: #475569;
 }
 
 .tab-button.active {
-    background: #8B5CF6;
+    background: #8b5cf6;
     color: #ffffff;
     font-weight: 700;
+    box-shadow: 0 1px 3px rgba(139, 92, 246, 0.3);
 }
 
-
-
 .tab-content {
-    padding: 40px 30px;
+    padding: 20px 20px 20px;
     min-height: 400px;
     background: #ffffff;
+    margin-top: 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
 }
 
 .tab-panel {
@@ -108,24 +96,37 @@ body {
 
 .placeholder-content {
     text-align: center;
-    color: #6B7280;
-    font-size: 1.1rem;
-    padding: 60px 20px;
+    color: #64748b;
+    font-size: 1rem;
+    padding: 60px 40px;
+    background: #f8fafc;
+    border-radius: 8px;
+    margin: 20px 0;
+    border: 1px solid #e2e8f0;
+}
+
+.placeholder-content h3 {
+    color: #1e293b;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.placeholder-content p {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
 .placeholder-icon {
     font-size: 3rem;
     margin-bottom: 20px;
-    color: #8B5CF6;
-    opacity: 0.6;
+    color: #8b5cf6;
+    opacity: 0.7;
 }
 
-/* Responsive Design */
+/* Responsive Design for Tabs */
 @media (max-width: 768px) {
-    .container {
-        padding: 15px;
-    }
-
     .page-title {
         font-size: 2rem;
     }
@@ -151,21 +152,4 @@ body {
     .tab-content {
         padding: 30px 20px;
     }
-}
-
-/* Additional styling for better visual hierarchy */
-.tab-indicator {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.tab-count {
-    background: #8B5CF6;
-    color: white;
-    font-size: 0.75rem;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-weight: 600;
 }
