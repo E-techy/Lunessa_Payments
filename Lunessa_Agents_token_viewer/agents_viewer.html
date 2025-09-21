@@ -17,6 +17,9 @@
     <script src="/utils_viewer/tokens_viewer/save-manager.js"></script>
     <script src="/utils_viewer/tokens_viewer/app.js"></script>
     <script src="/utils_viewer/tokens_viewer/get_agents_token_details_from_db.js"></script>
+
+    <!-- Your Orders -->
+    <script src="/utils_viewer/orders_and_raise_dispute/get_order_and_render.js"></script>
 </head>
 <body>
     <div class="container">
@@ -26,13 +29,13 @@
 
         <div class="tabs-container">
             <div class="tabs-header">
-                <button class="tab-button active" data-tab="tokens">
+                <button class="tab-button active" id="tokens-viewer-tab" data-tab="tokens">
                     <span>Tokens</span>
                 </button>
-                <button class="tab-button" data-tab="your-orders">
+                <button class="tab-button" id="your-orders-tab" data-tab="your-orders">
                     <span>Your Orders</span>
                 </button>
-                <button class="tab-button" data-tab="disputes">
+                <button class="tab-button" id="your-dispute-tab" data-tab="disputes" >
                     <span>Disputes</span>
                 </button>
             </div>
