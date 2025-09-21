@@ -14,6 +14,7 @@ class PaymentPortalController {
         // Bind navigation item click events
         const tokenAllocationNav = document.getElementById('token-allocation-nav-btn');
         const razorpayManagementNav = document.getElementById('razorpay-management-nav-btn');
+        const paymentDisputeManagementNav = document.getElementById('payment-dispute-management-nav-btn');
 
         if (tokenAllocationNav) {
             tokenAllocationNav.addEventListener('click', () => this.activateSection('token-allocation'));
@@ -21,6 +22,10 @@ class PaymentPortalController {
 
         if (razorpayManagementNav) {
             razorpayManagementNav.addEventListener('click', () => this.activateSection('razorpay-management'));
+        }
+
+        if (paymentDisputeManagementNav) {
+            paymentDisputeManagementNav.addEventListener('click', () => this.activateSection('payment-dispute-management'));
         }
     }
 
@@ -62,6 +67,9 @@ class PaymentPortalController {
             case 'razorpay-management':
                 this.initializeRazorpayManagement();
                 break;
+            case 'payment-dispute-management':
+                this.initializePaymentDisputeManagement();
+                break;
             default:
                 console.log(`Unknown section: ${sectionName}`);
         }
@@ -77,6 +85,12 @@ class PaymentPortalController {
         // Initialize Razorpay Management functionality
         console.log('Razorpay Management section activated');
         // Add your razorpay management specific initialization code here
+    }
+
+    initializePaymentDisputeManagement() {
+        // Initialize Payment Dispute Management functionality
+        console.log('Payment Dispute Management section activated');
+        // Add your payment dispute management specific initialization code here
     }
 
     getActiveSection() {
