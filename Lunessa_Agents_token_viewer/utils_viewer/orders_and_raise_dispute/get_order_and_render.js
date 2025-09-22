@@ -139,8 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>
             <div class="actions-cell">
               <button class="view-order-btn" data-order-id="${orderId}">
-                <svg class="view-arrow-icon" viewBox="0 0 12 8" fill="currentColor">
-                  <path d="M6 8L2.5 4.5H9.5L6 8Z"/>
+                <svg class="view-arrow-icon" viewBox="0 0 12 8" fill="none">
+                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
               <button class="raise-dispute-btn" data-order-id="${orderId}">
