@@ -1,0 +1,236 @@
+/* Dispute Popup Styles */
+
+.dispute-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(2px);
+}
+
+.dispute-popup {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow: hidden;
+    animation: disputePopupSlideIn 0.3s ease-out;
+}
+
+@keyframes disputePopupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.dispute-popup-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dispute-popup-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.dispute-popup-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.dispute-popup-close:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.dispute-popup-content {
+    padding: 20px;
+}
+
+.dispute-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.form-input,
+.form-textarea {
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-input[readonly] {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-textarea::placeholder {
+    color: #adb5bd;
+}
+
+.dispute-popup-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    padding: 20px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    min-width: 100px;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #ffffff;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn:disabled:hover {
+    background: #6c757d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dispute-popup {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .dispute-popup-header,
+    .dispute-popup-content,
+    .dispute-popup-footer {
+        padding: 15px;
+    }
+    
+    .dispute-popup-footer {
+        flex-direction: column-reverse;
+    }
+    
+    .btn {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+/* Animation for closing */
+.dispute-popup-overlay.closing {
+    animation: disputePopupFadeOut 0.2s ease-in;
+}
+
+.dispute-popup-overlay.closing .dispute-popup {
+    animation: disputePopupSlideOut 0.2s ease-in;
+}
+
+@keyframes disputePopupFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes disputePopupSlideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+}
