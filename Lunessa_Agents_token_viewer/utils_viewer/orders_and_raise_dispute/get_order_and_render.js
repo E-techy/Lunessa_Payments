@@ -30,6 +30,67 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Function to refresh orders data manually
+  async function refreshOrdersData() {
+      showLoadingState();
+      try {
+          await fetchAndRenderOrders();
+          
+          // Show success message briefly if no orders found
+          const tbody = document.getElementById('orders-table-body');
+          if (tbody && tbody.innerHTML.includes('No Orders Found')) {
+              tbody.innerHTML = `
+                  <tr>
+                      <td colspan="6" style="text-align: center; padding: 2rem; color: #059669;">
+                          <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">✅ Orders refreshed successfully</div>
+                          <div style="font-size: 0.9rem; opacity: 0.7;">No orders found</div>
+                      </td>
+                  </tr>
+              `;
+          }
+          
+          // Animate rows if we have orders
+          const hasOrders = tbody && !tbody.innerHTML.includes('No Orders Found') && !tbody.innerHTML.includes('Error Loading Orders');
+          if (hasOrders) {
+              setTimeout(() => {
+                  animateTableRows();
+              }, 10);
+          }
+      } catch (error) {
+          console.error('Failed to refresh orders:', error);
+          renderErrorState();
+      }
+  }
+
+  // Function to show loading state
+  function showLoadingState() {
+      const tbody = document.getElementById('orders-table-body');
+      if (!tbody) return;
+
+      tbody.innerHTML = `
+          <tr>
+              <td colspan="6" style="text-align: center; padding: 2rem;">
+                  <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">🔄 Refreshing orders...</div>
+                  <div style="font-size: 0.9rem; opacity: 0.7;">Please wait</div>
+              </td>
+          </tr>
+      `;
+  }
+
+  // Function to animate table rows
+  function animateTableRows() {
+      const rows = document.querySelectorAll('#orders-table-body tr');
+      rows.forEach((row, index) => {
+          row.style.opacity = '0';
+          row.style.transform = 'translateY(10px)';
+          row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          
+          setTimeout(() => {
+              row.style.opacity = '1';
+              row.style.transform = 'translateY(0)';
+          }, index * 50);
+      });
+  }
   // Function to render orders table
   function renderOrdersTable(orders) {
     const tableBody = document.getElementById("orders-table-body");
@@ -135,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (refreshOrdersBtn) {
     refreshOrdersBtn.addEventListener("click", () => {
-      fetchAndRenderOrders();
+        refreshOrdersData();
     });
   }
 });
