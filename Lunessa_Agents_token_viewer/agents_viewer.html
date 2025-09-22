@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agent Token - Dashboard</title>
     <link rel="stylesheet" href="/all_agents_viewer.css">
+    <link rel="stylesheet" href="/orders_and_raise_dispute.css">
     
     <!-- Main JavaScript -->
     <script src="/utils_viewer/tab_switching.js"></script>
@@ -20,6 +21,10 @@
 
     <!-- Your Orders -->
     <script src="/utils_viewer/orders_and_raise_dispute/get_order_and_render.js"></script>
+    <script src="/utils_viewer/orders_and_raise_dispute/raise-dispute.js"></script>
+
+    <!-- Dispute -->
+    <script src="/utils_viewer/disputes/get_dispute_and_render.js"></script>
 </head>
 <body>
     <div class="container">
@@ -47,9 +52,7 @@
                             <div>
                                 <h2>Agent Token Purchase</h2>
                             </div>
-                            <button id="refresh-data-btn" class="refresh-view-btn"
-                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(59, 130, 246, 0.4)';"
-                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)';">
+                            <button id="refresh-data-btn" class="refresh-view-btn">
                                  Refresh Data
                             </button>
                         </div>
@@ -73,10 +76,34 @@
                 </div>
 
                 <div class="tab-panel" id="your-orders">
-                    <div class="placeholder-content">
-                        <div class="placeholder-icon">📦</div>
-                        <h3>Your Orders Content</h3>
-                        <p>Content for Your Orders tab will be implemented here.</p>
+                    <div class="orders-header">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <div>
+                                <h2>Your Orders</h2>
+                            </div>
+                            <button id="refresh-orders-btn" class="refresh-orders-btn">
+                                Refresh Orders
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="orders-table-container">
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Agent ID</th>
+                                    <th>Model Name</th>
+                                    <th>Tokens</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <!-- Table content will be populated by JavaScript -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
