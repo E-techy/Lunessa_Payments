@@ -104,14 +104,17 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    tableBody.innerHTML = orders.map(order => {
+    tableBody.innerHTML = orders.map((order, index) => {
       const orderId = order.orderId || 'N/A';
       const agentId = order.paymentInfo?.billingSnapshot?.agentId || 'N/A';
-      const amount = order.amount ? `$${order.amount}` : 'N/A';
+      const amount = order.amount ? `${order.amount}` : 'N/A';
       const modelName = order.paymentInfo?.billingSnapshot?.modelName || 'N/A';
       const status = order.status || 'pending';
       const tokens = order.paymentInfo?.billingSnapshot?.tokens || 'N/A';
       const formattedTokens = tokens !== 'N/A' ? tokens.toLocaleString() : 'N/A';
+      
+      // Use a unique identifier combining receipt and index
+      const uniqueId = `${order.receipt || 'no-receipt'}-${index}`;
 
       return `
         <tr>
@@ -137,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </td>
           <td>
             <div class="amount-cell">
-              ${amount}
+              $${amount}
             </div>
           </td>
           <td>
@@ -147,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </td>
           <td>
             <div class="actions-cell">
-              <button class="view-order-btn" data-order-id="${orderId}">
+              <button class="view-order-btn" data-unique-id="${uniqueId}">
                 <svg class="view-arrow-icon" viewBox="0 0 12 8" fill="none">
                   <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -212,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener('click', function(e) {
       if (e.target.closest('.view-order-btn')) {
           const button = e.target.closest('.view-order-btn');
-          const orderId = button.dataset.orderId;
+          const uniqueId = button.dataset.uniqueId;
           const row = button.closest('tr');
           
           // Toggle button state
@@ -224,11 +227,11 @@ document.addEventListener("DOMContentLoaded", () => {
               // Remove existing details row
               existingDetailsRow.remove();
           } else {
-              // Find the order data
+              // Find the order data using the unique identifier
               const orders = window.currentOrdersData || [];
-              const orderData = orders.find(order => 
-                  (order.orderId || 'N/A') === orderId
-              );
+              const [receiptPart, indexPart] = uniqueId.split('-');
+              const orderIndex = parseInt(indexPart);
+              const orderData = orders[orderIndex];
               
               if (orderData) {
                   // Create and insert details row
@@ -251,6 +254,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const promo = billing.promo || {};
       const baseDiscount = billing.baseDiscount || {};
       const baseDiscountLevel = baseDiscount.level || {};
+      
+      // Use the same token extraction logic as the main table
+      const tokens = billing.tokens || 'N/A';
+      const formattedTokens = tokens !== 'N/A' ? tokens.toLocaleString() : 'N/A';
       
       // Format dates
       const formatDate = (dateStr) => {
@@ -341,7 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
                               </div>
                               <div class="order-detail-item">
                                   <span class="order-detail-label">Tokens:</span>
-                                  <span class="order-detail-value">${billing.tokens?.toLocaleString() || 'N/A'}</span>
+                                  <span class="order-detail-value">${formattedTokens}</span>
                               </div>
                               <div class="order-detail-item">
                                   <span class="order-detail-label">Per Token Price:</span>
