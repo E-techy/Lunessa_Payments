@@ -93,6 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   // Function to render orders table
   function renderOrdersTable(orders) {
+     // Store orders data globally for details expansion
+    window.currentOrdersData = orders;
     const tableBody = document.getElementById("orders-table-body");
     
     if (!tableBody) return;
@@ -198,5 +200,176 @@ document.addEventListener("DOMContentLoaded", () => {
     refreshOrdersBtn.addEventListener("click", () => {
         refreshOrdersData();
     });
+  }
+  // Add event listener for view order buttons
+  document.addEventListener('click', function(e) {
+      if (e.target.closest('.view-order-btn')) {
+          const button = e.target.closest('.view-order-btn');
+          const orderId = button.dataset.orderId;
+          const row = button.closest('tr');
+          
+          // Toggle button state
+          button.classList.toggle('expanded');
+          
+          // Check if details row already exists
+          const existingDetailsRow = row.nextElementSibling;
+          if (existingDetailsRow && existingDetailsRow.classList.contains('order-details-row')) {
+              // Remove existing details row
+              existingDetailsRow.remove();
+          } else {
+              // Find the order data
+              const orders = window.currentOrdersData || [];
+              const orderData = orders.find(order => 
+                  (order.orderId || 'N/A') === orderId
+              );
+              
+              if (orderData) {
+                  // Create and insert details row
+                  const detailsRow = createOrderDetailsRow(orderData);
+                  row.insertAdjacentHTML('afterend', detailsRow);
+                  
+                  // Animate the new row
+                  setTimeout(() => {
+                      const newRow = row.nextElementSibling;
+                      if (newRow) newRow.classList.add('show');
+                  }, 10);
+              }
+          }
+      }
+  });
+
+  // Function to create order details row HTML
+  function createOrderDetailsRow(order) {
+      const billing = order.paymentInfo?.billingSnapshot || {};
+      const promo = billing.promo || {};
+      const baseDiscount = billing.baseDiscount || {};
+      const baseDiscountLevel = baseDiscount.level || {};
+      
+      // Format dates
+      const formatDate = (dateStr) => {
+          if (!dateStr) return 'N/A';
+          const date = new Date(dateStr);
+          return date.toLocaleDateString() + ', ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + ' PM';
+      };
+
+      // Get discount value
+      const getDiscountValue = () => {
+          if (baseDiscountLevel.discountValue) return baseDiscountLevel.discountValue;
+          if (promo.data?.discountValue) return promo.data.discountValue;
+          return 'N/A';
+      };
+      
+      // Get min order value
+      const getMinOrderValue = () => {
+          if (baseDiscountLevel.minOrderValue) return baseDiscountLevel.minOrderValue;
+          if (promo.data?.minOrderValue) return promo.data.minOrderValue;
+          return 'N/A';
+      };
+      
+      return `
+          <tr class="order-details-row">
+              <td colspan="6">
+                  <div class="order-details-content">
+                      <div class="order-details-grid">
+                          <!-- Order Information Card -->
+                          <div class="order-detail-card">
+                              <h4>Order Information</h4>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Order ID:</span>
+                                  <span class="order-detail-value">${order.orderId || 'N/A'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Receipt:</span>
+                                  <span class="order-detail-value">${order.receipt || 'N/A'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Status:</span>
+                                  <span class="order-detail-value status-${order.status || 'pending'}">${order.status || 'pending'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Created:</span>
+                                  <span class="order-detail-value">${formatDate(order.createdAt)}</span>
+                              </div>
+                          </div>
+                          
+                          <!-- Payment Details Card -->
+                          <div class="order-detail-card">
+                              <h4>Payment Details</h4>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Amount:</span>
+                                  <span class="order-detail-value amount">$${order.amount || 'N/A'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Currency:</span>
+                                  <span class="order-detail-value">${billing.currency || 'USD'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Base Amount:</span>
+                                  <span class="order-detail-value">$${billing.baseAmount || 'N/A'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Total Discount:</span>
+                                  <span class="order-detail-value discount">$${billing.totalDiscount || '0'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Final Payable:</span>
+                                  <span class="order-detail-value amount">$${billing.finalPayable || 'N/A'}</span>
+                              </div>
+                          </div>
+                          
+                          <!-- Agent & Model Info Card -->
+                          <div class="order-detail-card">
+                              <h4>Agent & Model Info</h4>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Agent ID:</span>
+                                  <span class="order-detail-value agent-id">${billing.agentId || 'N/A'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Username:</span>
+                                  <span class="order-detail-value">${billing.username || 'N/A'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Model:</span>
+                                  <span class="order-detail-value model">${billing.modelName || 'N/A'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Tokens:</span>
+                                  <span class="order-detail-value">${billing.tokens?.toLocaleString() || 'N/A'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Per Token Price:</span>
+                                  <span class="order-detail-value">$${billing.perTokenPrice || 'N/A'}</span>
+                              </div>
+                          </div>
+                          
+                          <!-- Discount Information Card -->
+                          <div class="order-detail-card">
+                              <h4>Discount Information</h4>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Base Discount:</span>
+                                  <span class="order-detail-value discount">$${baseDiscount.amount || '0'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Base Applied:</span>
+                                  <span class="order-detail-value">${baseDiscount.applied ? 'Yes' : 'No'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Promo Type:</span>
+                                  <span class="order-detail-value">${promo.type || 'N/A'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Promo Code Used:</span>
+                                  <span class="order-detail-value ${promo.code ? 'promo-code' : ''}">${promo.code || 'None'}</span>
+                              </div>
+                              <div class="order-detail-item">
+                                  <span class="order-detail-label">Promo Discount:</span>
+                                  <span class="order-detail-value discount">$${promo.discountAmount || '0'}</span>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </td>
+          </tr>
+      `;
   }
 });
