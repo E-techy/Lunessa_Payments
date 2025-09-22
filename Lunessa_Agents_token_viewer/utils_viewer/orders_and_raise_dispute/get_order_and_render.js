@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (tbody && tbody.innerHTML.includes('No Orders Found')) {
               tbody.innerHTML = `
                   <tr>
-                      <td colspan="6" style="text-align: center; padding: 2rem; color: #059669;">
+                      <td colspan="7" style="text-align: center; padding: 2rem; color: #059669;">
                           <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">✅ Orders refreshed successfully</div>
                           <div style="font-size: 0.9rem; opacity: 0.7;">No orders found</div>
                       </td>
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       tbody.innerHTML = `
           <tr>
-              <td colspan="6" style="text-align: center; padding: 2rem;">
+              <td colspan="7" style="text-align: center; padding: 2rem;">
                   <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">🔄 Refreshing orders...</div>
                   <div style="font-size: 0.9rem; opacity: 0.7;">Please wait</div>
               </td>
@@ -110,7 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const amount = order.amount ? `$${order.amount}` : 'N/A';
       const modelName = order.paymentInfo?.billingSnapshot?.modelName || 'N/A';
       const status = order.status || 'pending';
-      
+      const tokens = order.paymentInfo?.billingSnapshot?.tokens || 'N/A';
+      const formattedTokens = tokens !== 'N/A' ? tokens.toLocaleString() : 'N/A';
+
       return `
         <tr>
           <td>
@@ -124,13 +126,18 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </td>
           <td>
-            <div class="amount-cell">
-              ${amount}
+            <div class="model-name-cell">
+              ${modelName}
             </div>
           </td>
           <td>
-            <div class="model-name-cell">
-              ${modelName}
+            <div class="tokens-cell">
+              ${formattedTokens}
+            </div>
+          </td>
+          <td>
+            <div class="amount-cell">
+              ${amount}
             </div>
           </td>
           <td>
@@ -162,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     tableBody.innerHTML = `
       <tr>
-        <td colspan="6">
+        <td colspan="7">
           <div class="orders-empty-state">
             <h3>No Orders Found</h3>
             <p>You haven't placed any orders yet.</p>
@@ -179,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     tableBody.innerHTML = `
       <tr>
-        <td colspan="6">
+        <td colspan="7">
           <div class="orders-empty-state">
             <h3>Error Loading Orders</h3>
             <p>Failed to load orders. Please try again.</p>
@@ -268,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       return `
           <tr class="order-details-row">
-              <td colspan="6">
+              <td colspan="7">
                   <div class="order-details-content">
                       <div class="order-details-grid">
                           <!-- Order Information Card -->
