@@ -73,10 +73,35 @@
                 </div>
 
                 <div class="tab-panel" id="your-orders">
-                    <div class="placeholder-content">
-                        <div class="placeholder-icon">📦</div>
-                        <h3>Your Orders Content</h3>
-                        <p>Content for Your Orders tab will be implemented here.</p>
+                    <div class="orders-header">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <div>
+                                <h2>Your Orders</h2>
+                            </div>
+                            <button id="refresh-orders-btn" class="refresh-orders-btn"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(34, 197, 94, 0.4)';"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(34, 197, 94, 0.3)';">
+                                Refresh Orders
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="orders-table-container">
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Agent ID</th>
+                                    <th>Amount</th>
+                                    <th>Model Name</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <!-- Table content will be populated by JavaScript -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

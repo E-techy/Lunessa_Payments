@@ -35,7 +35,6 @@ tbody tr {
 
 tbody tr:hover {
     background: rgba(139, 92, 246, 0.05);
-    transform: scale(1.01);
 }
 
 tbody tr:last-child {
