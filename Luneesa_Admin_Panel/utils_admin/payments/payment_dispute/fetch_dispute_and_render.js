@@ -170,38 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
             
             tableBody.appendChild(row);
         });
-        
-        // Add event listeners for action buttons (placeholder - no API calls as requested)
-        disputes.forEach((dispute, index) => {
-            const modifyBtn = document.getElementById(`dispute-modify-btn-${index}`);
-            const deleteBtn = document.getElementById(`dispute-delete-btn-${index}`);
-            
-            if (modifyBtn) {
-                modifyBtn.addEventListener("click", () => {
-                    console.log("Modify dispute clicked:", {
-                        disputeId: dispute.disputeId,
-                        orderId: dispute.orderId,
-                        dispute: dispute
-                    });
-                    // Placeholder for modify functionality
-                    alert(`Modify dispute: ${dispute.disputeId}\nOrder: ${dispute.orderId}`);
-                });
-            }
-            
-            if (deleteBtn) {
-                deleteBtn.addEventListener("click", () => {
-                    console.log("Delete dispute clicked:", {
-                        disputeId: dispute.disputeId,
-                        orderId: dispute.orderId,
-                        dispute: dispute
-                    });
-                    // Placeholder for delete functionality
-                    if (confirm(`Are you sure you want to delete this dispute?\n\nDispute ID: ${dispute.disputeId}\nOrder ID: ${dispute.orderId}`)) {
-                        alert(`Delete dispute: ${dispute.disputeId}`);
-                    }
-                });
-            }
-        });
     }
 
     function showError(message) {

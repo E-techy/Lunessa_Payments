@@ -1,0 +1,225 @@
+/* Edit Dispute Section */
+.dispute-edit-display-section {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.dispute-edit-display-section .portal-title-section {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    padding: 16px 24px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dispute-edit-display-section .portal-title-section i {
+    font-size: 20px;
+}
+
+.dispute-edit-display-section .portal-title-section h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Dispute Edit Container */
+.dispute-edit-container {
+    padding: 24px;
+}
+
+.dispute-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Form sections */
+.dispute-readonly-section,
+.dispute-editable-section {
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.dispute-readonly-section {
+    background: #f9fafb;
+}
+
+.dispute-editable-section {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+}
+
+.dispute-readonly-section h4,
+.dispute-editable-section h4 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.dispute-readonly-section h4 i {
+    color: #6b7280;
+}
+
+.dispute-editable-section h4 i {
+    color: #8b5cf6;
+}
+
+/* Form Layout */
+.dispute-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.dispute-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.dispute-form-group label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.dispute-form-group input,
+.dispute-form-group select,
+.dispute-form-group textarea {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: white;
+    color: #374151;
+}
+
+.dispute-form-group input:focus,
+.dispute-form-group select:focus,
+.dispute-form-group textarea:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.dispute-form-group input::placeholder,
+.dispute-form-group textarea::placeholder {
+    color: #9ca3af;
+}
+
+.dispute-form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+/* Read-only fields */
+.dispute-readonly-field {
+    background-color: #f3f4f6 !important;
+    color: #6b7280 !important;
+    cursor: not-allowed !important;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+}
+
+/* Fetch Order Section */
+.dispute-fetch-order-section {
+    display: flex;
+    align-items: center;
+}
+
+.dispute-fetch-order-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+/* Edit Actions */
+.dispute-edit-actions {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.dispute-btn-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.dispute-btn-success:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+}
+
+.dispute-btn-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.dispute-btn-warning:hover {
+    background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+.dispute-btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.dispute-btn-secondary:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dispute-edit-display-section {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dispute-form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .dispute-edit-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .dispute-btn {
+        justify-content: center;
+    }
+    
+    .dispute-edit-container {
+        padding: 16px;
+    }
+}
