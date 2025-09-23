@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <th>Comment</th>
                                 <th>Resolved</th>
                                 <th>Created</th>
+                                <th>Updated</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -139,6 +140,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 minute: "2-digit"
             });
             
+            // Format updated date
+            const updatedDate = new Date(dispute.updatedAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+
             // Resolved status badge
             const resolvedBadge = dispute.resolved 
                 ? '<span class="dispute-status-badge dispute-resolved">Resolved</span>'
@@ -154,6 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </td>
                 <td class="dispute-cell-resolved">${resolvedBadge}</td>
                 <td class="dispute-cell-created">${createdDate}</td>
+                <td class="dispute-cell-updated">${updatedDate}</td>
                 <td class="dispute-cell-actions">
                     <button class="dispute-action-btn dispute-modify-btn" 
                             id="dispute-modify-btn-${index}" 
