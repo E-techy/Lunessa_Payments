@@ -16,18 +16,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     function openEditDisputeTab(row, disputeId, orderId) {
-        // Extract data from the table row
-        const username = row.querySelector(".dispute-cell-username")?.textContent?.trim() || "";
-        const orderIdText = row.querySelector(".dispute-order-id")?.textContent?.trim() || orderId;
-        const resolvedBadge = row.querySelector(".dispute-status-badge");
-        const isResolved = resolvedBadge?.classList.contains("dispute-resolved") || false;
+        // Get the modify button to extract all data attributes
+        const modifyBtn = row.querySelector(".dispute-modify-btn");
+        
+        if (!modifyBtn) {
+            console.error("Could not find modify button in row");
+            return;
+        }
+        
+        // Extract data from button attributes
+        const username = modifyBtn.getAttribute("data-username") || "";
+        const orderIdText = modifyBtn.getAttribute("data-order-id") || orderId;
+        const disputeComment = modifyBtn.getAttribute("data-dispute-comment") || "";
+        const resolvedComment = modifyBtn.getAttribute("data-resolved-comment") || "";
+        const isResolved = modifyBtn.getAttribute("data-resolved") === "true";
         
         // Store current dispute data
         currentDisputeData = {
             disputeId: disputeId,
             orderId: orderIdText,
             username: username,
-            resolved: isResolved
+            resolved: isResolved,
+            disputeComment: disputeComment,
+            resolvedComment: resolvedComment
         };
         
         // Show the edit section
@@ -40,9 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("dispute-edit-orderid").value = orderIdText;
             document.getElementById("dispute-edit-resolved").value = isResolved.toString();
             
-            // Clear editable fields
-            document.getElementById("dispute-edit-comment").value = "";
-            document.getElementById("dispute-edit-resolved-comment").value = "";
+            // Set the dispute comment (read-only)
+            document.getElementById("dispute-edit-comment").value = disputeComment;
+            
+            // Set resolved comment if exists
+            document.getElementById("dispute-edit-resolved-comment").value = resolvedComment;
             
             // Scroll to the edit section
             editSection.scrollIntoView({ behavior: "smooth", block: "start" });

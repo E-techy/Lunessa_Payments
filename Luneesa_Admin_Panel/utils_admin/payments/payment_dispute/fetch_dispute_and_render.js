@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <tr>
                                 <th>Username</th>
                                 <th>Order ID</th>
+                                <th>Comment</th>
                                 <th>Resolved</th>
                                 <th>Created</th>
                                 <th>Actions</th>
@@ -148,6 +149,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td class="dispute-cell-orderid">
                     <span class="dispute-order-id">${escapeHtml(dispute.orderId)}</span>
                 </td>
+                <td class="dispute-cell-comment">
+                    <div class="dispute-comment">${escapeHtml(dispute.disputeComment || "No comment")}</div>
+                </td>
                 <td class="dispute-cell-resolved">${resolvedBadge}</td>
                 <td class="dispute-cell-created">${createdDate}</td>
                 <td class="dispute-cell-actions">
@@ -155,7 +159,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             id="dispute-modify-btn-${index}" 
                             title="Modify dispute"
                             data-dispute-id="${dispute.disputeId}"
-                            data-order-id="${dispute.orderId}">
+                            data-order-id="${dispute.orderId}"
+                            data-username="${dispute.username || ''}"
+                            data-dispute-comment="${escapeHtml(dispute.disputeComment || '')}"
+                            data-resolved="${dispute.resolved || false}"
+                            data-resolved-comment="${escapeHtml(dispute.resolvedComment || '')}">
                         <i class="fas fa-edit"></i>
                     </button>
                     <button class="dispute-action-btn dispute-delete-btn" 
@@ -167,7 +175,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     </button>
                 </td>
             `;
-            
             tableBody.appendChild(row);
         });
     }
