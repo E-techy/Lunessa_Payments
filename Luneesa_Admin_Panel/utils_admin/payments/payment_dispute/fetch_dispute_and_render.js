@@ -55,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             <tr>
                                 <th>Username</th>
                                 <th>Order ID</th>
-                                <th>Comment</th>
                                 <th>Resolved</th>
                                 <th>Created</th>
                                 <th>Updated</th>
@@ -158,9 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td class="dispute-cell-username">${escapeHtml(dispute.username || "N/A")}</td>
                 <td class="dispute-cell-orderid">
                     <span class="dispute-order-id">${escapeHtml(dispute.orderId)}</span>
-                </td>
-                <td class="dispute-cell-comment">
-                    <div class="dispute-comment">${escapeHtml(dispute.disputeComment || "No comment")}</div>
                 </td>
                 <td class="dispute-cell-resolved">${resolvedBadge}</td>
                 <td class="dispute-cell-created">${createdDate}</td>
