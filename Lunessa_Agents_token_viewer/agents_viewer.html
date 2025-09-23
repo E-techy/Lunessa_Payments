@@ -6,6 +6,7 @@
     <title>Agent Token - Dashboard</title>
     <link rel="stylesheet" href="/all_agents_viewer.css">
     <link rel="stylesheet" href="/orders_and_raise_dispute.css">
+    <link rel="stylesheet" href="/disuptes.css">
     
     <!-- Main JavaScript -->
     <script src="/utils_viewer/tab_switching.js"></script>
@@ -108,10 +109,32 @@
                 </div>
 
                 <div class="tab-panel" id="disputes">
-                    <div class="placeholder-content">
-                        <div class="placeholder-icon">⚖️</div>
-                        <h3>Disputes Content</h3>
-                        <p>Content for Disputes tab will be implemented here.</p>
+                    <div class="disputes-header">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <div>
+                                <h2>Your Disputes</h2>
+                            </div>
+                            <button id="refresh-disputes-btn" class="refresh-dispute-btn-head">
+                                Refresh Disputes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="disputes-table-container">
+                        <table class="disputes-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Resolved</th>
+                                    <th>Created</th>
+                                    <th>Updated</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="disputes-table-body">
+                                <!-- Table content will be populated by JavaScript -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

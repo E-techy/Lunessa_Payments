@@ -1,0 +1,114 @@
+/* Disputes Table Styles */
+.disputes-header h2 {
+    color: #1E293B;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.disputes-table-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+}
+
+.disputes-table {
+    width: 100%;
+    height: 25vh;
+    border-collapse: collapse;
+}
+
+.disputes-table thead {
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+}
+
+.disputes-table th {
+    padding: 20px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: white;
+}
+
+.disputes-table tbody tr {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.disputes-table tbody tr:hover {
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.disputes-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.disputes-table td {
+    padding: 20px;
+    text-align: center;
+    font-size: 1rem;
+    vertical-align: middle;
+}
+
+.dispute-order-id-cell {
+    font-family: 'Courier New', monospace;
+    color: black;
+    background: rgba(34, 197, 94, 0.15);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    display: inline-block;
+}
+
+.dispute-resolved-cell {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.resolved-false {
+    background: rgba(239, 68, 68, 0.2);
+    color: #DC2626;
+}
+
+.resolved-true {
+    background: rgba(34, 197, 94, 0.2);
+    color: #16A34A;
+}
+
+.dispute-date-cell {
+    font-size: 0.9rem;
+    color: #6B7280;
+}
+
+.dispute-actions-cell {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Empty state */
+.disputes-empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #6B7280;
+}
+
+.disputes-empty-state h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.disputes-empty-state p {
+    font-size: 1rem;
+    opacity: 0.8;
+}
