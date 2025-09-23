@@ -33,6 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function renderDisputesTable(disputeData, hasUsernameFilter) {
+        // Hide the edit section if it's open
+        const editSection = document.getElementById("dispute-edit-display-section");
+        if (editSection) {
+            editSection.style.display = "none";
+        }
+        
         // First, check if disputes table section already exists, if not create it
         let disputeTableSection = document.getElementById("dispute-table-display-section");
         
