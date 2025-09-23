@@ -72,19 +72,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to render disputes table
   function renderDisputesTable(disputes) {
-    const tableBody = document.getElementById("disputes-table-body");
+  // Store disputes data globally for details expansion
+  currentDisputesData = disputes || [];
+  const tableBody = document.getElementById("disputes-table-body");
     
     if (!disputes || disputes.length === 0) {
-      tableBody.innerHTML = `
+      tableBody.innerHTML = disputes.map((dispute, index) => `
         <tr>
-          <td colspan="5">
-            <div class="disputes-empty-state">
-              <h3>No Disputes Found</h3>
-              <p>You haven't raised any disputes yet.</p>
-            </div>
+          <td>
+            <span class="dispute-order-id-cell">${dispute.orderId}</span>
+          </td>
+          <td>
+            <span class="dispute-resolved-cell ${dispute.resolved ? 'resolved-true' : 'resolved-false'}">
+              ${dispute.resolved ? 'Resolved' : 'Pending'}
+            </span>
+          </td>
+          <td class="dispute-date-cell">
+            ${formatDate(dispute.createdAt)}
+          </td>
+          <td class="dispute-date-cell">
+            ${formatDate(dispute.updatedAt)}
+          </td>
+          <td class="dispute-actions-cell">
+            <button class="dispute-action-btn" title="View Details" data-dispute-id="${dispute.disputeId}" data-dispute-index="${index}">
+              <svg class="view-dispute-arrow-icon" viewBox="0 0 12 8" fill="none">
+                    <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
           </td>
         </tr>
-      `;
+      `).join('');
       return;
     }
 
@@ -105,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ${formatDate(dispute.updatedAt)}
         </td>
         <td class="dispute-actions-cell">
-          <button class="dispute-action-btn" title="View Details">
+          <button class="dispute-action-btn" title="View Details" data-dispute-id="${dispute.disputeId}" data-dispute-index="${disputes.indexOf(dispute)}">
             <svg class="view-dispute-arrow-icon" viewBox="0 0 12 8" fill="none">
                   <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -189,6 +206,73 @@ document.addEventListener("DOMContentLoaded", () => {
       showErrorState();
     }
   }
+
+  // Store current disputes data globally for details expansion
+  let currentDisputesData = [];
+
+  // Function to create dispute details row HTML
+  function createDisputeDetailsRow(dispute) {
+    // Format dates
+    const formatDate = (dateStr) => {
+      if (!dateStr) return 'N/A';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString() + ', ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    };
+
+    return `
+      <tr class="dispute-details-row">
+        <td colspan="5" style="
+          padding: 20px;
+          text-align: start;
+          font-size: 1rem;
+          vertical-align: middle;">
+          <div class="dispute-details">
+            <p><strong>Your Comment:</strong> ${dispute.disputeComment || 'No comment provided'}</p>
+            ${dispute.resolved && dispute.resolvedComment ? 
+              `<p><strong>Resolution Comment:</strong> ${dispute.resolvedComment}</p>` : 
+              dispute.resolved ? 
+              `<p><strong>Resolution Comment:</strong> No resolution comment provided</p>` : 
+              `<p><strong>Resolution Status:</strong> <em>Dispute is still pending resolution</em></p>`
+            }
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  // Add event listener for dispute action buttons
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.dispute-action-btn')) {
+      const button = e.target.closest('.dispute-action-btn');
+      const disputeIndex = parseInt(button.dataset.disputeIndex);
+      const row = button.closest('tr');
+      
+      // Toggle button state
+      button.classList.toggle('expanded');
+      
+      // Check if details row already exists
+      const existingDetailsRow = row.nextElementSibling;
+      if (existingDetailsRow && existingDetailsRow.classList.contains('dispute-details-row')) {
+        // Remove existing details row
+        existingDetailsRow.remove();
+      } else {
+        // Find the dispute data using the index
+        const disputeData = currentDisputesData[disputeIndex];
+        
+        if (disputeData) {
+          // Create and insert details row
+          const detailsRow = createDisputeDetailsRow(disputeData);
+          row.insertAdjacentHTML('afterend', detailsRow);
+          
+          // Animate the new row
+          setTimeout(() => {
+            const newRow = row.nextElementSibling;
+            if (newRow) newRow.classList.add('show');
+          }, 10);
+        }
+      }
+    }
+  });
 
   // Event listeners
   if (disputesTabButton) {
