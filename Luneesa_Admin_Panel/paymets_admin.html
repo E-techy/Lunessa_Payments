@@ -1259,6 +1259,40 @@
                             <i class="fas fa-exclamation-triangle"></i>
                             <h3>Payment Dispute Management</h3>
                         </div>
+                        
+                        <!-- Dispute Filters Section -->
+                        <div class="dispute-filters-section">
+                            <div class="dispute-filters-header">
+                                <i class="fas fa-filter"></i>
+                                <h4>Dispute Filters</h4>
+                            </div>
+                            
+                            <div class="dispute-form-grid">
+                                <!-- Username Input -->
+                                <div class="dispute-form-group">
+                                    <label for="dispute-username">Username (optional)</label>
+                                    <input type="text" id="dispute-username" placeholder="Enter username" />
+                                </div>
+                                
+                                <!-- Resolved Filter Select -->
+                                <div class="dispute-form-group">
+                                    <label for="dispute-resolved-filter">Resolved Filter</label>
+                                    <select id="dispute-resolved-filter">
+                                        <option value="all">--Resolved Filter--</option>
+                                        <option value="resolved">Resolved</option>
+                                        <option value="unresolved">Unresolved</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <div class="dispute-actions-section">
+                                <button type="button" class="dispute-btn dispute-btn-primary" id="dispute-fetch-btn">
+                                    <i class="fas fa-search"></i>
+                                    Fetch Disputes
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

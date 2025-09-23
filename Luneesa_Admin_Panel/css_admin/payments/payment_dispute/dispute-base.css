@@ -26,3 +26,128 @@
     color: white;
     box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
 }
+
+/* Dispute Filters Section */
+.dispute-filters-section {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dispute-filters-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.dispute-filters-header i {
+    color: #f59e0b;
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+.dispute-filters-header h4 {
+    margin: 0;
+    color: #374151;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.dispute-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.dispute-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.dispute-form-group label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.dispute-form-group input,
+.dispute-form-group select {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.dispute-form-group input:focus,
+.dispute-form-group select:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.dispute-form-group input::placeholder {
+    color: #9ca3af;
+}
+
+.dispute-actions-section {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+}
+
+.dispute-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dispute-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dispute-btn:active {
+    transform: translateY(0);
+}
+
+.dispute-btn-primary {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.dispute-btn-primary:hover {
+    background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dispute-form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .dispute-actions-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .dispute-btn {
+        justify-content: center;
+    }
+}
