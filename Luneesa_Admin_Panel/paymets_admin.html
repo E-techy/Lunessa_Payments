@@ -80,7 +80,11 @@
     <script src="/utils_admin/payments/razorpay_orders/razorpay-fetch-orders-and-render.js"></script>
     <script src="/utils_admin/payments/razorpay_orders/button_functionality.js"></script>
     <script src="/utils_admin/payments/razorpay_orders/razorpay-help-modal.js"></script>
-    <script src="utils_admin/payments/razorpay_orders/export-data-razorpay-orders.js"></script>
+    <script src="/utils_admin/payments/razorpay_orders/export-data-razorpay-orders.js"></script>
+
+    <!-- Disputes -->
+    <script src="/utils_admin/payments/payment_dispute/fetch_dispute_and_render.js"></script>
+    <script src="/utils_admin/payments/payment_dispute/dispute-edit-handler.js"></script>
 </head>
 <body>
     <div class="container">
@@ -1258,6 +1262,111 @@
                         <div class="portal-title-section">
                             <i class="fas fa-exclamation-triangle"></i>
                             <h3>Payment Dispute Management</h3>
+                        </div>
+                        
+                        <!-- Dispute Filters Section -->
+                        <div class="dispute-filters-section">
+                            <div class="dispute-filters-header">
+                                <i class="fas fa-filter"></i>
+                                <h4>Dispute Filters</h4>
+                            </div>
+                            
+                            <div class="dispute-form-grid">
+                                <!-- Username Input -->
+                                <div class="dispute-form-group">
+                                    <label for="dispute-username">Username (optional)</label>
+                                    <input type="text" id="dispute-username" placeholder="Enter username" />
+                                </div>
+                                
+                                <!-- Resolved Filter Select -->
+                                <div class="dispute-form-group">
+                                    <label for="dispute-resolved-filter">Resolved Filter</label>
+                                    <select id="dispute-resolved-filter">
+                                        <option value="all">--Resolved Filter--</option>
+                                        <option value="resolved">Resolved</option>
+                                        <option value="unresolved">Unresolved</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <div class="dispute-actions-section">
+                                <button type="button" class="dispute-btn dispute-btn-primary" id="dispute-fetch-btn">
+                                    <i class="fas fa-search"></i>
+                                    Fetch Disputes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Dispute Section (Add this after dispute-table-display-section) -->
+                    <div class="dispute-edit-display-section" id="dispute-edit-display-section" style="display: none;">
+                        <div class="portal-title-section">
+                            <i class="fas fa-edit"></i>
+                            <h4>Edit Dispute</h4>
+                        </div>
+                        
+                        <div class="dispute-edit-container">
+                            <form id="dispute-edit-form" class="dispute-edit-form">
+                                <!-- Read-only Database Fields -->
+                                <div class="dispute-readonly-section">
+                                    <h4><i class="fas fa-database"></i> Dispute Information</h4>
+                                    <div class="dispute-form-row">
+                                        <div class="dispute-form-group">
+                                            <label>Username</label>
+                                            <input type="text" id="dispute-edit-username" disabled class="dispute-readonly-field">
+                                        </div>
+                                        <div class="dispute-form-group">
+                                            <label>Order ID</label>
+                                            <input type="text" id="dispute-edit-orderid" disabled class="dispute-readonly-field">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Editable Fields -->
+                                <div class="dispute-editable-section">
+                                    <h4><i class="fas fa-edit"></i> Dispute Details</h4>
+                                    <div class="dispute-form-row">
+                                        <div class="dispute-form-group">
+                                            <label>Resolved Status *</label>
+                                            <select id="dispute-edit-resolved" required>
+                                                <option value="false">Unresolved</option>
+                                                <option value="true">Resolved</option>
+                                            </select>
+                                        </div>
+                                        <div class="dispute-form-group">
+                                            <label>Order Status</label>
+                                            <div class="dispute-fetch-order-section">
+                                                <button type="button" class="dispute-btn dispute-btn-secondary dispute-fetch-order-btn" id="dispute-fetch-order-btn">
+                                                    <i class="fas fa-search"></i> Fetch Order
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="dispute-form-group">
+                                        <label>Dispute Comment</label>
+                                        <textarea id="dispute-edit-comment" rows="3" disabled class="dispute-readonly-field" placeholder="Original dispute comment (read-only)"></textarea>
+                                    </div>
+                                    
+                                    <div class="dispute-form-group">
+                                        <label>Resolved Comment</label>
+                                        <textarea id="dispute-edit-resolved-comment" rows="4" placeholder="Enter resolution comment or admin notes..."></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <div class="dispute-edit-actions">
+                                <button type="button" class="dispute-btn dispute-btn-success" id="dispute-update-btn">
+                                    <i class="fas fa-save"></i> Update Dispute
+                                </button>
+                                <button type="button" class="dispute-btn dispute-btn-warning" id="dispute-allot-tokens-btn">
+                                    <i class="fas fa-coins"></i> Allot Tokens
+                                </button>
+                                <button type="button" class="dispute-btn dispute-btn-secondary" id="dispute-cancel-edit-btn">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,27 @@
+.dispute-details-row {
+  background: #f8f9fa;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dispute-details-row.show {
+  opacity: 1;
+}
+
+.dispute-details {
+  padding: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.dispute-details p {
+  margin: 5px 0;
+  line-height: 1.4;
+}
+
+.dispute-action-btn.expanded .view-dispute-arrow-icon {
+  transform: rotate(180deg);
+}
+
+.dispute-action-btn .view-dispute-arrow-icon {
+  transition: transform 0.3s ease;
+}

@@ -1,0 +1,293 @@
+/* Dispute Table Display Section */
+.dispute-table-display-section {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.dispute-table-display-section .portal-title-section {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    padding: 16px 24px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dispute-table-display-section .portal-title-section i {
+    font-size: 20px;
+}
+
+.dispute-table-display-section .portal-title-section h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Dispute Table Container */
+.dispute-table-container {
+    padding: 0;
+    position: relative;
+    min-height: 200px;
+}
+
+/* Dispute Table */
+.dispute-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.dispute-table thead {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.dispute-table th {
+    padding: 16px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.dispute-table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.dispute-table tbody tr:hover {
+    background-color: #fef3c7;
+    transform: scale(1.001);
+}
+
+.dispute-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.dispute-table td {
+    padding: 16px 12px;
+    vertical-align: top;
+    color: #374151;
+}
+
+/* Username Cell */
+.dispute-cell-username {
+    font-weight: 600;
+    color: #1f2937;
+    min-width: 120px;
+}
+
+/* Order ID Cell */
+.dispute-cell-orderid {
+    min-width: 200px;
+}
+
+.dispute-order-id {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    background: #f3f4f6;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #1f2937;
+    font-weight: 500;
+    display: inline-block;
+    margin-bottom: 6px;
+}
+
+.dispute-comment {
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.4;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* Resolved Status Cell */
+.dispute-cell-resolved {
+    min-width: 100px;
+}
+
+.dispute-status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dispute-resolved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.dispute-unresolved {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Created Date Cell */
+.dispute-cell-created {
+    font-size: 12px;
+    color: #6b7280;
+    min-width: 120px;
+    white-space: nowrap;
+}
+
+/* Actions Cell */
+.dispute-cell-actions {
+    min-width: 100px;
+    text-align: center;
+}
+
+.dispute-action-btn {
+    background: none;
+    border: 1px solid #d1d5db;
+    padding: 8px 10px;
+    margin: 0 2px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.dispute-action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dispute-modify-btn:hover {
+    background: #fef3c7;
+    border-color: #f59e0b;
+    color: #d97706;
+}
+
+.dispute-delete-btn:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #dc2626;
+}
+
+.dispute-action-btn:active {
+    transform: translateY(0);
+}
+
+/* Loading and No Data States */
+.dispute-loading,
+.dispute-no-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #6b7280;
+    font-size: 14px;
+    gap: 12px;
+}
+
+.dispute-loading i {
+    color: #f59e0b;
+    font-size: 18px;
+}
+
+.dispute-no-data i {
+    color: #9ca3af;
+    font-size: 18px;
+}
+
+/* Error Message Styles */
+.dispute-error-message {
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    margin: 16px 0;
+    overflow: hidden;
+    display: none;
+}
+
+.dispute-error-message .error-content {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #991b1b;
+}
+
+.dispute-error-message .error-content i {
+    font-size: 16px;
+    color: #dc2626;
+}
+
+.error-close-btn {
+    background: none;
+    border: none;
+    color: #991b1b;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: auto;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.error-close-btn:hover {
+    background: #fecaca;
+}
+
+.dispute-not-found{    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px
+
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .dispute-table {
+        font-size: 13px;
+    }
+    
+    .dispute-table th,
+    .dispute-table td {
+        padding: 12px 8px;
+    }
+    
+    .dispute-comment {
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dispute-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .dispute-table {
+        min-width: 700px;
+    }
+    
+    .dispute-comment {
+        max-width: 200px;
+        -webkit-line-clamp: 1;
+    }
+    
+    .dispute-action-btn {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+}
