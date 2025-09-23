@@ -41,6 +41,12 @@ document.addEventListener("DOMContentLoaded", () => {
             resolvedComment: resolvedComment
         };
         
+        // Hide the dispute table section
+        const disputeTableSection = document.getElementById("dispute-table-display-section");
+        if (disputeTableSection) {
+            disputeTableSection.style.display = "none";
+        }
+
         // Show the edit section
         const editSection = document.getElementById("dispute-edit-display-section");
         if (editSection) {
@@ -118,6 +124,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const editSection = document.getElementById("dispute-edit-display-section");
         if (editSection) {
             editSection.style.display = "none";
+        }
+        
+        // Show the dispute table section again
+        const disputeTableSection = document.getElementById("dispute-table-display-section");
+        if (disputeTableSection) {
+            disputeTableSection.style.display = "block";
         }
         
         // Clear form data
