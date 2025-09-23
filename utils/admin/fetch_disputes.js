@@ -66,12 +66,23 @@ async function fetchDisputes({ adminRole, username = null, resolved = null }) {
     }
 
     // Case A: No username provided → fetch all users' disputes
+
+    if (!username && resolved!= null) {
+          const allDisputes = await prisma.Disputes.findMany({
+            where : {
+              disputes: {
+                some: {
+                  resolved: resolved,
+                }
+              } 
+            }
+          });
+      return { success: true, data: allDisputes };
+    }
+    
+    // If the resolved paramater is not set and the username is also not provided then this will run
     if (!username) {
-      const allDisputes = await prisma.Disputes.findMany({
-        where : {
-          resolved: resolved
-        }
-      });
+      const allDisputes = await prisma.Disputes.findMany();
       return { success: true, data: allDisputes };
     }
 
