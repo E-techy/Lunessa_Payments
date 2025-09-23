@@ -19,3 +19,4 @@
 
 /* Payment Dispute */
 @import url('./css_admin/payments/payment_dispute/dispute-base.css');
+@import url('./css_admin/payments/payment_dispute/dispute-table.css');
