@@ -95,6 +95,117 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Opening edit tab for dispute:", currentDisputeData);
     }
     
+    // Fetch Order (new button) handler
+    document.addEventListener("click", async (event) => {
+        if (event.target.closest("#dispute-fetch-order-btn-new")) {
+            const orderIdInput = document.getElementById("dispute-edit-orderid");
+            const orderId = orderIdInput.value.trim();
+            
+            if (!orderId) {
+                console.warn("No Order ID provided for fetch order");
+                alert("Please enter an Order ID");
+                return;
+            }
+            
+            console.log("Fetching user order data for ID:", orderId);
+            
+            // Show loading state
+            const fetchBtn = document.getElementById("dispute-fetch-order-btn-new");
+            const originalText = fetchBtn.innerHTML;
+            fetchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+            fetchBtn.disabled = true;
+            
+            try {
+                // Prepare request body - only send orderId to search across all users
+                const requestBody = {
+                    orderId: orderId
+                };
+                
+                console.log("Request body:", requestBody);
+                
+                // Make API call to get user orders
+                const response = await fetch("/admin/get_user_orders", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include", // Include cookies for authentication
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    console.log("=== USER ORDER DATA FETCHED ===");
+                    console.log("Order Data:", result.data);
+                    console.log("=== END ORDER DATA ===");
+                    
+                    // Show success message
+                    console.log(`✅ Order ${orderId} data fetched successfully! Check console for details.`);
+                    
+                    // Optional: Show a brief success notification
+                    const successMsg = document.createElement("div");
+                    successMsg.style.cssText = `
+                        position: fixed; top: 20px; right: 20px; z-index: 9999;
+                        background: #10b981; color: white; padding: 12px 20px;
+                        border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    `;
+                    successMsg.innerHTML = `<i class="fas fa-check"></i> Order data fetched successfully!`;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(successMsg)) {
+                            document.body.removeChild(successMsg);
+                        }
+                    }, 3000);
+                    
+                } else {
+                    console.error("Failed to fetch user order data:", result.error || "Unknown error");
+                    console.log(`❌ Failed to fetch order ${orderId}:`, result.error || "Unknown error");
+                    
+                    // Show error notification
+                    const errorMsg = document.createElement("div");
+                    errorMsg.style.cssText = `
+                        position: fixed; top: 20px; right: 20px; z-index: 9999;
+                        background: #ef4444; color: white; padding: 12px 20px;
+                        border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    `;
+                    errorMsg.innerHTML = `<i class="fas fa-times"></i> Failed to fetch order data!`;
+                    document.body.appendChild(errorMsg);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(errorMsg)) {
+                            document.body.removeChild(errorMsg);
+                        }
+                    }, 4000);
+                }
+            } catch (error) {
+                console.error("Error fetching user order data:", error);
+                console.log(`❌ Network error while fetching order ${orderId}:`, error.message);
+                
+                // Show network error notification
+                const errorMsg = document.createElement("div");
+                errorMsg.style.cssText = `
+                    position: fixed; top: 20px; right: 20px; z-index: 9999;
+                    background: #ef4444; color: white; padding: 12px 20px;
+                    border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                `;
+                errorMsg.innerHTML = `<i class="fas fa-times"></i> Network error occurred!`;
+                document.body.appendChild(errorMsg);
+                
+                setTimeout(() => {
+                    if (document.body.contains(errorMsg)) {
+                        document.body.removeChild(errorMsg);
+                    }
+                }, 4000);
+            } finally {
+                // Reset button state
+                fetchBtn.innerHTML = originalText;
+                fetchBtn.disabled = false;
+            }
+        }
+    });
+
     // Fetch Razorpay Order button handler
     document.addEventListener("click", async (event) => {
         if (event.target.closest("#dispute-fetch-order-razorpay-btn")) {
