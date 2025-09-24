@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             
         // Clear any previous order details when opening a new dispute
-        clearOrderDetails();
+        clearRazorpayOrderDetails();
         
         console.log("Opening edit tab for dispute:", currentDisputeData);
     }
@@ -138,8 +138,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.log("Order Data:", result.data);
                     console.log("=== END ORDER DATA ===");
                     
-                    // Render the order data in the dispute-readonly-section
-                    renderOrderDetails(result.data);
+                    // Render the order data in the dispute-razorpay-order-section
+                    renderRazorpayOrderDetails(result.data);
                     
                     // Set the flag that order has been fetched
                     orderFetched = true;
@@ -201,13 +201,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Function to render order details
-    function renderOrderDetails(orderData) {
-        const orderDetailsSection = document.getElementById("dispute-order-details-section");
-        const orderInfoContainer = document.getElementById("dispute-order-info");
+    // Function to render razorpay order details
+    function renderRazorpayOrderDetails(orderData) {
+        const razorpayOrderSection = document.getElementById("dispute-razorpay-order-section");
+        const razorpayOrderInfoContainer = document.getElementById("dispute-razorpay-order-info");
         
-        if (!orderDetailsSection || !orderInfoContainer) {
-            console.error("Order details section not found");
+        if (!razorpayOrderSection || !razorpayOrderInfoContainer) {
+            console.error("Razorpay order details section not found");
             return;
         }
         
@@ -236,125 +236,125 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         
-        // Create order details HTML
-        const orderDetailsHTML = `
-            <div class="order-details-grid">
-                <div class="order-basic-info">
+        // Create razorpay order details HTML
+        const razorpayOrderDetailsHTML = `
+            <div class="razorpay-order-details-grid">
+                <div class="razorpay-order-basic-info">
                     <h5><i class="fas fa-info-circle"></i> Basic Information</h5>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Order ID:</label>
-                            <span class="order-value">${orderData.id}</span>
+                            <span class="razorpay-order-value">${orderData.id}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Status:</label>
-                            <span class="order-status order-status-${orderData.status}">${orderData.status}</span>
+                            <span class="razorpay-order-status razorpay-order-status-${orderData.status}">${orderData.status}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Amount:</label>
-                            <span class="order-value">$${(orderData.amount / 100).toFixed(2)}</span>
+                            <span class="razorpay-order-value">${(orderData.amount / 100).toFixed(2)}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Currency:</label>
-                            <span class="order-value">${orderData.currency}</span>
+                            <span class="razorpay-order-value">${orderData.currency}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Amount Paid:</label>
-                            <span class="order-value">$${(orderData.amount_paid / 100).toFixed(2)}</span>
+                            <span class="razorpay-order-value">${(orderData.amount_paid / 100).toFixed(2)}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Amount Due:</label>
-                            <span class="order-value">$${(orderData.amount_due / 100).toFixed(2)}</span>
+                            <span class="razorpay-order-value">${(orderData.amount_due / 100).toFixed(2)}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Created At:</label>
-                            <span class="order-value">${new Date(orderData.created_at * 1000).toLocaleString()}</span>
+                            <span class="razorpay-order-value">${new Date(orderData.created_at * 1000).toLocaleString()}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Receipt:</label>
-                            <span class="order-value">${orderData.receipt || 'N/A'}</span>
+                            <span class="razorpay-order-value">${orderData.receipt || 'N/A'}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Attempts:</label>
-                            <span class="order-value">${orderData.attempts}</span>
+                            <span class="razorpay-order-value">${orderData.attempts}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Entity:</label>
-                            <span class="order-value">${orderData.entity}</span>
+                            <span class="razorpay-order-value">${orderData.entity}</span>
                         </div>
                     </div>
                 </div>
                 
                 ${orderData.notes && orderData.notes.orderType ? `
-                <div class="order-notes-info">
+                <div class="razorpay-order-notes-info">
                     <h5><i class="fas fa-sticky-note"></i> Order Notes</h5>
-                    <div class="order-info-item">
+                    <div class="razorpay-order-info-item">
                         <label>Order Type:</label>
-                        <span class="order-value">${orderData.notes.orderType}</span>
+                        <span class="razorpay-order-value">${orderData.notes.orderType}</span>
                     </div>
                 </div>
                 ` : ''}
                 
                 ${paymentInfo ? `
-                <div class="order-payment-info">
+                <div class="razorpay-order-payment-info">
                     <h5><i class="fas fa-credit-card"></i> Payment Information</h5>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Username:</label>
-                            <span class="order-value">${paymentInfo.u || 'N/A'}</span>
+                            <span class="razorpay-order-value">${paymentInfo.u || 'N/A'}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Agent ID:</label>
-                            <span class="order-value">${paymentInfo.a || 'N/A'}</span>
+                            <span class="razorpay-order-value">${paymentInfo.a || 'N/A'}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Tokens:</label>
-                            <span class="order-value">${paymentInfo.t || 'N/A'}</span>
+                            <span class="razorpay-order-value">${paymentInfo.t || 'N/A'}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Amount ($):</label>
-                            <span class="order-value">$${paymentInfo.amt || 'N/A'}</span>
+                            <span class="razorpay-order-value">${paymentInfo.amt || 'N/A'}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Base Price:</label>
-                            <span class="order-value">$${paymentInfo.bp || 'N/A'}</span>
+                            <span class="razorpay-order-value">${paymentInfo.bp || 'N/A'}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Price Per Token:</label>
-                            <span class="order-value">$${paymentInfo.pp || 'N/A'}</span>
+                            <span class="razorpay-order-value">${paymentInfo.pp || 'N/A'}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Base Discount:</label>
-                            <span class="order-value">$${paymentInfo.bd || 'N/A'}</span>
+                            <span class="razorpay-order-value">${paymentInfo.bd || 'N/A'}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Promo Discount:</label>
-                            <span class="order-value">$${paymentInfo.pd || 'N/A'}</span>
+                            <span class="razorpay-order-value">${paymentInfo.pd || 'N/A'}</span>
                         </div>
                     </div>
                     ${paymentInfo.pt && paymentInfo.pc ? `
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Promo Type:</label>
-                            <span class="order-value">${paymentInfo.pt}</span>
+                            <span class="razorpay-order-value">${paymentInfo.pt}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Promo Code:</label>
-                            <span class="order-value">${paymentInfo.pc}</span>
+                            <span class="razorpay-order-value">${paymentInfo.pc}</span>
                         </div>
                     </div>
                     ` : ''}
@@ -364,10 +364,10 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         
         // Update the container
-        orderInfoContainer.innerHTML = orderDetailsHTML;
+        razorpayOrderInfoContainer.innerHTML = razorpayOrderDetailsHTML;
         
-        // Show the order details section
-        orderDetailsSection.style.display = "block";
+        // Show the razorpay order details section
+        razorpayOrderSection.style.display = "block";
     }
     
     // Allot Tokens button handler 
@@ -723,7 +723,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("token-alloc-tokens").value = "";
         
         // Clear any displayed order details
-        clearOrderDetails();
+        clearRazorpayOrderDetails();
         
         // Hide success section
         const successSection = document.getElementById("dispute-token-success-display-section");
@@ -737,20 +737,20 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Edit dispute tab closed");
     }
     
-    // Function to clear order details
-    function clearOrderDetails() {
-        const orderDetailsSection = document.getElementById("dispute-order-details-section");
-        const orderInfoContainer = document.getElementById("dispute-order-info");
+    // Function to clear razorpay order details
+    function clearRazorpayOrderDetails() {
+        const razorpayOrderSection = document.getElementById("dispute-razorpay-order-section");
+        const razorpayOrderInfoContainer = document.getElementById("dispute-razorpay-order-info");
         
-        if (orderDetailsSection) {
-            orderDetailsSection.style.display = "none";
+        if (razorpayOrderSection) {
+            razorpayOrderSection.style.display = "none";
         }
         
-        if (orderInfoContainer) {
-            orderInfoContainer.innerHTML = "";
+        if (razorpayOrderInfoContainer) {
+            razorpayOrderInfoContainer.innerHTML = "";
         }
         
-        // ADD THIS: Clear agent ID
+        // Clear agent ID
         const agentIdInput = document.getElementById("dispute-edit-agentid");
         if (agentIdInput) {
             agentIdInput.value = "";
@@ -768,7 +768,7 @@ document.addEventListener("DOMContentLoaded", () => {
             successSection.style.display = "none";
         }
         
-        console.log("Order details cleared");
+        console.log("Razorpay order details cleared");
     }
     
     // Function to display token success section
