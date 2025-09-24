@@ -1,6 +1,7 @@
 /* Token Success Display Section */
 .dispute-token-success-display-section {
-    margin-top: 20px;
+    margin-top: 16px;
+    margin-bottom: 16px;
     padding: 20px;
     background: #f0fdf4;
     border: 1px solid #bbf7d0;

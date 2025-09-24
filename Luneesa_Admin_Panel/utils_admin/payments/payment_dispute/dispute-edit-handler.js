@@ -380,6 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             
             const tokenSection = document.getElementById("dispute-token-allocation-section");
+            const successSection = document.getElementById("dispute-token-success-display-section");
             const usernameInput = document.getElementById("dispute-edit-username");
             const agentIdInput = document.getElementById("dispute-edit-agentid");
             
@@ -387,6 +388,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (tokenSection.style.display === "none" || !tokenSection.style.display) {
                     // Show the token allocation section
                     tokenSection.style.display = "block";
+                    
+                    // ADDED: Hide the success section when opening token allocation
+                    if (successSection) {
+                        successSection.style.display = "none";
+                    }
                     
                     // Pre-populate the username (non-editable)
                     const tokenUsernameInput = document.getElementById("token-alloc-username");
