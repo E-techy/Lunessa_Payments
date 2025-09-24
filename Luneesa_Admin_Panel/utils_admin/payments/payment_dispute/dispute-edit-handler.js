@@ -472,6 +472,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok && result.success) {
                     console.log("✅ Token allocation successful:", result);
                     
+                    // Hide the token allocation section
+                    const tokenSection = document.getElementById("dispute-token-allocation-section");
+                    if (tokenSection) {
+                        tokenSection.style.display = "none";
+                    }
+                    
+                    // Show and populate the success section
+                    displayTokenSuccessSection(result.data);
+                    
                     // Show success message
                     const successMsg = document.createElement("div");
                     successMsg.style.cssText = `
@@ -491,14 +500,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Clear the token allocation form
                     document.getElementById("token-alloc-modelname").value = "";
                     document.getElementById("token-alloc-tokens").value = "";
-                    
-                    // Optionally hide the token allocation section after successful allocation
-                    const tokenSection = document.getElementById("dispute-token-allocation-section");
-                    if (tokenSection) {
-                        tokenSection.style.display = "none";
-                    }
-                    
-                    alert(`✅ SUCCESS: ${Math.abs(tokensToAdd)} tokens ${tokensToAdd > 0 ? 'added to' : 'deducted from'} ${username}'s account for model ${modelName}`);
                     
                 } else {
                     console.error("❌ Token allocation failed:", result.error || "Unknown error");
@@ -627,6 +628,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // Clear any displayed order details
         clearOrderDetails();
         
+        // Hide success section
+        const successSection = document.getElementById("dispute-token-success-display-section");
+        if (successSection) {
+            successSection.style.display = "none";
+        }
+        
         // Clear current dispute data
         currentDisputeData = null;
         
@@ -658,6 +665,80 @@ document.addEventListener("DOMContentLoaded", () => {
             tokenSection.style.display = "none";
         }
         
+        // Hide success section
+        const successSection = document.getElementById("dispute-token-success-display-section");
+        if (successSection) {
+            successSection.style.display = "none";
+        }
+        
         console.log("Order details cleared");
     }
+    
+    // Function to display token success section
+    function displayTokenSuccessSection(data) {
+        const successSection = document.getElementById("dispute-token-success-display-section");
+        
+        if (!successSection) {
+            console.error("Success section not found");
+            return;
+        }
+        
+        // Populate agent information
+        document.getElementById("success-agent-id").textContent = data.agentId || "N/A";
+        document.getElementById("success-agent-name").textContent = data.agentName || "N/A";
+        
+        // Populate token balances
+        const tokenBalancesContainer = document.getElementById("success-token-balances");
+        if (data.tokenBalances && data.tokenBalances.length > 0) {
+            const balancesHTML = data.tokenBalances.map(balance => `
+                <div class="token-balance-card ${balance.status === 'active' ? 'active' : ''}">
+                    <div class="token-balance-model">${balance.modelName}</div>
+                    <div class="token-balance-tokens">Tokens: ${balance.availableTokens.toLocaleString()}</div>
+                    <div class="token-balance-status ${balance.status}">${balance.status}</div>
+                </div>
+            `).join('');
+            tokenBalancesContainer.innerHTML = balancesHTML;
+        } else {
+            tokenBalancesContainer.innerHTML = '<p style="color: #6b7280;">No token balances available</p>';
+        }
+        
+        // Populate using model information
+        const usingModelContainer = document.getElementById("success-using-model");
+        if (data.usingModel) {
+            const usingModelHTML = `
+                <div class="using-model-row">
+                    <span class="using-model-label">Model Name:</span>
+                    <span class="using-model-value">${data.usingModel.modelName}</span>
+                </div>
+                <div class="using-model-row">
+                    <span class="using-model-label">Available Tokens:</span>
+                    <span class="using-model-value">${data.usingModel.availableTokens.toLocaleString()}</span>
+                </div>
+                <div class="using-model-row">
+                    <span class="using-model-label">Status:</span>
+                    <span class="using-model-value token-balance-status ${data.usingModel.status}">${data.usingModel.status}</span>
+                </div>
+            `;
+            usingModelContainer.innerHTML = usingModelHTML;
+        } else {
+            usingModelContainer.innerHTML = '<p style="color: #6b7280;">No active model information available</p>';
+        }
+        
+        // Show the success section
+        successSection.style.display = "block";
+        
+        // Scroll to success section
+        successSection.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    // Token Success Close button handler
+    document.addEventListener("click", (event) => {
+        if (event.target.closest("#token-success-close-btn")) {
+            const successSection = document.getElementById("dispute-token-success-display-section");
+            if (successSection) {
+                successSection.style.display = "none";
+            }
+            console.log("Token success section closed");
+        }
+    });
 });

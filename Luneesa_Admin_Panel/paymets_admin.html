@@ -1396,6 +1396,47 @@
                                         </div>
                                     </div>
                                     
+                                    <!-- Add this NEW success section after dispute-token-allocation-section -->
+                                    <div class="dispute-token-success-display-section" id="dispute-token-success-display-section" style="display: none;">
+                                        <div class="token-success-header">
+                                            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                                            <h4 style="color: #10b981;">Token Allocation Successful</h4>
+                                        </div>
+                                        
+                                        <div class="token-success-content">
+                                            <div class="token-success-grid">
+                                                <div class="token-success-item">
+                                                    <label>Agent ID:</label>
+                                                    <span id="success-agent-id" class="token-success-value"></span>
+                                                </div>
+                                                <div class="token-success-item">
+                                                    <label>Agent Name:</label>
+                                                    <span id="success-agent-name" class="token-success-value"></span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="token-balances-section">
+                                                <h5><i class="fas fa-coins"></i> Token Balances</h5>
+                                                <div id="success-token-balances" class="token-balances-grid">
+                                                    <!-- Token balances will be populated here -->
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="using-model-section">
+                                                <h5><i class="fas fa-robot"></i> Using Model</h5>
+                                                <div class="using-model-info" id="success-using-model">
+                                                    <!-- Using model info will be populated here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="token-success-actions">
+                                            <button type="button" class="dispute-btn dispute-btn-primary" id="token-success-close-btn">
+                                                <i class="fas fa-times"></i> Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
                                     <div class="dispute-form-group">
                                         <label>Dispute Comment</label>
                                         <textarea id="dispute-edit-comment" rows="3" disabled class="dispute-readonly-field" placeholder="Original dispute comment (read-only)"></textarea>
