@@ -634,7 +634,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         
                         // Optionally close the edit section and refresh the disputes table
                         // You can uncomment these if you want to close the edit form after successful update
-                        // closeEditDisputeTab();
+                        closeEditDisputeTab();
                         
                     } else {
                         console.error("❌ Failed to update dispute:", result.error || "Unknown error");
