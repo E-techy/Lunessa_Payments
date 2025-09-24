@@ -113,6 +113,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.log("Order Data:", result.data);
                     console.log("=== END ORDER DATA ===");
                     
+                    // Render the order data in the dispute-readonly-section
+                    renderOrderDetails(result.data);
+                    
                     // Show success message
                     console.log(`✅ Order ${orderId} fetched successfully! Check console for details.`);
                     
@@ -123,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         background: #10b981; color: white; padding: 12px 20px;
                         border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
                     `;
-                    successMsg.innerHTML = `<i class="fas fa-check"></i> Order data logged to console!`;
+                    successMsg.innerHTML = `<i class="fas fa-check"></i> Order data loaded successfully!`;
                     document.body.appendChild(successMsg);
                     
                     setTimeout(() => {
@@ -146,6 +149,167 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
+
+    // Function to render order details
+    function renderOrderDetails(orderData) {
+        const orderDetailsSection = document.getElementById("dispute-order-details-section");
+        const orderInfoContainer = document.getElementById("dispute-order-info");
+        
+        if (!orderDetailsSection || !orderInfoContainer) {
+            console.error("Order details section not found");
+            return;
+        }
+        
+        // Parse payment info if it exists
+        let paymentInfo = null;
+        let userDetails = null;
+        
+        if (orderData.notes) {
+            try {
+                if (orderData.notes.paymentInfo) {
+                    paymentInfo = JSON.parse(orderData.notes.paymentInfo);
+                }
+                if (orderData.notes.userDetails) {
+                    userDetails = JSON.parse(orderData.notes.userDetails);
+                }
+            } catch (error) {
+                console.warn("Error parsing order notes:", error);
+            }
+        }
+        
+        // Create order details HTML
+        const orderDetailsHTML = `
+            <div class="order-details-grid">
+                <div class="order-basic-info">
+                    <h5><i class="fas fa-info-circle"></i> Basic Information</h5>
+                    <div class="order-info-row">
+                        <div class="order-info-item">
+                            <label>Order ID:</label>
+                            <span class="order-value">${orderData.id}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <label>Status:</label>
+                            <span class="order-status order-status-${orderData.status}">${orderData.status}</span>
+                        </div>
+                    </div>
+                    <div class="order-info-row">
+                        <div class="order-info-item">
+                            <label>Amount:</label>
+                            <span class="order-value">$${(orderData.amount / 100).toFixed(2)}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <label>Currency:</label>
+                            <span class="order-value">${orderData.currency}</span>
+                        </div>
+                    </div>
+                    <div class="order-info-row">
+                        <div class="order-info-item">
+                            <label>Amount Paid:</label>
+                            <span class="order-value">$${(orderData.amount_paid / 100).toFixed(2)}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <label>Amount Due:</label>
+                            <span class="order-value">$${(orderData.amount_due / 100).toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div class="order-info-row">
+                        <div class="order-info-item">
+                            <label>Created At:</label>
+                            <span class="order-value">${new Date(orderData.created_at * 1000).toLocaleString()}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <label>Receipt:</label>
+                            <span class="order-value">${orderData.receipt || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="order-info-row">
+                        <div class="order-info-item">
+                            <label>Attempts:</label>
+                            <span class="order-value">${orderData.attempts}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <label>Entity:</label>
+                            <span class="order-value">${orderData.entity}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                ${orderData.notes && orderData.notes.orderType ? `
+                <div class="order-notes-info">
+                    <h5><i class="fas fa-sticky-note"></i> Order Notes</h5>
+                    <div class="order-info-item">
+                        <label>Order Type:</label>
+                        <span class="order-value">${orderData.notes.orderType}</span>
+                    </div>
+                </div>
+                ` : ''}
+                
+                ${paymentInfo ? `
+                <div class="order-payment-info">
+                    <h5><i class="fas fa-credit-card"></i> Payment Information</h5>
+                    <div class="order-info-row">
+                        <div class="order-info-item">
+                            <label>Username:</label>
+                            <span class="order-value">${paymentInfo.u || 'N/A'}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <label>Agent ID:</label>
+                            <span class="order-value">${paymentInfo.a || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="order-info-row">
+                        <div class="order-info-item">
+                            <label>Tokens:</label>
+                            <span class="order-value">${paymentInfo.t || 'N/A'}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <label>Amount ($):</label>
+                            <span class="order-value">$${paymentInfo.amt || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="order-info-row">
+                        <div class="order-info-item">
+                            <label>Base Price:</label>
+                            <span class="order-value">$${paymentInfo.bp || 'N/A'}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <label>Price Per Token:</label>
+                            <span class="order-value">$${paymentInfo.pp || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="order-info-row">
+                        <div class="order-info-item">
+                            <label>Base Discount:</label>
+                            <span class="order-value">$${paymentInfo.bd || 'N/A'}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <label>Promo Discount:</label>
+                            <span class="order-value">$${paymentInfo.pd || 'N/A'}</span>
+                        </div>
+                    </div>
+                    ${paymentInfo.pt && paymentInfo.pc ? `
+                    <div class="order-info-row">
+                        <div class="order-info-item">
+                            <label>Promo Type:</label>
+                            <span class="order-value">${paymentInfo.pt}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <label>Promo Code:</label>
+                            <span class="order-value">${paymentInfo.pc}</span>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+                ` : ''}
+            </div>
+        `;
+        
+        // Update the container
+        orderInfoContainer.innerHTML = orderDetailsHTML;
+        
+        // Show the order details section
+        orderDetailsSection.style.display = "block";
+    }
     
     // Allot Tokens button handler
     document.addEventListener("click", (event) => {
