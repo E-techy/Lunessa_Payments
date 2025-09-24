@@ -577,22 +577,113 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     // Update Dispute button handler
-    document.addEventListener("click", (event) => {
+    document.addEventListener("click", async (event) => {
         if (event.target.closest("#dispute-update-btn")) {
             if (currentDisputeData) {
                 const resolvedValue = document.getElementById("dispute-edit-resolved").value;
                 const resolvedComment = document.getElementById("dispute-edit-resolved-comment").value.trim();
                 
-                console.log("Update dispute clicked:", {
-                    disputeId: currentDisputeData.disputeId,
-                    orderId: currentDisputeData.orderId,
-                    username: currentDisputeData.username,
-                    resolved: resolvedValue === "true",
-                    resolvedComment: resolvedComment
-                });
+                // Show loading state
+                const updateBtn = document.getElementById("dispute-update-btn");
+                const originalText = updateBtn.innerHTML;
+                updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+                updateBtn.disabled = true;
                 
-                // Placeholder - no API call as requested
-                alert(`Update Dispute:\nDispute ID: ${currentDisputeData.disputeId}\nResolved: ${resolvedValue === "true" ? "Yes" : "No"}\nComment: ${resolvedComment || "No comment"}\n\nThis will update the dispute when implemented.`);
+                try {
+                    const requestBody = {
+                        action: "modify",
+                        username: currentDisputeData.username,
+                        disputeId: currentDisputeData.disputeId,
+                        resolved: resolvedValue === "true",
+                        resolvedComment: resolvedComment,
+                        all: false
+                    };
+                    
+                    console.log("Updating dispute:", requestBody);
+                    
+                    // Make API call
+                    const response = await fetch("/admin/modify_disputes", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        credentials: "include", // Include cookies for authentication
+                        body: JSON.stringify(requestBody)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok && result.success) {
+                        console.log("✅ Dispute updated successfully:", result);
+                        
+                        // Show success message
+                        const successMsg = document.createElement("div");
+                        successMsg.style.cssText = `
+                            position: fixed; top: 20px; right: 20px; z-index: 9999;
+                            background: #10b981; color: white; padding: 12px 20px;
+                            border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                        `;
+                        successMsg.innerHTML = `<i class="fas fa-check"></i> Dispute updated successfully!`;
+                        document.body.appendChild(successMsg);
+                        
+                        setTimeout(() => {
+                            if (document.body.contains(successMsg)) {
+                                document.body.removeChild(successMsg);
+                            }
+                        }, 3000);
+                        
+                        // Optionally close the edit section and refresh the disputes table
+                        // You can uncomment these if you want to close the edit form after successful update
+                        // closeEditDisputeTab();
+                        
+                    } else {
+                        console.error("❌ Failed to update dispute:", result.error || "Unknown error");
+                        
+                        // Show error message
+                        const errorMsg = document.createElement("div");
+                        errorMsg.style.cssText = `
+                            position: fixed; top: 20px; right: 20px; z-index: 9999;
+                            background: #ef4444; color: white; padding: 12px 20px;
+                            border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                        `;
+                        errorMsg.innerHTML = `<i class="fas fa-times"></i> Update failed!`;
+                        document.body.appendChild(errorMsg);
+                        
+                        setTimeout(() => {
+                            if (document.body.contains(errorMsg)) {
+                                document.body.removeChild(errorMsg);
+                            }
+                        }, 4000);
+                        
+                        alert(`❌ ERROR: ${result.error || "Failed to update dispute. Please try again."}`);
+                    }
+                    
+                } catch (error) {
+                    console.error("❌ Network error during dispute update:", error);
+                    
+                    // Show network error message
+                    const errorMsg = document.createElement("div");
+                    errorMsg.style.cssText = `
+                        position: fixed; top: 20px; right: 20px; z-index: 9999;
+                        background: #ef4444; color: white; padding: 12px 20px;
+                        border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    `;
+                    errorMsg.innerHTML = `<i class="fas fa-times"></i> Network error occurred!`;
+                    document.body.appendChild(errorMsg);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(errorMsg)) {
+                            document.body.removeChild(errorMsg);
+                        }
+                    }, 4000);
+                    
+                    alert(`❌ NETWORK ERROR: ${error.message}`);
+                    
+                } finally {
+                    // Reset button state
+                    updateBtn.innerHTML = originalText;
+                    updateBtn.disabled = false;
+                }
             }
         }
     });
