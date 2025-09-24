@@ -1,7 +1,5 @@
 /* Razorpay Order Details Section Styling */
 .dispute-razorpay-order-section {
-    margin: 20px 0;
-    padding: 16px;
     background: #f8fafc;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
@@ -42,8 +40,8 @@
 
 .razorpay-order-info-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    grid-template-columns: 1fr;
+    gap: 8px;
     margin-bottom: 12px;
 }
 

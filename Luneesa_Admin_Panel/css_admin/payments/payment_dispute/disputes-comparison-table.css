@@ -1,0 +1,341 @@
+/* Order Comparison Container */
+.dispute-order-comparison-container {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    animation: fadeIn 0.3s ease;
+    overflow: hidden;
+}
+
+.dispute-order-comparison-header {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    padding: 16px 20px;
+    text-align: center;
+}
+
+.dispute-order-comparison-header i {
+    font-size: 20px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.dispute-order-comparison-header h4 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.dispute-order-comparison-header p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* Order Comparison Grid */
+.dispute-order-comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 400px;
+}
+
+/* Individual Order Sections */
+.dispute-razorpay-order-section,
+.dispute-user-order-section {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.dispute-razorpay-order-section {
+    border-right: 1px solid #e5e7eb;
+}
+
+/* Order Section Headers */
+.order-section-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.razorpay-header {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.user-order-header {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.order-section-header i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.order-section-header h5 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    flex: 1;
+}
+
+/* Order Section Badges */
+.order-section-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.razorpay-badge {
+    background: #f59e0b;
+    color: white;
+}
+
+.user-order-badge {
+    background: #3b82f6;
+    color: white;
+}
+
+/* Order Info Containers */
+.dispute-razorpay-order-info,
+.dispute-user-order-info {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+/* Unified Order Details Grid */
+.razorpay-order-details-grid,
+.user-order-details-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Unified Info Sections */
+.razorpay-order-basic-info,
+.razorpay-order-payment-info,
+.razorpay-order-notes-info,
+.user-order-basic-info,
+.user-order-billing-info {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 16px;
+}
+
+.razorpay-order-basic-info h5,
+.razorpay-order-payment-info h5,
+.razorpay-order-notes-info h5,
+.user-order-basic-info h5,
+.user-order-billing-info h5 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Unified Info Rows */
+.razorpay-order-info-row,
+.user-order-info-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.razorpay-order-info-item,
+.user-order-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #ffffff;
+    border-radius: 4px;
+    border: 1px solid #e5e7eb;
+    min-height: 32px;
+}
+
+.razorpay-order-info-item label,
+.user-order-info-item label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 13px;
+    margin-right: 8px;
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.razorpay-order-value,
+.user-order-value {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 13px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    word-break: break-all;
+    text-align: right;
+}
+
+/* Status Styling */
+.razorpay-order-status,
+.user-order-status {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.razorpay-order-status-created,
+.razorpay-order-status-attempted,
+.user-order-status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.razorpay-order-status-paid,
+.user-order-status-completed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.razorpay-order-status-failed,
+.user-order-status-failed {
+    background: #fecaca;
+    color: #991b1b;
+}
+
+/* Discount and Promo Sections */
+.user-order-discount-section,
+.user-order-promo-section {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+}
+
+.user-order-discount-section h6,
+.user-order-promo-section h6 {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Loading and Empty States */
+.order-section-loading,
+.order-section-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.order-section-loading i,
+.order-section-empty i {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+/* Sync Animation for both sections */
+.sync-highlight {
+    animation: syncPulse 0.6s ease-in-out;
+}
+
+@keyframes syncPulse {
+    0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+    }
+    50% { 
+        box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .dispute-order-comparison-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .dispute-razorpay-order-section {
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+}
+
+@media (max-width: 768px) {
+    .dispute-form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .dispute-edit-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .dispute-btn {
+        justify-content: center;
+    }
+    
+    .dispute-edit-container {
+        padding: 16px;
+    }
+    
+    .razorpay-order-info-row,
+    .user-order-info-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .razorpay-order-info-item,
+    .user-order-info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .razorpay-order-info-item label,
+    .user-order-info-item label {
+        min-width: auto;
+    }
+    
+    .razorpay-order-value,
+    .user-order-value {
+        text-align: left;
+    }
+    
+    .dispute-order-comparison-header {
+        padding: 12px 16px;
+    }
+    
+    .dispute-razorpay-order-info,
+    .dispute-user-order-info {
+        padding: 16px;
+    }
+}

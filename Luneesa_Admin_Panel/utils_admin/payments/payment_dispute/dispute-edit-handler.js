@@ -137,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 if (response.ok && result.success) {
                     console.log("=== USER ORDER DATA FETCHED ===");
+                    console.log("=== END ORDER DATA ===");
                     
                     // Display the order data in UI
                     displayUserOrderDataInUI(result.data);
@@ -480,8 +481,17 @@ document.addEventListener("DOMContentLoaded", () => {
         // Update the container
         userOrderInfoContainer.innerHTML = userOrderDetailsHTML;
         
-        // Show the user order details section
-        userOrderDisplaySection.style.display = "block";
+        // Show the comparison container
+        const comparisonContainer = document.getElementById("dispute-order-comparison-container");
+        if (comparisonContainer) {
+            comparisonContainer.style.display = "block";
+        }
+
+        // Add sync highlight effect
+        userOrderDisplaySection.classList.add("sync-highlight");
+        setTimeout(() => {
+            userOrderDisplaySection.classList.remove("sync-highlight");
+        }, 600);
     }
 
     // Function to render razorpay order details
@@ -649,8 +659,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // Update the container
         razorpayOrderInfoContainer.innerHTML = razorpayOrderDetailsHTML;
         
-        // Show the razorpay order details section
-        razorpayOrderSection.style.display = "block";
+        // Show the comparison container
+        const comparisonContainer = document.getElementById("dispute-order-comparison-container");
+        if (comparisonContainer) {
+            comparisonContainer.style.display = "block";
+        }
     }
     
     // Allot Tokens button handler 
@@ -1022,25 +1035,22 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Function to clear razorpay order details
     function clearRazorpayOrderDetails() {
-        const razorpayOrderSection = document.getElementById("dispute-razorpay-order-section");
+        // Hide the comparison container
+        const comparisonContainer = document.getElementById("dispute-order-comparison-container");
+        if (comparisonContainer) {
+            comparisonContainer.style.display = "none";
+        }
+
+        // Clear both containers
         const razorpayOrderInfoContainer = document.getElementById("dispute-razorpay-order-info");
-        // Clear user order details
-        const userOrderSection = document.getElementById("dispute-user-order-display-section");
         const userOrderInfoContainer = document.getElementById("dispute-user-order-info");
-
-        if (userOrderSection) {
-            userOrderSection.style.display = "none";
-        }
-
-        if (userOrderInfoContainer) {
-            userOrderInfoContainer.innerHTML = "";
-        }
-        if (razorpayOrderSection) {
-            razorpayOrderSection.style.display = "none";
-        }
         
         if (razorpayOrderInfoContainer) {
             razorpayOrderInfoContainer.innerHTML = "";
+        }
+        
+        if (userOrderInfoContainer) {
+            userOrderInfoContainer.innerHTML = "";
         }
         
         // Clear agent ID

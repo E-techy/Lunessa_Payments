@@ -1331,19 +1331,35 @@
                                     </div>
                                 </div>
 
-                                <!-- User Order Details Section (Initially Hidden) -->
-                                <div class="dispute-user-order-section" id="dispute-user-order-display-section" style="display: none;">
-                                    <h4><i class="fas fa-file-invoice-dollar"></i> User Order Details</h4>
-                                    <div class="dispute-user-order-info" id="dispute-user-order-info">
-                                        <!-- User order details will be dynamically populated here -->
+                                <!-- Order Comparison Grid Section (Initially Hidden) -->
+                                <div class="dispute-order-comparison-container" id="dispute-order-comparison-container" style="display: none;">
+                                    <div class="dispute-order-comparison-header">
+                                        <h4>Order Data Comparison</h4>
+                                        <p>Compare Razorpay and User Order data for verification</p>
                                     </div>
-                                </div>
+                                    
+                                    <div class="dispute-order-comparison-grid">
+                                        <!-- User Order Section -->
+                                        <div class="dispute-user-order-section" id="dispute-user-order-display-section">
+                                            <div class="order-section-header user-order-header">
+                                                <i class="fas fa-database"></i>
+                                                <h5>User Order Details</h5>
+                                            </div>
+                                            <div class="dispute-user-order-info" id="dispute-user-order-info">
+                                                <!-- User order details will be dynamically populated here -->
+                                            </div>
+                                        </div>
 
-                                <!-- Order Details Section (Initially Hidden) -->
-                                <div class="dispute-razorpay-order-section" id="dispute-razorpay-order-section" style="display: none;">
-                                    <h4><i class="fas fa-receipt"></i> Razorpay Order Details</h4>
-                                    <div class="dispute-razorpay-order-info" id="dispute-razorpay-order-info">
-                                        <!-- Order details will be dynamically populated here -->
+                                        <!-- Razorpay Order Section -->
+                                        <div class="dispute-razorpay-order-section" id="dispute-razorpay-order-section">
+                                            <div class="order-section-header razorpay-header">
+                                                <i class="fas fa-credit-card"></i>
+                                                <h5>Razorpay Order Details</h5>
+                                            </div>
+                                            <div class="dispute-razorpay-order-info" id="dispute-razorpay-order-info">
+                                                <!-- Razorpay order details will be dynamically populated here -->
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 
