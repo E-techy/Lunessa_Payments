@@ -838,4 +838,146 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Token success section closed");
         }
     });
+    
+    // Delete Dispute button handler
+    document.addEventListener("click", async (event) => {
+        if (event.target.closest(".dispute-delete-btn")) {
+            const btn = event.target.closest(".dispute-delete-btn");
+            const disputeId = btn.getAttribute("data-dispute-id");
+            const orderId = btn.getAttribute("data-order-id");
+            
+            // Get username from the table row
+            const row = btn.closest("tr");
+            const usernameCell = row.querySelector(".dispute-cell-username");
+            const username = usernameCell ? usernameCell.textContent.trim() : "";
+            
+            if (!disputeId || !username) {
+                console.error("Missing dispute ID or username for deletion");
+                alert("❌ Error: Missing required data for deletion");
+                return;
+            }
+            
+            // Confirm deletion
+            const confirmDelete = confirm(
+                `Are you sure you want to delete this dispute?\n\n` +
+                `Username: ${username}\n` +
+                `Order ID: ${orderId}\n` +
+                `Dispute ID: ${disputeId}\n\n` +
+                `This action cannot be undone.`
+            );
+            
+            if (!confirmDelete) {
+                return;
+            }
+            
+            // Show loading state
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+            
+            try {
+                const requestBody = {
+                    action: "delete",
+                    username: username,
+                    disputeId: disputeId,
+                    all: false
+                };
+                
+                console.log("Deleting dispute:", requestBody);
+                
+                // Make API call
+                const response = await fetch("/admin/modify_disputes", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include", // Include cookies for authentication
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    console.log("✅ Dispute deleted successfully:", result);
+                    
+                    // Remove the row from the table
+                    if (row) {
+                        row.remove();
+                    }
+                    
+                    // Check if table is now empty
+                    const tableBody = document.getElementById("dispute-table-body");
+                    if (tableBody && tableBody.children.length === 0) {
+                        const noDataDiv = document.getElementById("dispute-no-data");
+                        if (noDataDiv) {
+                            noDataDiv.style.display = "block";
+                        }
+                    }
+                    
+                    // Show success message
+                    const successMsg = document.createElement("div");
+                    successMsg.style.cssText = `
+                        position: fixed; top: 20px; right: 20px; z-index: 9999;
+                        background: #10b981; color: white; padding: 12px 20px;
+                        border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    `;
+                    successMsg.innerHTML = `<i class="fas fa-check"></i> Dispute deleted successfully!`;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(successMsg)) {
+                            document.body.removeChild(successMsg);
+                        }
+                    }, 3000);
+                    
+                } else {
+                    console.error("❌ Failed to delete dispute:", result.error || "Unknown error");
+                    
+                    // Show error message
+                    const errorMsg = document.createElement("div");
+                    errorMsg.style.cssText = `
+                        position: fixed; top: 20px; right: 20px; z-index: 9999;
+                        background: #ef4444; color: white; padding: 12px 20px;
+                        border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    `;
+                    errorMsg.innerHTML = `<i class="fas fa-times"></i> Delete failed!`;
+                    document.body.appendChild(errorMsg);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(errorMsg)) {
+                            document.body.removeChild(errorMsg);
+                        }
+                    }, 4000);
+                    
+                    alert(`❌ ERROR: ${result.error || "Failed to delete dispute. Please try again."}`);
+                }
+                
+            } catch (error) {
+                console.error("❌ Network error during dispute deletion:", error);
+                
+                // Show network error message
+                const errorMsg = document.createElement("div");
+                errorMsg.style.cssText = `
+                    position: fixed; top: 20px; right: 20px; z-index: 9999;
+                    background: #ef4444; color: white; padding: 12px 20px;
+                    border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                `;
+                errorMsg.innerHTML = `<i class="fas fa-times"></i> Network error occurred!`;
+                document.body.appendChild(errorMsg);
+                
+                setTimeout(() => {
+                    if (document.body.contains(errorMsg)) {
+                        document.body.removeChild(errorMsg);
+                    }
+                }, 4000);
+                
+                alert(`❌ NETWORK ERROR: ${error.message}`);
+                
+            } finally {
+                // Reset button state
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    });
 });
