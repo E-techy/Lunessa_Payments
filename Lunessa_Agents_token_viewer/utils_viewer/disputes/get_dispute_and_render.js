@@ -21,9 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     tableBody.innerHTML = `
       <tr>
-        <td colspan="5" style="text-align: center; padding: 2rem;">
-          <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">🔄 Loading disputes...</div>
-          <div style="font-size: 0.9rem; opacity: 0.7;">Fetching data from database</div>
+        <td colspan="5" style="text-align: center; padding: 3rem;">
+          <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div style="font-size: 1.1rem; margin-top: 1rem; color: #374151;">Loading your disputes...</div>
+            <div style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;">Please wait while we fetch your data</div>
+          </div>
         </td>
       </tr>
     `;
@@ -72,40 +75,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to render disputes table
   function renderDisputesTable(disputes) {
-  // Store disputes data globally for details expansion
-  currentDisputesData = disputes || [];
-  const tableBody = document.getElementById("disputes-table-body");
+    // Store disputes data globally for details expansion
+    currentDisputesData = disputes || [];
+    const tableBody = document.getElementById("disputes-table-body");
     
     if (!disputes || disputes.length === 0) {
-      tableBody.innerHTML = disputes.map((dispute, index) => `
+      tableBody.innerHTML = `
         <tr>
-          <td>
-            <span class="dispute-order-id-cell">${dispute.orderId}</span>
-          </td>
-          <td>
-            <span class="dispute-resolved-cell ${dispute.resolved ? 'resolved-true' : 'resolved-false'}">
-              ${dispute.resolved ? 'Resolved' : 'Pending'}
-            </span>
-          </td>
-          <td class="dispute-date-cell">
-            ${formatDate(dispute.createdAt)}
-          </td>
-          <td class="dispute-date-cell">
-            ${formatDate(dispute.updatedAt)}
-          </td>
-          <td class="dispute-actions-cell">
-            <button class="dispute-action-btn" title="View Details" data-dispute-id="${dispute.disputeId}" data-dispute-index="${index}">
-              <svg class="view-dispute-arrow-icon" viewBox="0 0 12 8" fill="none">
-                    <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
+          <td colspan="5" style="text-align: center; padding: 2rem;">
+            <div class="disputes-empty-state">
+              <h3>No Disputes Found</h3>
+              <p>You haven't raised any disputes yet.</p>
+            </div>
           </td>
         </tr>
-      `).join('');
+      `;
       return;
     }
 
-    tableBody.innerHTML = disputes.map(dispute => `
+    tableBody.innerHTML = disputes.map((dispute, index) => `
       <tr>
         <td>
           <span class="dispute-order-id-cell">${dispute.orderId}</span>
@@ -122,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ${formatDate(dispute.updatedAt)}
         </td>
         <td class="dispute-actions-cell">
-          <button class="dispute-action-btn" title="View Details" data-dispute-id="${dispute.disputeId}" data-dispute-index="${disputes.indexOf(dispute)}">
+          <button class="dispute-action-btn" title="View Details" data-dispute-id="${dispute.disputeId}" data-dispute-index="${index}">
             <svg class="view-dispute-arrow-icon" viewBox="0 0 12 8" fill="none">
                   <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -132,8 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
     `).join('');
   }
 
-  // Function to fetch disputes (basic version for tab switching)
+  // Function to fetch disputes (enhanced version for tab switching)
   async function fetchDisputes() {
+    // Show loading state immediately when function is called
+    showLoadingState();
+    
     try {
       const token = localStorage.getItem("authToken");
 
@@ -155,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (error) {
       console.error("Error fetching disputes:", error);
-      renderDisputesTable([]);
+      showErrorState();
     }
   }
 

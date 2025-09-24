@@ -112,3 +112,48 @@
     font-size: 1rem;
     opacity: 0.8;
 }
+
+/* Loading spinner styles for disputes */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Additional loading states styling for disputes */
+.disputes-table tbody td {
+    transition: all 0.3s ease;
+}
+
+.disputes-empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+}
+
+.disputes-empty-state h3 {
+    margin-bottom: 0.5rem;
+    color: #374151;
+    font-size: 1.125rem;
+}
+
+.disputes-empty-state p {
+    margin: 0;
+    font-size: 0.875rem;
+    opacity: 0.8;
+}

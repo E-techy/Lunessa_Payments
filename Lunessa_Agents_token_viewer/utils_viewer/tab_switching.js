@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (typeof fetchAndRenderOrders === 'function') {
                     fetchAndRenderOrders();
                 }
+            } else if (targetTab === 'disputes') {
+                // Trigger disputes loading when Disputes tab is clicked
+                if (typeof fetchDisputes === 'function') {
+                    fetchDisputes();
+                }
             }
         });
     });
