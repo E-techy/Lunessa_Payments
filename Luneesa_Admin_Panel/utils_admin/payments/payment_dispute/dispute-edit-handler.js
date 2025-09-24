@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     let currentDisputeData = null;
+    let orderFetched = false;
     
     // Add event listener for modify buttons (this will be called when dispute table is rendered)
     document.addEventListener("click", (event) => {
@@ -40,6 +41,16 @@ document.addEventListener("DOMContentLoaded", () => {
             disputeComment: disputeComment,
             resolvedComment: resolvedComment
         };
+        
+        // Reset the order fetched flag
+        orderFetched = false;
+        
+        // Disable the Allot Tokens button initially
+        const allotTokensBtn = document.getElementById("dispute-allot-tokens-btn");
+        if (allotTokensBtn) {
+            allotTokensBtn.disabled = true;
+            allotTokensBtn.classList.add("dispute-btn-disabled");
+        }
         
         // Hide the dispute table section
         const disputeTableSection = document.getElementById("dispute-table-display-section");
@@ -130,6 +141,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Render the order data in the dispute-readonly-section
                     renderOrderDetails(result.data);
                     
+                    // Set the flag that order has been fetched
+                    orderFetched = true;
+                    
+                    // Enable the Allot Tokens button
+                    const allotTokensBtn = document.getElementById("dispute-allot-tokens-btn");
+                    if (allotTokensBtn) {
+                        allotTokensBtn.disabled = false;
+                        allotTokensBtn.classList.remove("dispute-btn-disabled");
+                    }
+                    
                     // Show success message
                     console.log(`✅ Order ${orderId} fetched successfully! Check console for details.`);
                     
@@ -152,10 +173,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     console.error("Failed to fetch order:", result.error || "Unknown error");
                     console.log(`❌ Failed to fetch order ${orderId}:`, result.error || "Unknown error");
+                    
+                    // Keep the button disabled on error
+                    orderFetched = false;
+                    const allotTokensBtn = document.getElementById("dispute-allot-tokens-btn");
+                    if (allotTokensBtn) {
+                        allotTokensBtn.disabled = true;
+                        allotTokensBtn.classList.add("dispute-btn-disabled");
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching order:", error);
                 console.log(`❌ Network error while fetching order ${orderId}:`, error.message);
+                
+                // Keep the button disabled on error
+                orderFetched = false;
+                const allotTokensBtn = document.getElementById("dispute-allot-tokens-btn");
+                if (allotTokensBtn) {
+                    allotTokensBtn.disabled = true;
+                    allotTokensBtn.classList.add("dispute-btn-disabled");
+                }
             } finally {
                 // Reset button state
                 fetchBtn.innerHTML = originalText;
@@ -336,6 +373,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Allot Tokens button handler 
     document.addEventListener("click", (event) => {
         if (event.target.closest("#dispute-allot-tokens-btn")) {
+            // Check if order has been fetched first
+            if (!orderFetched) {
+                alert("Please fetch order details first before allocating tokens.");
+                return;
+            }
+            
             const tokenSection = document.getElementById("dispute-token-allocation-section");
             const usernameInput = document.getElementById("dispute-edit-username");
             const agentIdInput = document.getElementById("dispute-edit-agentid");
@@ -460,6 +503,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     function closeEditDisputeTab() {
+        // Reset order fetched state
+        orderFetched = false;
+        
         const editSection = document.getElementById("dispute-edit-display-section");
         if (editSection) {
             editSection.style.display = "none";
