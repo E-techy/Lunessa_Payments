@@ -414,7 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Token Allocation Submit button handler
-    document.addEventListener("click", (event) => {
+    document.addEventListener("click", async (event) => {
         if (event.target.closest("#token-allocation-submit-btn")) {
             const username = document.getElementById("token-alloc-username").value;
             const agentId = document.getElementById("token-alloc-agentid").value;
@@ -426,8 +426,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
             
-            if (!tokensToAdd) {
-                alert("Please enter tokens to add/deduct");
+            if (!tokensToAdd || isNaN(parseInt(tokensToAdd))) {
+                alert("Please enter a valid number for tokens to add/deduct");
                 return;
             }
             
@@ -441,18 +441,113 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
             
-            console.log("Token allocation request:", {
-                username: username,
-                agentId: agentId,
-                modelName: modelName,
-                tokensToAdd: parseInt(tokensToAdd)
-            });
+            // Show loading state
+            const submitBtn = document.getElementById("token-allocation-submit-btn");
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Allocating...';
+            submitBtn.disabled = true;
             
-            // Placeholder for actual API call
-            alert(`Token Allocation Request:\n\nUsername: ${username}\nAgent ID: ${agentId}\nModel Name: ${modelName}\nTokens: ${tokensToAdd}\n\nThis will make API call when implemented.`);
-            
-            // Optionally hide the token allocation section after successful allocation
-            // document.getElementById("dispute-token-allocation-section").style.display = "none";
+            try {
+                const requestBody = {
+                    username: username,
+                    agentId: agentId,
+                    modelName: modelName,
+                    tokensToAdd: parseInt(tokensToAdd)
+                };
+                
+                console.log("Token allocation request:", requestBody);
+                
+                // Make API call to your route
+                const response = await fetch("/admin/allot_tokens_to_agents", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include", // Include cookies for authentication
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    console.log("✅ Token allocation successful:", result);
+                    
+                    // Show success message
+                    const successMsg = document.createElement("div");
+                    successMsg.style.cssText = `
+                        position: fixed; top: 20px; right: 20px; z-index: 9999;
+                        background: #10b981; color: white; padding: 12px 20px;
+                        border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    `;
+                    successMsg.innerHTML = `<i class="fas fa-check"></i> ${tokensToAdd > 0 ? 'Added' : 'Deducted'} ${Math.abs(tokensToAdd)} tokens successfully!`;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(successMsg)) {
+                            document.body.removeChild(successMsg);
+                        }
+                    }, 4000);
+                    
+                    // Clear the token allocation form
+                    document.getElementById("token-alloc-modelname").value = "";
+                    document.getElementById("token-alloc-tokens").value = "";
+                    
+                    // Optionally hide the token allocation section after successful allocation
+                    const tokenSection = document.getElementById("dispute-token-allocation-section");
+                    if (tokenSection) {
+                        tokenSection.style.display = "none";
+                    }
+                    
+                    alert(`✅ SUCCESS: ${Math.abs(tokensToAdd)} tokens ${tokensToAdd > 0 ? 'added to' : 'deducted from'} ${username}'s account for model ${modelName}`);
+                    
+                } else {
+                    console.error("❌ Token allocation failed:", result.error || "Unknown error");
+                    
+                    // Show error message
+                    const errorMsg = document.createElement("div");
+                    errorMsg.style.cssText = `
+                        position: fixed; top: 20px; right: 20px; z-index: 9999;
+                        background: #ef4444; color: white; padding: 12px 20px;
+                        border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    `;
+                    errorMsg.innerHTML = `<i class="fas fa-times"></i> Token allocation failed!`;
+                    document.body.appendChild(errorMsg);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(errorMsg)) {
+                            document.body.removeChild(errorMsg);
+                        }
+                    }, 4000);
+                    
+                    alert(`❌ ERROR: ${result.error || "Failed to allocate tokens. Please try again."}`);
+                }
+                
+            } catch (error) {
+                console.error("❌ Network error during token allocation:", error);
+                
+                // Show network error message
+                const errorMsg = document.createElement("div");
+                errorMsg.style.cssText = `
+                    position: fixed; top: 20px; right: 20px; z-index: 9999;
+                    background: #ef4444; color: white; padding: 12px 20px;
+                    border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                `;
+                errorMsg.innerHTML = `<i class="fas fa-times"></i> Network error occurred!`;
+                document.body.appendChild(errorMsg);
+                
+                setTimeout(() => {
+                    if (document.body.contains(errorMsg)) {
+                        document.body.removeChild(errorMsg);
+                    }
+                }, 4000);
+                
+                alert(`❌ NETWORK ERROR: ${error.message}`);
+                
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
         }
     });
 
