@@ -1318,7 +1318,12 @@
                                         </div>
                                         <div class="dispute-form-group">
                                             <label>Order ID</label>
-                                            <input type="text" id="dispute-edit-orderid" disabled class="dispute-readonly-field">
+                                            <div style="display: flex; gap: 10px; align-items: center;">
+                                                <input type="text" id="dispute-edit-orderid" disabled class="dispute-readonly-field" style="flex: 1;">
+                                                <button type="button" class="dispute-btn dispute-btn-secondary dispute-fetch-order-btn" id="dispute-fetch-order-btn">
+                                                    <i class="fas fa-search"></i> Fetch Order
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1329,16 +1334,13 @@
                                     <div class="dispute-form-row">
                                         <div class="dispute-form-group">
                                             <label>Resolved Status *</label>
-                                            <select id="dispute-edit-resolved" required>
-                                                <option value="false">Unresolved</option>
-                                                <option value="true">Resolved</option>
-                                            </select>
-                                        </div>
-                                        <div class="dispute-form-group">
-                                            <label>Order Status</label>
-                                            <div class="dispute-fetch-order-section">
-                                                <button type="button" class="dispute-btn dispute-btn-secondary dispute-fetch-order-btn" id="dispute-fetch-order-btn">
-                                                    <i class="fas fa-search"></i> Fetch Order
+                                            <div style="display: flex; gap: 10px; align-items: center;">
+                                                <select id="dispute-edit-resolved" required style="flex: 1;">
+                                                    <option value="false">Unresolved</option>
+                                                    <option value="true">Resolved</option>
+                                                </select>
+                                                <button type="button" class="dispute-btn dispute-btn-warning" id="dispute-allot-tokens-btn">
+                                                    <i class="fas fa-coins"></i> Allot Tokens
                                                 </button>
                                             </div>
                                         </div>
@@ -1359,9 +1361,6 @@
                             <div class="dispute-edit-actions">
                                 <button type="button" class="dispute-btn dispute-btn-success" id="dispute-update-btn">
                                     <i class="fas fa-save"></i> Update Dispute
-                                </button>
-                                <button type="button" class="dispute-btn dispute-btn-warning" id="dispute-allot-tokens-btn">
-                                    <i class="fas fa-coins"></i> Allot Tokens
                                 </button>
                                 <button type="button" class="dispute-btn dispute-btn-secondary" id="dispute-cancel-edit-btn">
                                     <i class="fas fa-times"></i> Cancel
