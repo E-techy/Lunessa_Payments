@@ -16,6 +16,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Show corresponding panel
             document.getElementById(targetTab).classList.add('active');
+
+            // Trigger specific tab actions
+            if (targetTab === 'your-orders') {
+                // Trigger orders loading when Your Orders tab is clicked
+                if (typeof fetchAndRenderOrders === 'function') {
+                    fetchAndRenderOrders();
+                }
+            } else if (targetTab === 'disputes') {
+                // Trigger disputes loading when Disputes tab is clicked
+                if (typeof fetchDisputes === 'function') {
+                    fetchDisputes();
+                }
+            } else if (targetTab === 'tokens') {
+                // Optional: Trigger tokens refresh when Tokens tab is clicked
+                if (typeof refreshAgentsData === 'function') {
+                    refreshAgentsData();
+                }
+            }
         });
     });
 });

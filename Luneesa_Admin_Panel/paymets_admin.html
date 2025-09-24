@@ -1318,8 +1318,21 @@
                                         </div>
                                         <div class="dispute-form-group">
                                             <label>Order ID</label>
-                                            <input type="text" id="dispute-edit-orderid" disabled class="dispute-readonly-field">
+                                            <div style="display: flex; gap: 10px; align-items: center;">
+                                                <input type="text" id="dispute-edit-orderid" disabled class="dispute-readonly-field" style="flex: 1;">
+                                                <button type="button" class="dispute-btn dispute-btn-secondary dispute-fetch-order-btn" id="dispute-fetch-order-btn">
+                                                    <i class="fas fa-search"></i> Fetch Order
+                                                </button>
+                                            </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <!-- Order Details Section (Initially Hidden) -->
+                                <div class="dispute-order-details-section" id="dispute-order-details-section" style="display: none;">
+                                    <h4><i class="fas fa-receipt"></i> Order Details</h4>
+                                    <div class="dispute-order-info" id="dispute-order-info">
+                                        <!-- Order details will be populated here -->
                                     </div>
                                 </div>
                                 
@@ -1329,18 +1342,98 @@
                                     <div class="dispute-form-row">
                                         <div class="dispute-form-group">
                                             <label>Resolved Status *</label>
-                                            <select id="dispute-edit-resolved" required>
-                                                <option value="false">Unresolved</option>
-                                                <option value="true">Resolved</option>
-                                            </select>
-                                        </div>
-                                        <div class="dispute-form-group">
-                                            <label>Order Status</label>
-                                            <div class="dispute-fetch-order-section">
-                                                <button type="button" class="dispute-btn dispute-btn-secondary dispute-fetch-order-btn" id="dispute-fetch-order-btn">
-                                                    <i class="fas fa-search"></i> Fetch Order
+                                            <div style="display: flex; gap: 10px; align-items: center;">
+                                                <select id="dispute-edit-resolved" required style="flex: 1;">
+                                                    <option value="false">Unresolved</option>
+                                                    <option value="true">Resolved</option>
+                                                </select>
+                                                <button type="button" class="dispute-btn dispute-btn-warning" id="dispute-allot-tokens-btn">
+                                                    <i class="fas fa-coins"></i> Allot Tokens
                                                 </button>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Add this NEW section for Agent ID input -->
+                                    <div class="dispute-form-group" style="display: none;">
+                                        <label>Agent ID</label>
+                                        <input type="text" id="dispute-edit-agentid" disabled class="dispute-readonly-field" placeholder="Agent ID will be loaded when fetching order">
+                                    </div>
+
+                                    <!-- Add this NEW token allocation section (initially hidden) -->
+                                    <div class="dispute-token-allocation-section" id="dispute-token-allocation-section" style="display: none;">
+                                        <h4><i class="fas fa-coins"></i> Token Allocation</h4>
+                                        <div class="token-allocation-form">
+                                            <div class="dispute-form-row">
+                                                <div class="dispute-form-group">
+                                                    <label>Username</label>
+                                                    <input type="text" id="token-alloc-username" disabled class="dispute-readonly-field">
+                                                </div>
+                                                <div class="dispute-form-group">
+                                                    <label>Agent ID</label>
+                                                    <input type="text" id="token-alloc-agentid" class="dispute-editable-field">
+                                                </div>
+                                            </div>
+                                            <div class="dispute-form-row">
+                                                <div class="dispute-form-group">
+                                                    <label>Model Name *</label>
+                                                    <input type="text" id="token-alloc-modelname" placeholder="e.g., gpt-4, claude-3-sonnet" required>
+                                                </div>
+                                                <div class="dispute-form-group">
+                                                    <label>Tokens to Add/Deduct *</label>
+                                                    <input type="number" id="token-alloc-tokens" placeholder="30 or -10" step="1" required>
+                                                    <small class="token-hint">Use positive values to add tokens, negative to deduct</small>
+                                                </div>
+                                            </div>
+                                            <div class="token-allocation-actions">
+                                                <button type="button" class="dispute-btn dispute-btn-success" id="token-allocation-submit-btn">
+                                                    <i class="fas fa-check"></i> Allocate Tokens
+                                                </button>
+                                                <button type="button" class="dispute-btn dispute-btn-secondary" id="token-allocation-cancel-btn">
+                                                    <i class="fas fa-times"></i> Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Add this NEW success section after dispute-token-allocation-section -->
+                                    <div class="dispute-token-success-display-section" id="dispute-token-success-display-section" style="display: none;">
+                                        <div class="token-success-header">
+                                            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                                            <h4 style="color: #10b981;">Token Allocation Successful</h4>
+                                        </div>
+                                        
+                                        <div class="token-success-content">
+                                            <div class="token-success-grid">
+                                                <div class="token-success-item">
+                                                    <label>Agent ID:</label>
+                                                    <span id="success-agent-id" class="token-success-value"></span>
+                                                </div>
+                                                <div class="token-success-item">
+                                                    <label>Agent Name:</label>
+                                                    <span id="success-agent-name" class="token-success-value"></span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="token-balances-section">
+                                                <h5><i class="fas fa-coins"></i> Token Balances</h5>
+                                                <div id="success-token-balances" class="token-balances-grid">
+                                                    <!-- Token balances will be populated here -->
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="using-model-section">
+                                                <h5><i class="fas fa-robot"></i> Using Model</h5>
+                                                <div class="using-model-info" id="success-using-model">
+                                                    <!-- Using model info will be populated here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="token-success-actions">
+                                            <button type="button" class="dispute-btn dispute-btn-primary" id="token-success-close-btn">
+                                                <i class="fas fa-times"></i> Close
+                                            </button>
                                         </div>
                                     </div>
                                     
@@ -1359,9 +1452,6 @@
                             <div class="dispute-edit-actions">
                                 <button type="button" class="dispute-btn dispute-btn-success" id="dispute-update-btn">
                                     <i class="fas fa-save"></i> Update Dispute
-                                </button>
-                                <button type="button" class="dispute-btn dispute-btn-warning" id="dispute-allot-tokens-btn">
-                                    <i class="fas fa-coins"></i> Allot Tokens
                                 </button>
                                 <button type="button" class="dispute-btn dispute-btn-secondary" id="dispute-cancel-edit-btn">
                                     <i class="fas fa-times"></i> Cancel

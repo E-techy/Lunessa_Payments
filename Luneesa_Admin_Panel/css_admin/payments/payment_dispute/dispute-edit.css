@@ -187,6 +187,82 @@
     border-color: #9ca3af;
 }
 
+/* Token Allocation Section */
+.dispute-token-allocation-section {
+    background: #fefce8;
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    animation: fadeIn 0.3s ease;
+}
+
+.dispute-token-allocation-section h4 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #92400e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #fbbf24;
+}
+
+.dispute-token-allocation-section h4 i {
+    color: #f59e0b;
+}
+
+.token-allocation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.token-allocation-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #fbbf24;
+}
+
+.token-hint {
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* Button variations for token allocation */
+.dispute-btn-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.dispute-btn-success:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+}
+
+/* Disabled Button State */
+.dispute-btn-disabled,
+.dispute-btn:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    background: #9ca3af !important;
+    color: #6b7280 !important;
+    border: 1px solid #d1d5db !important;
+    box-shadow: none !important;
+}
+
+.dispute-btn-disabled:hover,
+.dispute-btn:disabled:hover {
+    background: #9ca3af !important;
+    transform: none !important;
+}
+
 /* Animation */
 @keyframes fadeIn {
     from {
@@ -221,5 +297,10 @@
     
     .dispute-edit-container {
         padding: 16px;
+    }
+    
+    .order-info-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
     }
 }

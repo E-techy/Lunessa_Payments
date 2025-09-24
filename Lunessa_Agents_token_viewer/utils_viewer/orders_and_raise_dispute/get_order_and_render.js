@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to fetch and render orders
   async function fetchAndRenderOrders() {
+    // Show loading state immediately when function is called
+    showLoadingState();
+    
     try {
       // Replace with however you're storing the token
       const token = localStorage.getItem("authToken") || "";
@@ -69,9 +72,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       tbody.innerHTML = `
           <tr>
-              <td colspan="7" style="text-align: center; padding: 2rem;">
-                  <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">🔄 Refreshing orders...</div>
-                  <div style="font-size: 0.9rem; opacity: 0.7;">Please wait</div>
+              <td colspan="7" style="text-align: center; padding: 3rem;">
+                  <div class="loading-container">
+                      <div class="loading-spinner"></div>
+                      <div style="font-size: 1.1rem; margin-top: 1rem; color: #374151;">Loading your orders...</div>
+                      <div style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;">Please wait while we fetch your data</div>
+                  </div>
               </td>
           </tr>
       `;
