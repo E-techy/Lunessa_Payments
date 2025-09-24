@@ -1353,6 +1353,48 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Add this NEW section for Agent ID input -->
+                                    <div class="dispute-form-group">
+                                        <label>Agent ID</label>
+                                        <input type="text" id="dispute-edit-agentid" disabled class="dispute-readonly-field" placeholder="Agent ID will be loaded when fetching order">
+                                    </div>
+
+                                    <!-- Add this NEW token allocation section (initially hidden) -->
+                                    <div class="dispute-token-allocation-section" id="dispute-token-allocation-section" style="display: none;">
+                                        <h4><i class="fas fa-coins"></i> Token Allocation</h4>
+                                        <div class="token-allocation-form">
+                                            <div class="dispute-form-row">
+                                                <div class="dispute-form-group">
+                                                    <label>Username</label>
+                                                    <input type="text" id="token-alloc-username" disabled class="dispute-readonly-field">
+                                                </div>
+                                                <div class="dispute-form-group">
+                                                    <label>Agent ID</label>
+                                                    <input type="text" id="token-alloc-agentid" disabled class="dispute-readonly-field">
+                                                </div>
+                                            </div>
+                                            <div class="dispute-form-row">
+                                                <div class="dispute-form-group">
+                                                    <label>Model Name *</label>
+                                                    <input type="text" id="token-alloc-modelname" placeholder="e.g., gpt-4, claude-3-sonnet" required>
+                                                </div>
+                                                <div class="dispute-form-group">
+                                                    <label>Tokens to Add/Deduct *</label>
+                                                    <input type="number" id="token-alloc-tokens" placeholder="30 or -10" step="1" required>
+                                                    <small class="token-hint">Use positive values to add tokens, negative to deduct</small>
+                                                </div>
+                                            </div>
+                                            <div class="token-allocation-actions">
+                                                <button type="button" class="dispute-btn dispute-btn-success" id="token-allocation-submit-btn">
+                                                    <i class="fas fa-check"></i> Allocate Tokens
+                                                </button>
+                                                <button type="button" class="dispute-btn dispute-btn-secondary" id="token-allocation-cancel-btn">
+                                                    <i class="fas fa-times"></i> Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                     
                                     <div class="dispute-form-group">
                                         <label>Dispute Comment</label>

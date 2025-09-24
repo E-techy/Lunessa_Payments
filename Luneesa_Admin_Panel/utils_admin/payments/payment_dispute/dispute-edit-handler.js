@@ -46,7 +46,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if (disputeTableSection) {
             disputeTableSection.style.display = "none";
         }
-
+    
+        // Populate the form
+        document.getElementById("dispute-edit-username").value = username;
+        document.getElementById("dispute-edit-orderid").value = orderIdText;
+        document.getElementById("dispute-edit-resolved").value = isResolved.toString();
+        
+        // ADD THIS LINE: Clear Agent ID initially
+        document.getElementById("dispute-edit-agentid").value = "";
+        
+        // Set the dispute comment (read-only)
+        document.getElementById("dispute-edit-comment").value = disputeComment;
+        
         // Show the edit section
         const editSection = document.getElementById("dispute-edit-display-section");
         if (editSection) {
@@ -67,10 +78,10 @@ document.addEventListener("DOMContentLoaded", () => {
             editSection.scrollIntoView({ behavior: "smooth", block: "start" });
             }
             
-            // Clear any previous order details when opening a new dispute
-    clearOrderDetails();
-    
-    console.log("Opening edit tab for dispute:", currentDisputeData);
+        // Clear any previous order details when opening a new dispute
+        clearOrderDetails();
+        
+        console.log("Opening edit tab for dispute:", currentDisputeData);
     }
     
     // Fetch Order button handler
@@ -177,6 +188,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             } catch (error) {
                 console.warn("Error parsing order notes:", error);
+            }
+        }
+        
+        // ADD THIS: Update the Agent ID field when order is fetched
+        if (paymentInfo && paymentInfo.a) {
+            const agentIdInput = document.getElementById("dispute-edit-agentid");
+            if (agentIdInput) {
+                agentIdInput.value = paymentInfo.a;
             }
         }
         
@@ -314,14 +333,101 @@ document.addEventListener("DOMContentLoaded", () => {
         orderDetailsSection.style.display = "block";
     }
     
-    // Allot Tokens button handler
+    // Allot Tokens button handler 
     document.addEventListener("click", (event) => {
         if (event.target.closest("#dispute-allot-tokens-btn")) {
-            if (currentDisputeData) {
-                console.log("Allot tokens clicked for dispute:", currentDisputeData);
-                // Placeholder - no API call as requested
-                alert(`Allot Tokens functionality for:\nUsername: ${currentDisputeData.username}\nOrder ID: ${currentDisputeData.orderId}\n\nThis will open token allocation when implemented.`);
+            const tokenSection = document.getElementById("dispute-token-allocation-section");
+            const usernameInput = document.getElementById("dispute-edit-username");
+            const agentIdInput = document.getElementById("dispute-edit-agentid");
+            
+            if (tokenSection) {
+                if (tokenSection.style.display === "none" || !tokenSection.style.display) {
+                    // Show the token allocation section
+                    tokenSection.style.display = "block";
+                    
+                    // Pre-populate the username (non-editable)
+                    const tokenUsernameInput = document.getElementById("token-alloc-username");
+                    const tokenAgentIdInput = document.getElementById("token-alloc-agentid");
+                    
+                    if (tokenUsernameInput) {
+                        tokenUsernameInput.value = usernameInput.value;
+                    }
+                    
+                    if (tokenAgentIdInput) {
+                        tokenAgentIdInput.value = agentIdInput.value;
+                    }
+                    
+                    // Scroll to token section
+                    tokenSection.scrollIntoView({ behavior: "smooth", block: "center" });
+                    
+                    console.log("Token allocation section opened");
+                } else {
+                    // Hide the token allocation section
+                    tokenSection.style.display = "none";
+                    console.log("Token allocation section closed");
+                }
             }
+        }
+    });
+
+    // Token Allocation Submit button handler
+    document.addEventListener("click", (event) => {
+        if (event.target.closest("#token-allocation-submit-btn")) {
+            const username = document.getElementById("token-alloc-username").value;
+            const agentId = document.getElementById("token-alloc-agentid").value;
+            const modelName = document.getElementById("token-alloc-modelname").value.trim();
+            const tokensToAdd = document.getElementById("token-alloc-tokens").value;
+            
+            if (!modelName) {
+                alert("Please enter a model name");
+                return;
+            }
+            
+            if (!tokensToAdd) {
+                alert("Please enter tokens to add/deduct");
+                return;
+            }
+            
+            if (!username) {
+                alert("Username is required. Please fetch order first.");
+                return;
+            }
+            
+            if (!agentId) {
+                alert("Agent ID is required. Please fetch order first.");
+                return;
+            }
+            
+            console.log("Token allocation request:", {
+                username: username,
+                agentId: agentId,
+                modelName: modelName,
+                tokensToAdd: parseInt(tokensToAdd)
+            });
+            
+            // Placeholder for actual API call
+            alert(`Token Allocation Request:\n\nUsername: ${username}\nAgent ID: ${agentId}\nModel Name: ${modelName}\nTokens: ${tokensToAdd}\n\nThis will make API call when implemented.`);
+            
+            // Optionally hide the token allocation section after successful allocation
+            // document.getElementById("dispute-token-allocation-section").style.display = "none";
+        }
+    });
+
+    // Token Allocation Cancel button handler
+    document.addEventListener("click", (event) => {
+        if (event.target.closest("#token-allocation-cancel-btn")) {
+            const tokenSection = document.getElementById("dispute-token-allocation-section");
+            
+            // Clear the form
+            document.getElementById("token-alloc-modelname").value = "";
+            document.getElementById("token-alloc-tokens").value = "";
+            
+            // Hide the section
+            if (tokenSection) {
+                tokenSection.style.display = "none";
+            }
+            
+            console.log("Token allocation cancelled");
         }
     });
     
@@ -372,6 +478,11 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("dispute-edit-comment").value = "";
         document.getElementById("dispute-edit-resolved-comment").value = "";
         
+        // ADD THESE LINES: Clear token allocation form
+        document.getElementById("dispute-edit-agentid").value = "";
+        document.getElementById("token-alloc-modelname").value = "";
+        document.getElementById("token-alloc-tokens").value = "";
+        
         // Clear any displayed order details
         clearOrderDetails();
         
@@ -392,6 +503,18 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (orderInfoContainer) {
             orderInfoContainer.innerHTML = "";
+        }
+        
+        // ADD THIS: Clear agent ID
+        const agentIdInput = document.getElementById("dispute-edit-agentid");
+        if (agentIdInput) {
+            agentIdInput.value = "";
+        }
+        
+        // ADD THIS: Hide token allocation section
+        const tokenSection = document.getElementById("dispute-token-allocation-section");
+        if (tokenSection) {
+            tokenSection.style.display = "none";
         }
         
         console.log("Order details cleared");
