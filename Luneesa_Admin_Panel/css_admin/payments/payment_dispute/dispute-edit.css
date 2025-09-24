@@ -137,12 +137,14 @@
 }
 
 /* Fetch Razorpay Order Section */
-.dispute-fetch-razorpay-order-section {
+.dispute-fetch-razorpay-order-section 
+,.dispute-btn-fetch-order-custom{
     display: flex;
     align-items: center;
 }
 
-.dispute-fetch-razorpay-order-btn {
+.dispute-fetch-razorpay-order-btn 
+,.dispute-btn-fetch-order-custom{
     padding: 8px 16px;
     font-size: 13px;
     white-space: nowrap;
@@ -176,13 +178,15 @@
     background: linear-gradient(135deg, #d97706, #b45309);
 }
 
-.dispute-btn-secondary {
+.dispute-btn-secondary 
+,.dispute-btn-fetch-order-custom{
     background: #f3f4f6;
     color: #374151;
     border: 1px solid #d1d5db;
 }
 
-.dispute-btn-secondary:hover {
+.dispute-btn-secondary:hover 
+,.dispute-btn-fetch-order-custom:hover{
     background: #e5e7eb;
     border-color: #9ca3af;
 }
