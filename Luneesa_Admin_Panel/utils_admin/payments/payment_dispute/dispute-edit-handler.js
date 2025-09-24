@@ -90,14 +90,127 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             
         // Clear any previous order details when opening a new dispute
-        clearOrderDetails();
+        clearRazorpayOrderDetails();
         
         console.log("Opening edit tab for dispute:", currentDisputeData);
     }
     
-    // Fetch Order button handler
+    // Fetch Order (new button) handler
     document.addEventListener("click", async (event) => {
-        if (event.target.closest("#dispute-fetch-order-btn")) {
+        if (event.target.closest("#dispute-fetch-order-btn-new")) {
+            const orderIdInput = document.getElementById("dispute-edit-orderid");
+            const orderId = orderIdInput.value.trim();
+            
+            if (!orderId) {
+                console.warn("No Order ID provided for fetch order");
+                alert("Please enter an Order ID");
+                return;
+            }
+            
+            console.log("Fetching user order data for ID:", orderId);
+            
+            // Show loading state
+            const fetchBtn = document.getElementById("dispute-fetch-order-btn-new");
+            const originalText = fetchBtn.innerHTML;
+            fetchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+            fetchBtn.disabled = true;
+            
+            try {
+                // Prepare request body - only send orderId to search across all users
+                const requestBody = {
+                    orderId: orderId
+                };
+                
+                console.log("Request body:", requestBody);
+                
+                // Make API call to get user orders
+                const response = await fetch("/admin/get_user_orders", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include", // Include cookies for authentication
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    console.log("=== USER ORDER DATA FETCHED ===");
+                    console.log("=== END ORDER DATA ===");
+                    
+                    // Display the order data in UI
+                    displayUserOrderDataInUI(result.data);
+                    
+                    // Show success message
+                    console.log(`✅ Order ${orderId} data fetched successfully! Check console for details.`);
+                    
+                    // Optional: Show a brief success notification
+                    const successMsg = document.createElement("div");
+                    successMsg.style.cssText = `
+                        position: fixed; top: 20px; right: 20px; z-index: 9999;
+                        background: #10b981; color: white; padding: 12px 20px;
+                        border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    `;
+                    successMsg.innerHTML = `<i class="fas fa-check"></i> Order data fetched successfully!`;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(successMsg)) {
+                            document.body.removeChild(successMsg);
+                        }
+                    }, 3000);
+                    
+                } else {
+                    console.error("Failed to fetch user order data:", result.error || "Unknown error");
+                    console.log(`❌ Failed to fetch order ${orderId}:`, result.error || "Unknown error");
+                    
+                    // Show error notification
+                    const errorMsg = document.createElement("div");
+                    errorMsg.style.cssText = `
+                        position: fixed; top: 20px; right: 20px; z-index: 9999;
+                        background: #ef4444; color: white; padding: 12px 20px;
+                        border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    `;
+                    errorMsg.innerHTML = `<i class="fas fa-times"></i> Failed to fetch order data!`;
+                    document.body.appendChild(errorMsg);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(errorMsg)) {
+                            document.body.removeChild(errorMsg);
+                        }
+                    }, 4000);
+                }
+            } catch (error) {
+                console.error("Error fetching user order data:", error);
+                console.log(`❌ Network error while fetching order ${orderId}:`, error.message);
+                
+                // Show network error notification
+                const errorMsg = document.createElement("div");
+                errorMsg.style.cssText = `
+                    position: fixed; top: 20px; right: 20px; z-index: 9999;
+                    background: #ef4444; color: white; padding: 12px 20px;
+                    border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                `;
+                errorMsg.innerHTML = `<i class="fas fa-times"></i> Network error occurred!`;
+                document.body.appendChild(errorMsg);
+                
+                setTimeout(() => {
+                    if (document.body.contains(errorMsg)) {
+                        document.body.removeChild(errorMsg);
+                    }
+                }, 4000);
+            } finally {
+                // Reset button state
+                fetchBtn.innerHTML = originalText;
+                fetchBtn.disabled = false;
+            }
+        }
+    });
+
+    // Fetch Razorpay Order button handler
+    document.addEventListener("click", async (event) => {
+        if (event.target.closest("#dispute-fetch-order-razorpay-btn")) {
             const orderIdInput = document.getElementById("dispute-edit-orderid");
             const orderId = orderIdInput.value.trim();
             
@@ -110,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Fetching order for ID:", orderId);
             
             // Show loading state
-            const fetchBtn = document.getElementById("dispute-fetch-order-btn");
+            const fetchBtn = document.getElementById("dispute-fetch-order-razorpay-btn");
             const originalText = fetchBtn.innerHTML;
             fetchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
             fetchBtn.disabled = true;
@@ -138,8 +251,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.log("Order Data:", result.data);
                     console.log("=== END ORDER DATA ===");
                     
-                    // Render the order data in the dispute-readonly-section
-                    renderOrderDetails(result.data);
+                    // Render the order data in the dispute-razorpay-order-section
+                    renderRazorpayOrderDetails(result.data);
                     
                     // Set the flag that order has been fetched
                     orderFetched = true;
@@ -201,13 +314,193 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Function to render order details
-    function renderOrderDetails(orderData) {
-        const orderDetailsSection = document.getElementById("dispute-order-details-section");
-        const orderInfoContainer = document.getElementById("dispute-order-info");
+    // Function to display user order data in UI
+    function displayUserOrderDataInUI(orderData) {
+        const userOrderDisplaySection = document.getElementById("dispute-user-order-display-section");
+        const userOrderInfoContainer = document.getElementById("dispute-user-order-info");
         
-        if (!orderDetailsSection || !orderInfoContainer) {
-            console.error("Order details section not found");
+        if (!userOrderDisplaySection || !userOrderInfoContainer) {
+            console.error("User order display section not found");
+            return;
+        }
+        
+        const order = orderData.order;
+        const billing = order?.paymentInfo?.billingSnapshot;
+        
+        // Create user order details HTML
+        const userOrderDetailsHTML = `
+            <div class="user-order-details-grid">
+                <div class="user-order-basic-info">
+                    <h5><i class="fas fa-info-circle"></i> Basic Information</h5>
+                    <div class="user-order-info-row">
+                        <div class="user-order-info-item">
+                            <label>Username:</label>
+                            <span class="user-order-value">${orderData.username}</span>
+                        </div>
+                        <div class="user-order-info-item">
+                            <label>Order ID:</label>
+                            <span class="user-order-value">${order?.orderId || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="user-order-info-row">
+                        <div class="user-order-info-item">
+                            <label>Amount:</label>
+                            <span class="user-order-value">$${order?.amount || 'N/A'}</span>
+                        </div>
+                        <div class="user-order-info-item">
+                            <label>Status:</label>
+                            <span class="user-order-status user-order-status-${order?.status}">${order?.status || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="user-order-info-row">
+                        <div class="user-order-info-item">
+                            <label>Fulfillment:</label>
+                            <span class="user-order-value">${order?.fulfillment ? 'Yes' : 'No'}</span>
+                        </div>
+                        <div class="user-order-info-item">
+                            <label>Receipt:</label>
+                            <span class="user-order-value">${order?.receipt || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="user-order-info-row">
+                        <div class="user-order-info-item">
+                            <label>Created At:</label>
+                            <span class="user-order-value">${order?.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A'}</span>
+                        </div>
+                        <div class="user-order-info-item">
+                            <label>Updated At:</label>
+                            <span class="user-order-value">${order?.updatedAt ? new Date(order.updatedAt).toLocaleString() : 'N/A'}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                ${billing ? `
+                <div class="user-order-billing-info">
+                    <h5><i class="fas fa-credit-card"></i> Billing Information</h5>
+                    <div class="user-order-info-row">
+                        <div class="user-order-info-item">
+                            <label>Agent ID:</label>
+                            <span class="user-order-value">${billing.agentId || 'N/A'}</span>
+                        </div>
+                        <div class="user-order-info-item">
+                            <label>Model Name:</label>
+                            <span class="user-order-value">${billing.modelName || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="user-order-info-row">
+                        <div class="user-order-info-item">
+                            <label>Base Amount:</label>
+                            <span class="user-order-value">$${billing.baseAmount || 'N/A'}</span>
+                        </div>
+                        <div class="user-order-info-item">
+                            <label>Final Payable:</label>
+                            <span class="user-order-value">$${billing.finalPayable || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="user-order-info-row">
+                        <div class="user-order-info-item">
+                            <label>Tokens:</label>
+                            <span class="user-order-value">${billing.tokens || 'N/A'}</span>
+                        </div>
+                        <div class="user-order-info-item">
+                            <label>Per Token Price:</label>
+                            <span class="user-order-value">$${billing.perTokenPrice || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="user-order-info-row">
+                        <div class="user-order-info-item">
+                            <label>Total Discount:</label>
+                            <span class="user-order-value">$${billing.totalDiscount || 'N/A'}</span>
+                        </div>
+                        <div class="user-order-info-item">
+                            <label>Currency:</label>
+                            <span class="user-order-value">${billing.currency || 'N/A'}</span>
+                        </div>
+                    </div>
+                    
+                    ${billing.baseDiscount ? `
+                    <div class="user-order-discount-section">
+                        <h6><i class="fas fa-tags"></i> Base Discount</h6>
+                        <div class="user-order-info-row">
+                            <div class="user-order-info-item">
+                                <label>Discount Amount:</label>
+                                <span class="user-order-value">$${billing.baseDiscount.amount || 'N/A'}</span>
+                            </div>
+                            <div class="user-order-info-item">
+                                <label>Applied:</label>
+                                <span class="user-order-value">${billing.baseDiscount.applied ? 'Yes' : 'No'}</span>
+                            </div>
+                        </div>
+                        ${billing.baseDiscount.level ? `
+                        <div class="user-order-info-row">
+                            <div class="user-order-info-item">
+                                <label>Discount Type:</label>
+                                <span class="user-order-value">${billing.baseDiscount.level.discountType || 'N/A'}</span>
+                            </div>
+                            <div class="user-order-info-item">
+                                <label>Discount Value:</label>
+                                <span class="user-order-value">${billing.baseDiscount.level.discountValue || 'N/A'}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    ` : ''}
+                    
+                    ${billing.promo ? `
+                    <div class="user-order-promo-section">
+                        <h6><i class="fas fa-percent"></i> Promo Details</h6>
+                        <div class="user-order-info-row">
+                            <div class="user-order-info-item">
+                                <label>Promo Code:</label>
+                                <span class="user-order-value">${billing.promo.code || 'N/A'}</span>
+                            </div>
+                            <div class="user-order-info-item">
+                                <label>Promo Type:</label>
+                                <span class="user-order-value">${billing.promo.type || 'N/A'}</span>
+                            </div>
+                        </div>
+                        <div class="user-order-info-row">
+                            <div class="user-order-info-item">
+                                <label>Discount Amount:</label>
+                                <span class="user-order-value">$${billing.promo.discountAmount || 'N/A'}</span>
+                            </div>
+                            ${billing.promo.data ? `
+                            <div class="user-order-info-item">
+                                <label>Discount Type:</label>
+                                <span class="user-order-value">${billing.promo.data.discountType || 'N/A'}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+                ` : ''}
+            </div>
+        `;
+        
+        // Update the container
+        userOrderInfoContainer.innerHTML = userOrderDetailsHTML;
+        
+        // Show the comparison container
+        const comparisonContainer = document.getElementById("dispute-order-comparison-container");
+        if (comparisonContainer) {
+            comparisonContainer.style.display = "block";
+        }
+
+        // Add sync highlight effect
+        userOrderDisplaySection.classList.add("sync-highlight");
+        setTimeout(() => {
+            userOrderDisplaySection.classList.remove("sync-highlight");
+        }, 600);
+    }
+
+    // Function to render razorpay order details
+    function renderRazorpayOrderDetails(orderData) {
+        const razorpayOrderSection = document.getElementById("dispute-razorpay-order-section");
+        const razorpayOrderInfoContainer = document.getElementById("dispute-razorpay-order-info");
+        
+        if (!razorpayOrderSection || !razorpayOrderInfoContainer) {
+            console.error("Razorpay order details section not found");
             return;
         }
         
@@ -236,125 +529,125 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         
-        // Create order details HTML
-        const orderDetailsHTML = `
-            <div class="order-details-grid">
-                <div class="order-basic-info">
+        // Create razorpay order details HTML
+        const razorpayOrderDetailsHTML = `
+            <div class="razorpay-order-details-grid">
+                <div class="razorpay-order-basic-info">
                     <h5><i class="fas fa-info-circle"></i> Basic Information</h5>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Order ID:</label>
-                            <span class="order-value">${orderData.id}</span>
+                            <span class="razorpay-order-value">${orderData.id}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Status:</label>
-                            <span class="order-status order-status-${orderData.status}">${orderData.status}</span>
+                            <span class="razorpay-order-status razorpay-order-status-${orderData.status}">${orderData.status}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Amount:</label>
-                            <span class="order-value">$${(orderData.amount / 100).toFixed(2)}</span>
+                            <span class="razorpay-order-value">$${(orderData.amount / 100).toFixed(2)}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Currency:</label>
-                            <span class="order-value">${orderData.currency}</span>
+                            <span class="razorpay-order-value">${orderData.currency}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Amount Paid:</label>
-                            <span class="order-value">$${(orderData.amount_paid / 100).toFixed(2)}</span>
+                            <span class="razorpay-order-value">$${(orderData.amount_paid / 100).toFixed(2)}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Amount Due:</label>
-                            <span class="order-value">$${(orderData.amount_due / 100).toFixed(2)}</span>
+                            <span class="razorpay-order-value">$${(orderData.amount_due / 100).toFixed(2)}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Created At:</label>
-                            <span class="order-value">${new Date(orderData.created_at * 1000).toLocaleString()}</span>
+                            <span class="razorpay-order-value">${new Date(orderData.created_at * 1000).toLocaleString()}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Receipt:</label>
-                            <span class="order-value">${orderData.receipt || 'N/A'}</span>
+                            <span class="razorpay-order-value">${orderData.receipt || 'N/A'}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Attempts:</label>
-                            <span class="order-value">${orderData.attempts}</span>
+                            <span class="razorpay-order-value">${orderData.attempts}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Entity:</label>
-                            <span class="order-value">${orderData.entity}</span>
+                            <span class="razorpay-order-value">${orderData.entity}</span>
                         </div>
                     </div>
                 </div>
                 
                 ${orderData.notes && orderData.notes.orderType ? `
-                <div class="order-notes-info">
+                <div class="razorpay-order-notes-info">
                     <h5><i class="fas fa-sticky-note"></i> Order Notes</h5>
-                    <div class="order-info-item">
+                    <div class="razorpay-order-info-item">
                         <label>Order Type:</label>
-                        <span class="order-value">${orderData.notes.orderType}</span>
+                        <span class="razorpay-order-value">${orderData.notes.orderType}</span>
                     </div>
                 </div>
                 ` : ''}
                 
                 ${paymentInfo ? `
-                <div class="order-payment-info">
+                <div class="razorpay-order-payment-info">
                     <h5><i class="fas fa-credit-card"></i> Payment Information</h5>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Username:</label>
-                            <span class="order-value">${paymentInfo.u || 'N/A'}</span>
+                            <span class="razorpay-order-value">${paymentInfo.u || 'N/A'}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Agent ID:</label>
-                            <span class="order-value">${paymentInfo.a || 'N/A'}</span>
+                            <span class="razorpay-order-value">${paymentInfo.a || 'N/A'}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Tokens:</label>
-                            <span class="order-value">${paymentInfo.t || 'N/A'}</span>
+                            <span class="razorpay-order-value">${paymentInfo.t || 'N/A'}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Amount ($):</label>
-                            <span class="order-value">$${paymentInfo.amt || 'N/A'}</span>
+                            <span class="razorpay-order-value">$${paymentInfo.amt || 'N/A'}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Base Price:</label>
-                            <span class="order-value">$${paymentInfo.bp || 'N/A'}</span>
+                            <span class="razorpay-order-value">$${paymentInfo.bp || 'N/A'}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Price Per Token:</label>
-                            <span class="order-value">$${paymentInfo.pp || 'N/A'}</span>
+                            <span class="razorpay-order-value">$${paymentInfo.pp || 'N/A'}</span>
                         </div>
                     </div>
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Base Discount:</label>
-                            <span class="order-value">$${paymentInfo.bd || 'N/A'}</span>
+                            <span class="razorpay-order-value">$${paymentInfo.bd || 'N/A'}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Promo Discount:</label>
-                            <span class="order-value">$${paymentInfo.pd || 'N/A'}</span>
+                            <span class="razorpay-order-value">$${paymentInfo.pd || 'N/A'}</span>
                         </div>
                     </div>
                     ${paymentInfo.pt && paymentInfo.pc ? `
-                    <div class="order-info-row">
-                        <div class="order-info-item">
+                    <div class="razorpay-order-info-row">
+                        <div class="razorpay-order-info-item">
                             <label>Promo Type:</label>
-                            <span class="order-value">${paymentInfo.pt}</span>
+                            <span class="razorpay-order-value">${paymentInfo.pt}</span>
                         </div>
-                        <div class="order-info-item">
+                        <div class="razorpay-order-info-item">
                             <label>Promo Code:</label>
-                            <span class="order-value">${paymentInfo.pc}</span>
+                            <span class="razorpay-order-value">${paymentInfo.pc}</span>
                         </div>
                     </div>
                     ` : ''}
@@ -364,10 +657,13 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         
         // Update the container
-        orderInfoContainer.innerHTML = orderDetailsHTML;
+        razorpayOrderInfoContainer.innerHTML = razorpayOrderDetailsHTML;
         
-        // Show the order details section
-        orderDetailsSection.style.display = "block";
+        // Show the comparison container
+        const comparisonContainer = document.getElementById("dispute-order-comparison-container");
+        if (comparisonContainer) {
+            comparisonContainer.style.display = "block";
+        }
     }
     
     // Allot Tokens button handler 
@@ -723,7 +1019,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("token-alloc-tokens").value = "";
         
         // Clear any displayed order details
-        clearOrderDetails();
+        clearRazorpayOrderDetails();
         
         // Hide success section
         const successSection = document.getElementById("dispute-token-success-display-section");
@@ -737,20 +1033,27 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Edit dispute tab closed");
     }
     
-    // Function to clear order details
-    function clearOrderDetails() {
-        const orderDetailsSection = document.getElementById("dispute-order-details-section");
-        const orderInfoContainer = document.getElementById("dispute-order-info");
+    // Function to clear razorpay order details
+    function clearRazorpayOrderDetails() {
+        // Hide the comparison container
+        const comparisonContainer = document.getElementById("dispute-order-comparison-container");
+        if (comparisonContainer) {
+            comparisonContainer.style.display = "none";
+        }
+
+        // Clear both containers
+        const razorpayOrderInfoContainer = document.getElementById("dispute-razorpay-order-info");
+        const userOrderInfoContainer = document.getElementById("dispute-user-order-info");
         
-        if (orderDetailsSection) {
-            orderDetailsSection.style.display = "none";
+        if (razorpayOrderInfoContainer) {
+            razorpayOrderInfoContainer.innerHTML = "";
         }
         
-        if (orderInfoContainer) {
-            orderInfoContainer.innerHTML = "";
+        if (userOrderInfoContainer) {
+            userOrderInfoContainer.innerHTML = "";
         }
         
-        // ADD THIS: Clear agent ID
+        // Clear agent ID
         const agentIdInput = document.getElementById("dispute-edit-agentid");
         if (agentIdInput) {
             agentIdInput.value = "";
@@ -768,7 +1071,7 @@ document.addEventListener("DOMContentLoaded", () => {
             successSection.style.display = "none";
         }
         
-        console.log("Order details cleared");
+        console.log("Razorpay order details cleared");
     }
     
     // Function to display token success section

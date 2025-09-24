@@ -1320,19 +1320,46 @@
                                             <label>Order ID</label>
                                             <div style="display: flex; gap: 10px; align-items: center;">
                                                 <input type="text" id="dispute-edit-orderid" disabled class="dispute-readonly-field" style="flex: 1;">
-                                                <button type="button" class="dispute-btn dispute-btn-secondary dispute-fetch-order-btn" id="dispute-fetch-order-btn">
+                                                <button type="button" class="dispute-btn-fetch-order-custom" id="dispute-fetch-order-btn-new">
                                                     <i class="fas fa-search"></i> Fetch Order
+                                                </button>
+                                                <button type="button" class="dispute-btn dispute-btn-secondary dispute-fetch-razorpay-order-btn" id="dispute-fetch-order-razorpay-btn">
+                                                    <i class="fas fa-search"></i> Fetch Razorpay Order
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Order Details Section (Initially Hidden) -->
-                                <div class="dispute-order-details-section" id="dispute-order-details-section" style="display: none;">
-                                    <h4><i class="fas fa-receipt"></i> Order Details</h4>
-                                    <div class="dispute-order-info" id="dispute-order-info">
-                                        <!-- Order details will be populated here -->
+                                <!-- Order Comparison Grid Section (Initially Hidden) -->
+                                <div class="dispute-order-comparison-container" id="dispute-order-comparison-container" style="display: none;">
+                                    <div class="dispute-order-comparison-header">
+                                        <h4>Order Data Comparison</h4>
+                                        <p>Compare Razorpay and User Order data for verification</p>
+                                    </div>
+                                    
+                                    <div class="dispute-order-comparison-grid">
+                                        <!-- User Order Section -->
+                                        <div class="dispute-user-order-section" id="dispute-user-order-display-section">
+                                            <div class="order-section-header user-order-header">
+                                                <i class="fas fa-database"></i>
+                                                <h5>User Order Details</h5>
+                                            </div>
+                                            <div class="dispute-user-order-info" id="dispute-user-order-info">
+                                                <!-- User order details will be dynamically populated here -->
+                                            </div>
+                                        </div>
+
+                                        <!-- Razorpay Order Section -->
+                                        <div class="dispute-razorpay-order-section" id="dispute-razorpay-order-section">
+                                            <div class="order-section-header razorpay-header">
+                                                <i class="fas fa-credit-card"></i>
+                                                <h5>Razorpay Order Details</h5>
+                                            </div>
+                                            <div class="dispute-razorpay-order-info" id="dispute-razorpay-order-info">
+                                                <!-- Razorpay order details will be dynamically populated here -->
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 

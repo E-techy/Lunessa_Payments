@@ -1,36 +1,34 @@
-/* Order Details Section Styling */
-.dispute-order-details-section {
-    margin: 20px 0;
-    padding: 16px;
+/* Razorpay Order Details Section Styling */
+.dispute-razorpay-order-section {
     background: #f8fafc;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
 }
 
-.dispute-order-details-section h4 {
+.dispute-razorpay-order-section h4 {
     margin: 0 0 16px 0;
     color: #374151;
     font-size: 16px;
     font-weight: 600;
 }
 
-.order-details-grid {
+.razorpay-order-details-grid {
     display: grid;
     gap: 20px;
 }
 
-.order-basic-info,
-.order-notes-info,
-.order-payment-info {
+.razorpay-order-basic-info,
+.razorpay-order-notes-info,
+.razorpay-order-payment-info {
     background: white;
     padding: 16px;
     border-radius: 6px;
     border: 1px solid #e5e7eb;
 }
 
-.order-basic-info h5,
-.order-notes-info h5,
-.order-payment-info h5 {
+.razorpay-order-basic-info h5,
+.razorpay-order-notes-info h5,
+.razorpay-order-payment-info h5 {
     margin: 0 0 12px 0;
     color: #4b5563;
     font-size: 14px;
@@ -40,33 +38,33 @@
     gap: 8px;
 }
 
-.order-info-row {
+.razorpay-order-info-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    grid-template-columns: 1fr;
+    gap: 8px;
     margin-bottom: 12px;
 }
 
-.order-info-item {
+.razorpay-order-info-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px dotted #e5e7eb;
 }
 
-.order-info-item label {
+.razorpay-order-info-item label {
     font-weight: 500;
     color: #6b7280;
     font-size: 13px;
 }
 
-.order-value {
+.razorpay-order-value {
     font-weight: 600;
     color: #374151;
     font-size: 13px;
 }
 
-.order-status {
+.razorpay-order-status {
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 12px;
@@ -74,17 +72,17 @@
     text-transform: uppercase;
 }
 
-.order-status-created {
+.razorpay-order-status-created {
     background: #fef3c7;
     color: #92400e;
 }
 
-.order-status-paid {
+.razorpay-order-status-paid {
     background: #d1fae5;
     color: #065f46;
 }
 
-.order-status-failed {
+.razorpay-order-status-failed {
     background: #fee2e2;
     color: #991b1b;
 }

@@ -104,7 +104,8 @@
     justify-content: flex-start;
 }
 
-.dispute-btn {
+.dispute-btn 
+,.dispute-btn-fetch-order-custom{
     padding: 10px 20px;
     border: none;
     border-radius: 6px;
