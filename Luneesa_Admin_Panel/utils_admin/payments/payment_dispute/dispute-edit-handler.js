@@ -95,9 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Opening edit tab for dispute:", currentDisputeData);
     }
     
-    // Fetch Order button handler
+    // Fetch Razorpay Order button handler
     document.addEventListener("click", async (event) => {
-        if (event.target.closest("#dispute-fetch-order-btn")) {
+        if (event.target.closest("#dispute-fetch-order-razorpay-btn")) {
             const orderIdInput = document.getElementById("dispute-edit-orderid");
             const orderId = orderIdInput.value.trim();
             
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Fetching order for ID:", orderId);
             
             // Show loading state
-            const fetchBtn = document.getElementById("dispute-fetch-order-btn");
+            const fetchBtn = document.getElementById("dispute-fetch-order-razorpay-btn");
             const originalText = fetchBtn.innerHTML;
             fetchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
             fetchBtn.disabled = true;
@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="razorpay-order-info-row">
                         <div class="razorpay-order-info-item">
                             <label>Amount:</label>
-                            <span class="razorpay-order-value">${(orderData.amount / 100).toFixed(2)}</span>
+                            <span class="razorpay-order-value">$${(orderData.amount / 100).toFixed(2)}</span>
                         </div>
                         <div class="razorpay-order-info-item">
                             <label>Currency:</label>
@@ -264,11 +264,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="razorpay-order-info-row">
                         <div class="razorpay-order-info-item">
                             <label>Amount Paid:</label>
-                            <span class="razorpay-order-value">${(orderData.amount_paid / 100).toFixed(2)}</span>
+                            <span class="razorpay-order-value">$${(orderData.amount_paid / 100).toFixed(2)}</span>
                         </div>
                         <div class="razorpay-order-info-item">
                             <label>Amount Due:</label>
-                            <span class="razorpay-order-value">${(orderData.amount_due / 100).toFixed(2)}</span>
+                            <span class="razorpay-order-value">$${(orderData.amount_due / 100).toFixed(2)}</span>
                         </div>
                     </div>
                     <div class="razorpay-order-info-row">
@@ -323,27 +323,27 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                         <div class="razorpay-order-info-item">
                             <label>Amount ($):</label>
-                            <span class="razorpay-order-value">${paymentInfo.amt || 'N/A'}</span>
+                            <span class="razorpay-order-value">$${paymentInfo.amt || 'N/A'}</span>
                         </div>
                     </div>
                     <div class="razorpay-order-info-row">
                         <div class="razorpay-order-info-item">
                             <label>Base Price:</label>
-                            <span class="razorpay-order-value">${paymentInfo.bp || 'N/A'}</span>
+                            <span class="razorpay-order-value">$${paymentInfo.bp || 'N/A'}</span>
                         </div>
                         <div class="razorpay-order-info-item">
                             <label>Price Per Token:</label>
-                            <span class="razorpay-order-value">${paymentInfo.pp || 'N/A'}</span>
+                            <span class="razorpay-order-value">$${paymentInfo.pp || 'N/A'}</span>
                         </div>
                     </div>
                     <div class="razorpay-order-info-row">
                         <div class="razorpay-order-info-item">
                             <label>Base Discount:</label>
-                            <span class="razorpay-order-value">${paymentInfo.bd || 'N/A'}</span>
+                            <span class="razorpay-order-value">$${paymentInfo.bd || 'N/A'}</span>
                         </div>
                         <div class="razorpay-order-info-item">
                             <label>Promo Discount:</label>
-                            <span class="razorpay-order-value">${paymentInfo.pd || 'N/A'}</span>
+                            <span class="razorpay-order-value">$${paymentInfo.pd || 'N/A'}</span>
                         </div>
                     </div>
                     ${paymentInfo.pt && paymentInfo.pc ? `

@@ -136,13 +136,13 @@
     font-size: 13px;
 }
 
-/* Fetch Order Section */
-.dispute-fetch-order-section {
+/* Fetch Razorpay Order Section */
+.dispute-fetch-razorpay-order-section {
     display: flex;
     align-items: center;
 }
 
-.dispute-fetch-order-btn {
+.dispute-fetch-razorpay-order-btn {
     padding: 8px 16px;
     font-size: 13px;
     white-space: nowrap;
