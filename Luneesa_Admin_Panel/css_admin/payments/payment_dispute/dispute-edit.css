@@ -222,4 +222,9 @@
     .dispute-edit-container {
         padding: 16px;
     }
+    
+    .order-info-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
 }

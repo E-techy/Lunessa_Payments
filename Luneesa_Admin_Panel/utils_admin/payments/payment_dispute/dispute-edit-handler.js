@@ -65,9 +65,12 @@ document.addEventListener("DOMContentLoaded", () => {
             
             // Scroll to the edit section
             editSection.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-        
-        console.log("Opening edit tab for dispute:", currentDisputeData);
+            }
+            
+            // Clear any previous order details when opening a new dispute
+    clearOrderDetails();
+    
+    console.log("Opening edit tab for dispute:", currentDisputeData);
     }
     
     // Fetch Order button handler
@@ -369,9 +372,28 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("dispute-edit-comment").value = "";
         document.getElementById("dispute-edit-resolved-comment").value = "";
         
+        // Clear any displayed order details
+        clearOrderDetails();
+        
         // Clear current dispute data
         currentDisputeData = null;
         
         console.log("Edit dispute tab closed");
+    }
+    
+    // Function to clear order details
+    function clearOrderDetails() {
+        const orderDetailsSection = document.getElementById("dispute-order-details-section");
+        const orderInfoContainer = document.getElementById("dispute-order-info");
+        
+        if (orderDetailsSection) {
+            orderDetailsSection.style.display = "none";
+        }
+        
+        if (orderInfoContainer) {
+            orderInfoContainer.innerHTML = "";
+        }
+        
+        console.log("Order details cleared");
     }
 });
