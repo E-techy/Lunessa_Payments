@@ -71,12 +71,78 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     // Fetch Order button handler
-    document.addEventListener("click", (event) => {
+    document.addEventListener("click", async (event) => {
         if (event.target.closest("#dispute-fetch-order-btn")) {
-            if (currentDisputeData) {
-                console.log("Fetch order clicked for:", currentDisputeData.orderId);
-                // Placeholder - no API call as requested
-                alert(`Fetch Order functionality for Order ID: ${currentDisputeData.orderId}\n\nThis will fetch order details when implemented.`);
+            const orderIdInput = document.getElementById("dispute-edit-orderid");
+            const orderId = orderIdInput.value.trim();
+            
+            if (!orderId) {
+                console.warn("No Order ID provided");
+                alert("Please enter an Order ID");
+                return;
+            }
+            
+            console.log("Fetching order for ID:", orderId);
+            
+            // Show loading state
+            const fetchBtn = document.getElementById("dispute-fetch-order-btn");
+            const originalText = fetchBtn.innerHTML;
+            fetchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+            fetchBtn.disabled = true;
+            
+            try {
+                // Prepare request body
+                const requestBody = {
+                    orderId: orderId
+                };
+                
+                // Make API call
+                const response = await fetch("/admin/fetch_razorpay_orders", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include", // Include cookies for authentication
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    console.log("=== RAZORPAY ORDER FETCHED ===");
+                    console.log("Order Data:", result.data);
+                    console.log("=== END ORDER DATA ===");
+                    
+                    // Show success message
+                    console.log(`✅ Order ${orderId} fetched successfully! Check console for details.`);
+                    
+                    // Optional: Show a brief success notification
+                    const successMsg = document.createElement("div");
+                    successMsg.style.cssText = `
+                        position: fixed; top: 20px; right: 20px; z-index: 9999;
+                        background: #10b981; color: white; padding: 12px 20px;
+                        border-radius: 6px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    `;
+                    successMsg.innerHTML = `<i class="fas fa-check"></i> Order data logged to console!`;
+                    document.body.appendChild(successMsg);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(successMsg)) {
+                            document.body.removeChild(successMsg);
+                        }
+                    }, 3000);
+                    
+                } else {
+                    console.error("Failed to fetch order:", result.error || "Unknown error");
+                    console.log(`❌ Failed to fetch order ${orderId}:`, result.error || "Unknown error");
+                }
+            } catch (error) {
+                console.error("Error fetching order:", error);
+                console.log(`❌ Network error while fetching order ${orderId}:`, error.message);
+            } finally {
+                // Reset button state
+                fetchBtn.innerHTML = originalText;
+                fetchBtn.disabled = false;
             }
         }
     });
