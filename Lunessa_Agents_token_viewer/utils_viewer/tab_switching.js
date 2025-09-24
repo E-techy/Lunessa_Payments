@@ -28,6 +28,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (typeof fetchDisputes === 'function') {
                     fetchDisputes();
                 }
+            } else if (targetTab === 'tokens') {
+                // Optional: Trigger tokens refresh when Tokens tab is clicked
+                if (typeof refreshAgentsData === 'function') {
+                    refreshAgentsData();
+                }
             }
         });
     });
