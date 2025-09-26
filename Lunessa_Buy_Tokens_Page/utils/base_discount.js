@@ -90,7 +90,7 @@ function calculateBaseDiscount(orderAmount) {
         discountType: applicableLevel.discountType,
         discountValue: applicableLevel.discountValue,
         level: applicableLevel,
-        message: `Base discount applied: ${applicableLevel.discountType === 'percentage' ? applicableLevel.discountValue + '%' : '₹' + applicableLevel.discountValue}`
+        message: `Base discount applied: ${applicableLevel.discountType === 'percentage' ? applicableLevel.discountValue + '%' : '$' + applicableLevel.discountValue}`
     };
 }
 
@@ -148,7 +148,7 @@ function getNextDiscountLevel(currentAmount) {
         return {
             level: nextLevel,
             additionalAmountNeeded: additionalAmount,
-            message: `Spend ₹${additionalAmount.toFixed(2)} more to get ${nextLevel.discountType === 'percentage' ? nextLevel.discountValue + '%' : '₹' + nextLevel.discountValue} ${nextLevel.discountType} discount!`
+            message: `Spend $${additionalAmount.toFixed(2)} more to get ${nextLevel.discountType === 'percentage' ? nextLevel.discountValue + '%' : '$' + nextLevel.discountValue} ${nextLevel.discountType} discount!`
         };
     }
 
@@ -180,12 +180,12 @@ function displayDiscountLevels() {
     
     console.log('💰 Available Discount Levels:', baseDiscountData.levels.map(level => {
         const rangeText = level.maxOrderValue 
-            ? `₹${level.minOrderValue} - ₹${level.maxOrderValue}`
-            : `₹${level.minOrderValue}+`;
+            ? `$${level.minOrderValue} - $${level.maxOrderValue}`
+            : `$${level.minOrderValue}+`;
         
         const discountText = level.discountType === 'percentage' 
             ? `${level.discountValue}% off`
-            : `₹${level.discountValue} flat discount`;
+            : `$${level.discountValue} flat discount`;
             
         return `${rangeText}: ${discountText}`;
     }));
@@ -204,7 +204,7 @@ function updateBaseDiscountDisplay() {
     
     if (totalDiscount > 0) {
         discountRow.style.display = 'flex';
-        discountAmount.textContent = `-₹${totalDiscount.toFixed(2)}`;
+        discountAmount.textContent = `-$${totalDiscount.toFixed(2)}`;
         
         // Update discount source text - show breakdown when both discounts are applied
         const sources = [];
@@ -212,15 +212,15 @@ function updateBaseDiscountDisplay() {
         
         if (currentCalculation.baseDiscount > 0) {
             sources.push('Base Discount');
-            discountBreakdown.push(`-₹${currentCalculation.baseDiscount.toFixed(2)}`);
+            discountBreakdown.push(`-$${currentCalculation.baseDiscount.toFixed(2)}`);
         }
         if (currentCalculation.discount > 0) {
             if (currentCalculation.discountSource === 'coupon') {
                 sources.push(`Coupon: ${currentCalculation.appliedCoupon}`);
-                discountBreakdown.push(`-₹${currentCalculation.discount.toFixed(2)}`);
+                discountBreakdown.push(`-$${currentCalculation.discount.toFixed(2)}`);
             } else if (currentCalculation.appliedOffer) {
                 sources.push(`Offer: ${currentCalculation.appliedOffer}`);
-                discountBreakdown.push(`-₹${currentCalculation.discount.toFixed(2)}`);
+                discountBreakdown.push(`-$${currentCalculation.discount.toFixed(2)}`);
             }
         }
         

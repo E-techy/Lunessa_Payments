@@ -34,8 +34,8 @@ function applyOffer(button) {
     // Show success message with breakdown
     const totalSaved = (currentCalculation.baseDiscount || 0) + offerDiscount;
     const message = currentCalculation.baseDiscount > 0 
-        ? `🎉 Exclusive offer applied! Base discount (₹${currentCalculation.baseDiscount.toFixed(2)}) + Offer discount (₹${offerDiscount.toFixed(2)}) = Total saved: ₹${totalSaved.toFixed(2)}`
-        : `🎉 Exclusive offer applied! You saved: ₹${offerDiscount.toFixed(2)}`;
+        ? `🎉 Exclusive offer applied! Base discount ($${currentCalculation.baseDiscount.toFixed(2)}) + Offer discount ($${offerDiscount.toFixed(2)}) = Total saved: $${totalSaved.toFixed(2)}`
+        : `🎉 Exclusive offer applied! You saved: $${offerDiscount.toFixed(2)}`;
     
     showNotification(message, 'success');
 }
@@ -50,7 +50,7 @@ function validateOfferApplication(minAmount) {
     }
     
     if (currentCalculation.basePrice < minAmount) {
-        showNotification(`Minimum purchase amount is ₹${minAmount}`, 'error');
+        showNotification(`Minimum purchase amount is $${minAmount}`, 'error');
         return false;
     }
     

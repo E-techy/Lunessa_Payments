@@ -46,7 +46,7 @@ function calculatePrice() {
     pricingSection.classList.add('show');
     
     const discountMessage = hasBaseDiscount 
-        ? `Price calculated with base discount applied! Saved ₹${currentCalculation.baseDiscount.toFixed(2)}`
+        ? `Price calculated with base discount applied! Saved $${currentCalculation.baseDiscount.toFixed(2)}`
         : 'Pricing calculated successfully!';
     
     showNotification(discountMessage, 'success');
@@ -69,9 +69,9 @@ function resetCalculationState() {
  */
 function updatePricingBreakdown() {
     document.getElementById('billTokens').textContent = currentCalculation.tokens.toLocaleString();
-    document.getElementById('tokenRate').textContent = `₹${currentCalculation.rate.toFixed(3)}`;
-    document.getElementById('billPrice').textContent = `₹${currentCalculation.basePrice.toFixed(2)}`;
-    document.getElementById('totalPrice').textContent = `₹${currentCalculation.totalPrice.toFixed(2)}`;
+    document.getElementById('tokenRate').textContent = `$${currentCalculation.rate.toFixed(3)}`;
+    document.getElementById('billPrice').textContent = `$${currentCalculation.basePrice.toFixed(2)}`;
+    document.getElementById('totalPrice').textContent = `$${currentCalculation.totalPrice.toFixed(2)}`;
     
     const modelBadge = document.getElementById('selectedModelBadge');
     modelBadge.textContent = currentCalculation.modelName;
