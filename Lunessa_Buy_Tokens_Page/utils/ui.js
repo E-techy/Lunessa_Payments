@@ -51,10 +51,10 @@ function setPurchaseButtonState(button, isProcessing) {
  * Complete the purchase process
  */
 function completePurchase(purchaseBtn, originalContent) {
-    let message = `Purchase successful! You have bought ${currentCalculation.tokens.toLocaleString()} tokens for ₹${currentCalculation.totalPrice.toFixed(2)}`;
+    let message = `Purchase successful! You have bought ${currentCalculation.tokens.toLocaleString()} tokens for $${currentCalculation.totalPrice.toFixed(2)}`;
     
     if (currentCalculation.discount > 0) {
-        message += ` (saved ₹${currentCalculation.discount.toFixed(2)})`;
+        message += ` (saved $${currentCalculation.discount.toFixed(2)})`;
     }
     
     showNotification(message, 'success');

@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (discountType === "percentage") {
       discountText = `${discountValue}% off`;
     } else if (discountType === "flat") {
-      discountText = `Flat ₹${discountValue} off`;
+      discountText = `Flat $${discountValue} off`;
     }
 
     return `

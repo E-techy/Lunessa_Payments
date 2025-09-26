@@ -9,7 +9,7 @@ function applyCouponToCalculation(couponData) {
   const { couponCode, discountType, discountValue, minAmount } = couponData;
 
   if (currentCalculation.basePrice < minAmount) {
-    return showCouponError(`❌ Minimum purchase amount for this coupon is ₹${minAmount}`);
+    return showCouponError(`❌ Minimum purchase amount for this coupon is $${minAmount}`);
   }
 
   // Remove old discounts
@@ -32,8 +32,8 @@ function applyCouponToCalculation(couponData) {
 
     const totalSaved = (currentCalculation.baseDiscount || 0) + couponDiscount;
     const msg = currentCalculation.baseDiscount > 0
-      ? `🎉 Coupon ${couponCode} applied! Total saved: ₹${totalSaved.toFixed(2)}`
-      : `🎉 Coupon ${couponCode} applied! You saved: ₹${couponDiscount.toFixed(2)}`;
+      ? `🎉 Coupon ${couponCode} applied! Total saved: $${totalSaved.toFixed(2)}`
+      : `🎉 Coupon ${couponCode} applied! You saved: $${couponDiscount.toFixed(2)}`;
 
     if (typeof showNotification === "function") showNotification(msg, "success");
     else showCouponSuccess(msg);
