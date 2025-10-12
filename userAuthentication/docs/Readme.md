@@ -1,0 +1,1 @@
+This is a standalone folder which you can put in any website and backend server, to enable authentication.
