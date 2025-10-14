@@ -1,4 +1,4 @@
-// userAuthentication/utils/extract_info_from_GoogleID.js
+//userAuthentication/utils/login_via_google/extract_info_from_GoogleID.js
 /**
  * @fileoverview Utility function for server-side verification and information extraction 
  * from a Google ID Token.
@@ -7,15 +7,14 @@
  */
 
 // Import the OAuth2Client from the official Google authentication library.
-// This client handles the secure process of verifying the JWT signature, 
-// checking expiration, and ensuring the audience (aud) matches the client ID.
 const { OAuth2Client } = require('google-auth-library');
 
 /**
  * Validates a Google ID Token against the specified client ID and extracts
  * the user's information from the token's payload.
  *
- * This is an asynchronous function designed for use in a Node.js backend environment.
+ * This function performs the critical security checks (signature, expiration, 
+ * audience, and issuer validation).
  * * @param {string} idToken The Google ID token received from the client (frontend).
  * @param {string} clientId The client ID (audience) corresponding to the application
  * that generated the token (e.g., your web application client ID).
@@ -33,15 +32,11 @@ async function extractInfoFromGoogleIDToken(idToken, clientId) {
 
     try {
         // 1. Initialize the OAuth2 Client.
-        // We initialize the client with the expected client ID.
         const client = new OAuth2Client(clientId);
 
         // 2. Verify the token. This is the critical security step.
-        // The library automatically:
-        // - Fetches Google's public keys.
-        // - Verifies the token's signature.
-        // - Checks the token's expiration (exp).
-        // - Ensures the 'aud' (audience) claim matches the provided clientId.
+        // The library automatically verifies the signature, expiration, 
+        // and crucially, ensures the 'aud' (audience) claim matches the provided clientId.
         const ticket = await client.verifyIdToken({
             idToken: idToken,
             audience: clientId,
@@ -50,7 +45,6 @@ async function extractInfoFromGoogleIDToken(idToken, clientId) {
         // 3. Extract the verified payload.
         const payload = ticket.getPayload();
 
-        // Check if the token payload exists and is valid
         if (!payload) {
              return { success: false, error: 'Token verification failed: Payload is missing.' };
         }
@@ -75,7 +69,7 @@ async function extractInfoFromGoogleIDToken(idToken, clientId) {
         };
 
     } catch (error) {
-        // Handle all possible errors during verification (e.g., expired token, invalid signature, network error)
+        // Handle all possible errors during verification (e.g., expired token, invalid signature)
         console.error('Google ID Token verification failed:', error.message);
         return {
             success: false,
