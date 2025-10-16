@@ -48,6 +48,20 @@ const shortid = require("shortid");
 
 const PORT = process.env.LUNESSA_AGENT_TOKENS_BUYING_PORT || 3004;
 
+
+const { getScyllaClient } = require('./database/scyllaDB/scylla_connection_pool.js');
+
+// Use your dynamic list of hosts if available, otherwise defaults will be used.
+const customContactPoints = process.env.SCYLLA_HOSTS ? process.env.SCYLLA_HOSTS.split(',') : undefined;
+
+// Explicitly call it once to start the connection process
+const dbClient = getScyllaClient(customContactPoints, 'auth_keyspace'); 
+
+// Optional: wait for it to be ready before starting API server
+dbClient.on('end', () => console.log('ScyllaDB connection pool closed.'));
+
+
+
 const app = express();
 
 // Setting the view engine to ejs, to send dynamic file data
