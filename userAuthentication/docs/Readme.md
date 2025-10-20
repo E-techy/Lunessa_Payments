@@ -1,1 +1,2 @@
 This is a standalone folder which you can put in any website and backend server, to enable authentication.
+We are using scyllaDB for storing the refresh tokens of the users, which will be further used for creating the temporary tokens.
